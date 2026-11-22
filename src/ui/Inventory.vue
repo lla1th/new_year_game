@@ -8,11 +8,10 @@ import { clientToGame } from './coords';
 import { canvasRect } from './stage';
 import { uiState } from './uiState';
 import Placeholder from './Placeholder.vue';
+import { LONG_PRESS_MS, classifyPress } from './input/press';
 
 const emit = defineEmits<{ inspect: [itemId: ItemId] }>();
 
-const LONG_PRESS_MS = 500;
-const DRAG_START_PX = 8;
 const TOUCH_LIFT = 60;   // game px the dragged icon is lifted above a finger
 
 const data = getGameData()!;
@@ -68,7 +67,7 @@ function onDown (e: PointerEvent, i: number) {
 
 function onMove (e: PointerEvent) {
     if (e.pointerId !== drag.pointerId || !drag.itemId) return;
-    if (!drag.dragging && Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) >= DRAG_START_PX) {
+    if (!drag.dragging && classifyPress(0, Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY)) === 'drag') {
         drag.dragging = true;
         clearPress();
     }

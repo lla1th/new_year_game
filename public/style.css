@@ -14,3 +14,15 @@ body {
     width: 100%;
     height: 100%;
 }
+
+/* Phones: no browser gestures, callouts or text selection over the game (long press = inspect). */
+#game-container canvas {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+body {
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
+}

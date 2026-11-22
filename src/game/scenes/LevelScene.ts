@@ -23,6 +23,7 @@ import { TransitionScene, type TransitionData } from './TransitionScene';
 import { getAudio } from '../audio/AudioManager';
 import { ambientForLevel, musicForLevel } from '../audio/volume';
 import { combineItems } from '../../puzzles/logic/combine';
+import { classifyPress, DRAG_THRESHOLD_PX, LONG_PRESS_MS } from '../../ui/input/press';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
 export class WalkInterruptedError extends Error {
@@ -42,7 +43,6 @@ const BOB_HEIGHT = 6;          // px
 const BOB_PERIOD_MS = 350;
 const TILT_DEG = 3;
 const USE_POSE_MS = 300;
-const LONG_PRESS_MS = 500;
 const HIGHLIGHT_MS = 2000;
 const SPITZ_FOLLOW_DIST = 80;
 const KSYUSHA_W = 90;
@@ -105,7 +105,8 @@ export class LevelScene extends Scene
     private cursorKind: CursorKind = 'default';
     private highlightUntil = 0;
     private lastWrongKey: string | undefined;
-    private touch: { pt: Vec2; timer: { remove: () => void } } | null = null;
+    private touch: { pt: Vec2; t0: number; dragged: boolean; timer: { remove: () => void } } | null = null;
+    private tapFlash: { id: string; until: number } | null = null;
     private outlineGfx: GameObjects.Graphics;
     private debugGfx: GameObjects.Graphics | null = null;
     private offBus: (() => void)[] = [];
@@ -483,26 +484,45 @@ export class LevelScene extends Scene
         const pt = { x: p.worldX, y: p.worldY };
         if (p.rightButtonDown()) { this.inspectAt(pt); return; }
         if (p.wasTouch) {
-            // Long tap = inspect, short tap = primary action (on release).
+            // Touch (classifyPress): tap = primary action on release, long press = inspect, a moved finger = nothing.
             this.touch?.timer.remove();
-            const timer = this.time.delayedCall(LONG_PRESS_MS, () => { this.touch = null; this.inspectAt(pt); });
-            this.touch = { pt, timer };
+            const timer = this.time.delayedCall(LONG_PRESS_MS, () => {
+                const t = this.touch;
+                this.touch = null;
+                if (t && !t.dragged) this.inspectAt(t.pt);
+            });
+            this.touch = { pt, t0: this.time.now, dragged: false, timer };
             return;
         }
         this.primaryAt(pt);
     }
 
-    private onPointerUp (_p: Input.Pointer)
+    /** Finger movement in CSS pixels since it touched down. */
+    private movedCss (p: Input.Pointer, from: Vec2): number
     {
-        if (!this.touch) return;
-        const { pt, timer } = this.touch;
-        timer.remove();
+        const scale = this.scale.displayScale.x || 1;   // game px per CSS px
+        return Math.hypot(p.worldX - from.x, p.worldY - from.y) / scale;
+    }
+
+    private onPointerUp (p: Input.Pointer)
+    {
+        const t = this.touch;
+        if (!t) return;
+        t.timer.remove();
         this.touch = null;
-        this.primaryAt(pt);
+        const kind = classifyPress(this.time.now - t.t0, t.dragged ? Infinity : this.movedCss(p, t.pt));
+        if (kind !== 'tap') return;   // 'long' was handled by the timer; 'drag' (scroll gesture) never uses a hotspot
+        const h = this.hotspotAt(t.pt);
+        if (h) this.tapFlash = { id: h.id, until: this.time.now + 400 };   // phones: the first tap briefly outlines it
+        this.primaryAt(t.pt);
     }
 
     private onPointerMove (p: Input.Pointer)
     {
+        if (this.touch && !this.touch.dragged && this.movedCss(p, this.touch.pt) > DRAG_THRESHOLD_PX) {
+            this.touch.dragged = true;   // a drag/scroll gesture: no use, no inspect
+            this.touch.timer.remove();
+        }
         if (p.wasTouch || !this.map) return;
         const h = this.isBusy ? null : this.hotspotAt({ x: p.worldX, y: p.worldY });
         const id = h?.id ?? null;
@@ -986,11 +1006,12 @@ export class LevelScene extends Scene
         if (!g || !this.map) return;
         g.clear();
         const all = this.time.now < this.highlightUntil;
-        if (!all && !this.hoverId) return;
+        const flash = this.tapFlash && this.time.now < this.tapFlash.until ? this.tapFlash.id : null;
+        if (!all && !this.hoverId && !flash) return;
         g.lineStyle(4, 0xffffff, 0.9);
         for (const h of this.map.hotspots) {
             if (!isHotspotActive(h, f => gameState.hasFlag(f))) continue;
-            if (!all && h.id !== this.hoverId) continue;
+            if (!all && h.id !== this.hoverId && h.id !== flash) continue;
             tracePath(g, h.shape, true);
             g.strokePath();
         }
