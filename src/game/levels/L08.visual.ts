@@ -38,10 +38,12 @@ registerCutscene('midnight', async (scene, skipped) => {
             strike.setText(`${i}`).setScale(1.4);
             scene.tweens.add({ targets: strike, scale: 1, duration: 300 });
             scene.cameras.main.shake(150, 0.003);
+            scene.playSfx('sfx_chime');
             await wait(1250);
             if (isSkipped) return;
         }
         strike.setText('00:00');
+        scene.playSfx('sfx_fireworks');
         const colors = [0x7e57c2, 0xff7043, 0x29b6f6, 0xffeb3b, 0xe91e63];   // three styles mix + fireworks
         for (let k = 0; k < 24; k++) {
             const x = 200 + Math.random() * 1520;

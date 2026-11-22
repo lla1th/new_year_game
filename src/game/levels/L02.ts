@@ -29,7 +29,7 @@ export const L02: LevelScript = {
                     onItem: {
                         ITEM_MANDARIN: [
                             { removeItem: 'ITEM_MANDARIN' }, { setFlag: 'L02_SNOWMAN_HAPPY' },
-                            { sfx: 'sfx_sparkle' }, { say: 'ksyusha', key: 'l02.snowman.happy' },
+                            { sfx: 'sfx_hihik' }, { say: 'ksyusha', key: 'l02.snowman.happy' },
                         ],
                     },
                 },
@@ -77,7 +77,7 @@ export const L02: LevelScript = {
                     hotspot: 'gate',
                     onItem: {
                         ITEM_GATE_KEY: [
-                            { removeItem: 'ITEM_GATE_KEY' }, { sfx: 'sfx_gate_creak' },
+                            { removeItem: 'ITEM_GATE_KEY' }, { sfx: 'sfx_gate' },
                             { setFlag: 'L02_GATE_OPEN' }, { say: 'ksyusha', key: 'l02.gate.open' },
                         ],
                     },

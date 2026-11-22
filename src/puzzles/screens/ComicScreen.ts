@@ -80,7 +80,10 @@ export class ComicScreen extends OverlayScreen {
             const c = this.slot(pos);
             if (Math.abs(lx - c.x) <= W / 2 && Math.abs(ly - c.y) <= H / 2) target = pos;
         }
-        if (target >= 0 && target !== d.pos) this.state = swapPanels(this.state, d.pos, target);
+        if (target >= 0 && target !== d.pos) {
+            this.state = swapPanels(this.state, d.pos, target);
+            this.services.sfx('sfx_page_swap');
+        }
         for (let pos = 0; pos < 4; pos++) {
             const c = this.slot(pos);
             this.panels[pos].setPosition(c.x, c.y);
@@ -101,6 +104,7 @@ export class ComicScreen extends OverlayScreen {
                 fontFamily: 'Impact, sans-serif', fontSize: '140px', color: '#ffeb3b', stroke: '#d84315', strokeThickness: 14,
             }).setOrigin(0.5).setAngle(-8);
             this.container.add(wow);
+            this.services.sfx('sfx_whoosh');
             this.scene.tweens.add({ targets: wow, scale: { from: 0.3, to: 1 }, duration: 300, ease: 'Back.easeOut' });
             this.scene.time.delayedCall(900, () => this.solve());
         });

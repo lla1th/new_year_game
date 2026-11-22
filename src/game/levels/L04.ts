@@ -43,7 +43,7 @@ export const L04: LevelScript = {
                     onUse: [{
                         openPuzzle: 'P-04',
                         onSolved: [
-                            { setFlag: 'L04_PIPES_DONE' }, { sfx: 'sfx_conveyor' }, { dialog: 'l04_lekha_done' },
+                            { setFlag: 'L04_PIPES_DONE' }, { sfx: 'sfx_glaze_flow' }, { dialog: 'l04_lekha_done' },
                             { giveItem: 'ITEM_MITTENS' }, { checkpoint: true },
                         ],
                     }],
@@ -52,7 +52,7 @@ export const L04: LevelScript = {
                     hotspot: 'tank',
                     onItem: {
                         ITEM_VALVE: [
-                            { removeItem: 'ITEM_VALVE' }, { sfx: 'sfx_valve' }, { setFlag: 'L04_VALVE_INSTALLED' },
+                            { removeItem: 'ITEM_VALVE' }, { sfx: 'sfx_pipe_rotate' }, { setFlag: 'L04_VALVE_INSTALLED' },
                             { say: 'ksyusha', key: 'l04.tank.valve' },
                         ],
                     },

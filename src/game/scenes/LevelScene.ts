@@ -20,6 +20,8 @@ import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registr
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 import { openShortcut } from './overlayClose';
 import { TransitionScene, type TransitionData } from './TransitionScene';
+import { getAudio } from '../audio/AudioManager';
+import { ambientForLevel, musicForLevel } from '../audio/volume';
 import { combineItems } from '../../puzzles/logic/combine';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
@@ -231,6 +233,7 @@ export class LevelScene extends Scene
             this.loading = false;
         }
         this.checkpoint();
+        this.updateMusic();   // during a brush transition the new music starts when it is over
         bus.emit('scene:ready', { levelId: script.levelId, screenId: screen ?? null });
         if (screenScript.onEnter?.length) {
             if (this.transitioning) this.heldEnter = screenScript.onEnter;   // runs when the brush transition is over
@@ -264,15 +267,27 @@ export class LevelScene extends Scene
         } finally {
             this.transitioning = false;
         }
+        this.updateMusic();
         const enter = this.heldEnter;
         this.heldEnter = null;
         if (enter) void this.runScript(enter);
     }
 
-    /** Sound effect (routed to the AudioManager). */
+    /** Sound effect (AudioManager; missing files are skipped silently). */
     playSfx (name: string): void
     {
         if (isDebug()) console.debug(`[sfx] ${name}`);
+        getAudio()?.playSfx(name);
+    }
+
+    /** Music of the world (L07 after the reconciliation: the finale theme) and the level's background noise. */
+    updateMusic (): void
+    {
+        if (!this.script || this.transitioning) return;
+        const lvl = this.script.levelId;
+        const audio = getAudio();
+        audio?.playMusic(lvl === 'L07' && gameState.hasFlag('L07_CAT_RECONCILED') ? 'mus_finale' : musicForLevel(lvl));
+        audio?.playAmbient(this.screenId === 'post' ? null : ambientForLevel(lvl));
     }
 
     /** Camera fade out (true) / in (false), FADE_MS. */
@@ -378,6 +393,7 @@ export class LevelScene extends Scene
                 this.pushTrail();
             }
             if (this.path.length === 0) this.finishWalk();
+            this.stepSound(delta);
             this.drawDebug();
         }
         this.syncSprite();
@@ -533,7 +549,7 @@ export class LevelScene extends Scene
         gameState.removeItem(a);
         gameState.removeItem(b);
         gameState.addItem(result);
-        if (isDebug()) console.debug('[sfx] sfx_combine');
+        this.playSfx('sfx_combine');
         this.hints?.notifyProgress();
         this.refreshVisuals();
     }
@@ -558,6 +574,7 @@ export class LevelScene extends Scene
         const tb = getGameData()?.texts;
         const key = tb ? tb.randomVariant('common.wrongItem', Math.random, this.lastWrongKey).key : 'common.wrongItem.1';
         this.lastWrongKey = key;
+        this.playSfx('sfx_nope');
         return key;
     }
 
@@ -629,7 +646,7 @@ export class LevelScene extends Scene
                 await fn(this);
                 this.refreshVisuals();
             },
-            sfx: name => { if (isDebug()) console.debug(`[sfx] ${name}`); },   // audio arrives in M4
+            sfx: name => this.playSfx(name),
             walkTo: async point => {
                 const p = this.map.points[point];
                 if (!p) { console.warn(`[LevelScene] unknown point "${point}"`); return; }
@@ -654,6 +671,7 @@ export class LevelScene extends Scene
             progress: () => {
                 this.hints?.notifyProgress();
                 this.refreshVisuals();
+                this.updateMusic();
             },
         };
     }
@@ -735,7 +753,7 @@ export class LevelScene extends Scene
                     state: gameState,
                     progress: () => { this.hints?.notifyProgress(); this.refreshVisuals(); },
                     say: (speaker, key) => this.say(speaker, key),
-                    sfx: name => { if (isDebug()) console.debug(`[sfx] ${name}`); },
+                    sfx: name => this.playSfx(name),
                 },
                 onFinish: resolve,
                 bgKey: CLOSEUP_BG[puzzleId],
@@ -817,6 +835,17 @@ export class LevelScene extends Scene
     }
 
     // --- walking internals --------------------------------------------------
+
+    private stepClock = 0;
+
+    /** Footsteps by the surface of the map (Tiled property `footsteps`), one per bob period. */
+    private stepSound (delta: number)
+    {
+        this.stepClock += delta;
+        if (this.stepClock < BOB_PERIOD_MS) return;
+        this.stepClock = 0;
+        if (this.map) this.playSfx(`sfx_step_${this.map.footsteps}`);
+    }
 
     private finishWalk ()
     {

@@ -6,6 +6,8 @@ import { LEVEL_STYLE, type SpeakerId } from '../game/data/types';
 import type { DialogChoice } from '../game/data/schemas';
 import { gameState } from '../state/gameState';
 import { DialogQueue } from './dialogQueue';
+import { getAudio } from '../game/audio/AudioManager';
+import { isHihik } from '../game/scenes/LevelScene';
 import { charsVisible } from './typewriter';
 import { uiState } from './uiState';
 import Placeholder from './Placeholder.vue';
@@ -47,6 +49,12 @@ watch(() => [q.job, q.index] as const, () => {
     if (q.active && !raf) raf = requestAnimationFrame(tick);
     if (!q.active && raf) { cancelAnimationFrame(raf); raf = 0; }
 });
+
+// a quiet tick every 3 printed characters; the sparkle with «Хихик»
+watch(() => shown.value.length, (n, o) => {
+    if (n > o && Math.floor(n / 3) > Math.floor(o / 3) && n < fullText.value.length) getAudio()?.playSfx('sfx_typing');
+});
+watch(() => line.value, l => { if (l && isHihik(fullText.value)) getAudio()?.playSfx('sfx_hihik'); });
 
 function onClick () {
     if (!line.value) return;

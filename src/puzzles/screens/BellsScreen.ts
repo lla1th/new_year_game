@@ -68,7 +68,7 @@ export class BellsScreen extends OverlayScreen {
         this.paint();
         if (r.result === 'solved') {
             this.locked = true;
-            this.services.sfx('sfx_bells_melody');
+            this.services.sfx('sfx_solve');
             this.scene.time.delayedCall(700, () => this.solve());
         }
     }

@@ -131,6 +131,7 @@ export class FifteenScreen extends OverlayScreen {
         }
         const to = this.cell(this.board.indexOf(0));
         this.board = moveTile(this.board, idx);
+        this.services.sfx('sfx_tile_slide');
         this.busy = true;
         this.scene.tweens.add({
             targets: img, x: to.x, y: to.y, duration: SLIDE_MS,
@@ -193,7 +194,7 @@ export class FifteenScreen extends OverlayScreen {
         this.auto = false;
         this.clearHelp();
         this.showSolved();
-        this.services.sfx('sfx_solve');
+        this.services.sfx('sfx_box_open');
         this.scene.time.delayedCall(900, () => this.solve());
     }
 

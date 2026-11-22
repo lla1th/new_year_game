@@ -78,6 +78,7 @@ export class PipesScreen extends OverlayScreen {
     private rotate(c: number, r: number): void {
         if (this.state.solved) return;   // tiles are locked after success
         this.state = rotateTile(this.state, c, r);
+        this.services.sfx('sfx_pipe_rotate');
         this.animating++;
         const tile = this.tiles[r][c];
         this.scene.tweens.add({
@@ -87,7 +88,7 @@ export class PipesScreen extends OverlayScreen {
         this.paint();
         if (computeFlow(this.state).reachesOutlet) {
             this.state = { ...this.state, solved: true };
-            this.services.sfx('sfx_solve');
+            this.services.sfx('sfx_glaze_flow');
             this.scene.time.delayedCall(800, () => this.solve());
         }
     }

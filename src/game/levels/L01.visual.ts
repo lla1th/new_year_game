@@ -51,6 +51,7 @@ registerLevelVisual('L01', scene => {
 registerAnim('spitz_out', scene => new Promise<void>(resolve => {
     const p = point(scene, 'spitz_under_sofa', { x: scene.position.x + 120, y: scene.position.y });
     const sp = scene.showSpitz(p);
+    scene.playSfx('sfx_spitz_bark');
     sp.setScale(0.2);
     scene.tweens.add({
         targets: sp, scale: 1, y: p.y - 80, duration: 260, ease: 'Back.easeOut', yoyo: true,
@@ -62,6 +63,7 @@ registerAnim('spitz_out', scene => new Promise<void>(resolve => {
 registerAnim('portal', scene => new Promise<void>(resolve => {
     const p = point(scene, 'portal', scene.position);
     const targets = [scene.ksyusha, scene.spitz].filter((o): o is GameObjects.Image => !!o);
+    scene.playSfx('sfx_portal');
     scene.tweens.add({ targets, x: p.x, y: p.y, scale: 0, angle: 360, duration: 800, ease: 'Cubic.easeIn' });
     scene.time.delayedCall(800, () => { scene.cameras.main.flash(250, 255, 255, 255); resolve(); });
 }));

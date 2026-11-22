@@ -40,7 +40,7 @@ export class ClockScreen extends OverlayScreen {
         if (!slot || !fitsSlot(partId, slot)) return;   // soft return, no line
         this.inserted.push(partId);
         this.services.state.removePart(partId);         // the indicator empties as parts go in
-        this.services.sfx('sfx_part_click');
+        this.services.sfx('sfx_part');
         this.drawPart(slot, true);
         if (this.isSolved()) this.scene.time.delayedCall(700, () => this.solve());
     }

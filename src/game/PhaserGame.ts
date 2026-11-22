@@ -6,6 +6,8 @@ import { OverlayScene } from './scenes/OverlayScene';
 import { TransitionScene } from './scenes/TransitionScene';
 import './levels/visuals';
 import { LEVELS } from './levels';
+import { isDebug } from './debug';
+import { AudioManager, setAudio, type SoundManagerLike } from './audio/AudioManager';
 
 LevelScene.resolveLevel = id => LEVELS[id];
 
@@ -23,7 +25,13 @@ const config: Types.Core.GameConfig = {
 };
 
 const StartGame = (parent: string): Game => {
-    return new Game({ ...config, scale: { ...config.scale, parent } });
+    const game = new Game({ ...config, scale: { ...config.scale, parent } });
+    const audio = new AudioManager(game.sound as unknown as SoundManagerLike, key => game.cache.audio.exists(key), () => performance.now());
+    setAudio(audio);
+    if (isDebug()) (window as unknown as { __audio?: AudioManager }).__audio = audio;   // debug-only handle for checks
+    game.events.on('step', () => audio.update());
+    game.events.once('destroy', () => setAudio(null));
+    return game;
 };
 
 export default StartGame;

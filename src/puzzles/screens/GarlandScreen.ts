@@ -52,6 +52,7 @@ export class GarlandScreen extends OverlayScreen {
         const next = insertBulb(this.state, idx, color);
         if (!next) return;   // fixed / occupied: the bulb stays in the inventory
         this.state = next;
+        this.services.sfx('sfx_bulb_in');
         this.services.state.removeItem(itemId);
         this.redraw();
         this.afterChange();
@@ -108,6 +109,7 @@ export class GarlandScreen extends OverlayScreen {
         if (r.result === 'incomplete') return;
         if (r.result === 'solved') {
             this.state = r.state;   // solved now: closing during the animation still counts (isSolved)
+            this.services.sfx('sfx_garland_on');
             this.locked = true;
             this.redraw();
             this.scene.tweens.add({
@@ -121,6 +123,7 @@ export class GarlandScreen extends OverlayScreen {
         const ghosts = r.wrongIdx.map(i => this.bulbs[i]).filter((x): x is GameObjects.Container => !!x);
         r.wrongIdx.forEach(i => { this.bulbs[i] = null; });
         this.state = r.state;
+        this.services.sfx('sfx_bulb_wrong');
         for (const c of r.returned) if (c !== 'red') this.services.state.addItem(BULB_ITEM[c]);
         this.redraw();
         for (const g of ghosts) (g.getByName('body') as GameObjects.Arc | null)?.setFillStyle(0xff0000, 1);

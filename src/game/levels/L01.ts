@@ -37,7 +37,7 @@ export const L01: LevelScript = {
                 { hotspot: 'sofa', onInspect: [{ say: 'ksyusha', key: 'l01.sofa.freed.inspect' }] },
                 // Mandarin: once (the source is "done" while the mandarin is in the inventory).
                 { hotspot: 'table', onUse: [{ giveItem: 'ITEM_MANDARIN' }, { say: 'ksyusha', key: 'l01.table.take' }] },
-                { hotspot: 'fridge', onUse: [{ openPuzzle: 'fridge' }] },
+                { hotspot: 'fridge', onUse: [{ sfx: 'sfx_fridge' }, { openPuzzle: 'fridge' }] },
                 // Portal: only after the dialog.
                 {
                     hotspot: 'terrarium',

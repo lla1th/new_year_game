@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { getAudio } from './game/audio/AudioManager';
 import { bus } from './events';
 import { loadData } from './game/data/loadData';
 import { getGameData, setGameData } from './game/data/gameData';
@@ -91,10 +92,30 @@ function pause (on: boolean) {
     if (uiState.screen !== 'game' || uiState.ending) return;   // no pause over the card / credits
     uiState.paused = on;
     setPaused(on);
+    getAudio()?.setPaused(on);   // music at 30 %
+}
+
+// --- audio: unlock on the first interaction, settings, menu music, UI sounds ---------------------------
+function unlockAudio () {
+    getAudio()?.unlock();
+}
+watch(() => ({ ...uiState.settings }), s => getAudio()?.applySettings(s), { deep: true });
+function menuAudio () {
+    const a = getAudio();
+    if (!a) return;
+    a.applySettings(uiState.settings);
+    if (uiState.screen === 'menu') { a.playMusic('mus_menu'); a.playAmbient(null); a.setPaused(false); }
+}
+watch(() => uiState.screen, menuAudio);
+watch(() => gameState.inventory.length, (n, o) => { if (n > o) getAudio()?.playSfx('sfx_pickup'); });
+watch(() => gameState.parts.length, (n, o) => { if (n > o) getAudio()?.playSfx('sfx_part'); });
+function onUiClick (e: MouseEvent) {
+    if ((e.target as HTMLElement | null)?.closest('button')) getAudio()?.playSfx('sfx_click');
 }
 
 function toMenu () {
     stopLevel();
+    getAudio()?.setPaused(false);
     uiState.ending = null;
     uiState.puzzleTakesItems = false;
     uiState.paused = false;
@@ -130,6 +151,8 @@ onMounted(async () => {
         }),
     );
     window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', unlockAudio, { capture: true });
+    window.addEventListener('keydown', unlockAudio, { capture: true });
     document.addEventListener('fullscreenchange', onFsChange);
     try {
         setGameData(await loadData());
@@ -142,13 +165,15 @@ onMounted(async () => {
 onUnmounted(() => {
     offs.forEach(off => off());
     window.removeEventListener('keydown', onKey);
+    window.removeEventListener('pointerdown', unlockAudio, { capture: true });
+    window.removeEventListener('keydown', unlockAudio, { capture: true });
     document.removeEventListener('fullscreenchange', onFsChange);
 });
 </script>
 
 <template>
     <div class="root" :style="{ cursor: uiState.screen === 'game' ? uiState.cursor : 'default' }">
-        <PhaserGame v-if="uiState.screen === 'menu' || uiState.screen === 'game'" />
+        <PhaserGame v-if="uiState.screen === 'menu' || uiState.screen === 'game'" @ready="menuAudio" />
         <div v-if="uiState.screen === 'loading'" class="msg">…</div>
         <div v-if="uiState.screen === 'error'" class="msg">Load error. Please reload the page.</div>
         <!--
@@ -157,7 +182,7 @@ onUnmounted(() => {
         -->
         <div
             v-if="uiState.screen === 'menu' || uiState.screen === 'game'" class="stage" :style="stageStyle"
-            @mousedown.stop @touchstart.stop
+            @mousedown.stop @touchstart.stop @click="onUiClick"
         >
             <template v-if="uiState.screen === 'game'">
                 <Hud v-show="!uiState.ending" @pause="pause(true)" />

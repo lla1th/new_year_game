@@ -17,7 +17,7 @@ export const L06: LevelScript = {
                 { hotspot: 'comic_page', when: 'L06_BRIDGE_DONE', onInspect: [{ say: 'ksyusha', key: 'l06.comic_page.done.inspect' }] },
                 {
                     hotspot: 'comic_page',
-                    onUse: [{ openPuzzle: 'P-06', onSolved: [{ sfx: 'sfx_bridge' }, { setFlag: 'L06_BRIDGE_DONE' }, { checkpoint: true }] }],
+                    onUse: [{ openPuzzle: 'P-06', onSolved: [{ sfx: 'sfx_whoosh' }, { setFlag: 'L06_BRIDGE_DONE' }, { checkpoint: true }] }],
                 },
                 // The bridge is active on the map only after P-06; the variant below guards the script anyway.
                 {

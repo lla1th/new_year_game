@@ -10,6 +10,7 @@ registerAnim('cat_turn', scene => new Promise<void>(resolve => {
     const cat = scene.getSprite('cat');
     if (!cat) { resolve(); return; }
     cat.setFlipX(!cat.flipX);
+    scene.playSfx('sfx_meow');
     scene.time.delayedCall(1000, () => { cat.setFlipX(!cat.flipX); resolve(); });
 }));
 
