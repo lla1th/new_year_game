@@ -12,6 +12,7 @@ export interface OverlayServices {
     state: GameStateModel;
     progress(): void;
     say(speaker: SpeakerId, key: string): Promise<void>;
+    sfx(name: string): void;   // audio arrives in M4
 }
 
 /**

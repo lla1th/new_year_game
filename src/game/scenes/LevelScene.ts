@@ -615,6 +615,7 @@ export class LevelScene extends Scene
                     state: gameState,
                     progress: () => { this.hints?.notifyProgress(); this.refreshVisuals(); },
                     say: (speaker, key) => this.say(speaker, key),
+                    sfx: name => { if (isDebug()) console.debug(`[sfx] ${name}`); },
                 },
                 onFinish: resolve,
             };
