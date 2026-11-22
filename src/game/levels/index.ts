@@ -5,6 +5,7 @@ import { L02 } from './L02';
 import { L03 } from './L03';
 import { L04 } from './L04';
 import { L05 } from './L05';
+import { L06 } from './L06';
 
 /** Placeholder for levels that are not built yet: a room with a "to be continued" sign. */
 function toBeContinued(levelId: LevelId): LevelScript {
@@ -33,7 +34,7 @@ export const LEVELS: Record<LevelId, LevelScript> = {
     L03,
     L04,
     L05,
-    L06: toBeContinued('L06'),
+    L06,
     L07: toBeContinued('L07'),
     L08: toBeContinued('L08'),
 };

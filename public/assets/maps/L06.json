@@ -1,0 +1,343 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 5,
+ "nextobjectid": 11,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "img/world3/l06_bg.png"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "metal"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "L06"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_world3"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": false
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 80,
+     "y": 600,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1020,
+       "y": 0
+      },
+      {
+       "x": 1020,
+       "y": 400
+      },
+      {
+       "x": 0,
+       "y": 400
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "friends",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 200,
+     "y": 380,
+     "width": 220,
+     "height": 240,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 440
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 700
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "talk"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ul"
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "comic_page",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 560,
+     "y": 120,
+     "width": 300,
+     "height": 260,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 700
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 700
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "gap",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1100,
+     "y": 600,
+     "width": 300,
+     "height": 400,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 1060
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 800
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "eye"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "dr"
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "bridge",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1080,
+     "y": 700,
+     "width": 340,
+     "height": 120,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 1060
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 760
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "dr"
+      },
+      {
+       "name": "enabledIf",
+       "type": "string",
+       "value": "L06_BRIDGE_DONE"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 6,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 300,
+     "y": 880,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 7,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 220,
+     "y": 900,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 8,
+     "name": "cat_roof",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1620,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "sprites",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 9,
+     "name": "bridge",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1250,
+     "y": 820,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 821
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "l06_bridge"
+      }
+     ]
+    },
+    {
+     "id": 10,
+     "name": "cat",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1620,
+     "y": 600,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 601
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "cat_w3_idle"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

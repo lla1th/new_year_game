@@ -54,5 +54,15 @@
       "speaker": "lekha",
       "key": "l04.dlg.lekha.3"
     }
+  ],
+  "l06_friends": [
+    {
+      "speaker": "lekha",
+      "key": "l06.dlg.friends.1"
+    },
+    {
+      "speaker": "nika",
+      "key": "l06.dlg.friends.2"
+    }
   ]
 }
