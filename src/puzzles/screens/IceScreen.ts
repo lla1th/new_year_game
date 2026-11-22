@@ -18,6 +18,8 @@ export class IceScreen extends OverlayScreen {
     private arrows: GameObjects.Text[] = [];
     private busy = false;
 
+    isSolved(): boolean { return this.state.solved; }
+
     create(container: GameObjects.Container): void {
         const s = this.scene;
         this.container = container;

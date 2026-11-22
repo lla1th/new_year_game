@@ -19,6 +19,8 @@ export class PipesScreen extends OverlayScreen {
     private frames: GameObjects.Rectangle[][] = [];
     private animating = 0;
 
+    isSolved(): boolean { return this.state.solved; }
+
     create(container: GameObjects.Container): void {
         const s = this.scene;
         this.animating = 0;

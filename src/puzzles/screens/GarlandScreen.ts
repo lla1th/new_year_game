@@ -2,7 +2,7 @@ import type { GameObjects } from 'phaser';
 import type { ItemId } from '../../game/data/types';
 import type { Vec2 } from '../../game/nav/geometry';
 import { OverlayScreen } from '../../game/scenes/OverlayScene';
-import { BULB_ITEM, checkGarland, createGarland, ejectWrong, insertBulb, removeBulb, type BulbColor, type GarlandState } from '../logic/garland';
+import { BULB_ITEM, completeGarland, createGarland, insertBulb, removeBulb, type BulbColor, type GarlandState } from '../logic/garland';
 
 const SOCKET_GAP = 200;
 const SOCKET_Y = 20;
@@ -20,6 +20,8 @@ export class GarlandScreen extends OverlayScreen {
     private container: GameObjects.Container;
     private bulbs: (GameObjects.Container | null)[] = [];
     private locked = false;
+
+    isSolved(): boolean { return this.state.solved; }
 
     create(container: GameObjects.Container): void {
         this.container = container;
@@ -102,28 +104,31 @@ export class GarlandScreen extends OverlayScreen {
     }
 
     private afterChange(): void {
-        const check = checkGarland(this.state);
-        if (!check.complete) return;
-        this.locked = true;
-        if (check.solved) {
-            this.state = ejectWrong(this.state).state;   // marks solved
+        const r = completeGarland(this.state);
+        if (r.result === 'incomplete') return;
+        if (r.result === 'solved') {
+            this.state = r.state;   // solved now: closing during the animation still counts (isSolved)
+            this.locked = true;
             this.redraw();
             this.scene.tweens.add({
-                targets: this.bulbs.filter((b): b is GameObjects.Container => !!b), scale: 1.15, duration: 250, yoyo: true,
+                targets: this.bulbs.filter((x): x is GameObjects.Container => !!x), scale: 1.15, duration: 250, yoyo: true,
                 onComplete: () => this.solve(),
             });
             return;
         }
-        // Right bulbs stay lit, wrong ones blink red 3 times (0.6 s) and go back to the inventory.
-        const wrong = check.wrongIdx.map(i => this.bulbs[i]?.getByName('body') as GameObjects.Arc | null).filter((b): b is GameObjects.Arc => !!b);
-        for (const b of wrong) b.setFillStyle(0xff0000, 1);
+        // Wrong: the wrong bulbs leave the garland and go back to the inventory right away (state first),
+        // then their old images blink red 3 times (0.6 s) as decoration — closing the screen loses nothing.
+        const ghosts = r.wrongIdx.map(i => this.bulbs[i]).filter((x): x is GameObjects.Container => !!x);
+        r.wrongIdx.forEach(i => { this.bulbs[i] = null; });
+        this.state = r.state;
+        for (const c of r.returned) if (c !== 'red') this.services.state.addItem(BULB_ITEM[c]);
+        this.redraw();
+        for (const g of ghosts) (g.getByName('body') as GameObjects.Arc | null)?.setFillStyle(0xff0000, 1);
+        this.locked = true;
         this.scene.tweens.add({
-            targets: wrong, alpha: 0.15, duration: BLINK_MS, yoyo: true, repeat: 2,
+            targets: ghosts, alpha: 0.15, duration: BLINK_MS, yoyo: true, repeat: 2,
             onComplete: () => {
-                const r = ejectWrong(this.state);
-                this.state = r.state;
-                for (const c of r.returned) if (c !== 'red') this.services.state.addItem(BULB_ITEM[c]);
-                this.redraw();
+                for (const g of ghosts) g.destroy();
                 this.locked = false;
                 void this.services.say('ksyusha', 'l02.garland.wrong');
             },

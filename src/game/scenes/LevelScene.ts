@@ -17,6 +17,7 @@ import { gameState } from '../../state/gameState';
 import { saveGame } from '../../state/SaveService';
 import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registry';
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
+import { openShortcut } from './overlayClose';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
 export class WalkInterruptedError extends Error {
@@ -99,8 +100,8 @@ export class LevelScene extends Scene
     private actionHotspot: HotspotDef | null = null;
     private screens = new Map<PuzzleId, OverlayScreen>();
     private skipCutscene: (() => void) | null = null;
-    private pendingTalk = new Set<() => void>();
-    private placeholderBoxes: { h: HotspotDef; objs: GameObjects.Components.Visible[] }[] = [];   // resolvers of say/dialog promises waiting for the UI
+    private pendingTalk = new Set<() => void>();   // resolvers of say/dialog promises waiting for the UI
+    private placeholderBoxes: { h: HotspotDef; objs: GameObjects.Components.Visible[] }[] = [];
 
     constructor ()
     {
@@ -191,7 +192,7 @@ export class LevelScene extends Scene
             this.tweens.killAll();
             this.children.removeAll(true);
             this.sprites.clear();
-            this.screens.clear();
+            if (this.script?.levelId !== script.levelId) this.screens.clear();   // puzzle state lives until the level ends
             this.placeholderBoxes = [];
             this.spitz = null;
             this.cameras.main.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
@@ -634,6 +635,7 @@ export class LevelScene extends Scene
     {
         const screen = this.ensureScreen(puzzleId);
         if (!screen) { console.warn(`[LevelScene] no overlay screen "${puzzleId}"`); return false; }
+        if (openShortcut(screen)) return true;   // solved before (e.g. closed during the success animation)
         const cam = this.cameras.main;
         const h = this.actionHotspot;
         if (h) {

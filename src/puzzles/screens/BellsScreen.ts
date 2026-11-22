@@ -17,6 +17,8 @@ export class BellsScreen extends OverlayScreen {
     private cat: GameObjects.Image;
     private locked = false;
 
+    isSolved(): boolean { return this.state.solved; }
+
     create(container: GameObjects.Container): void {
         const s = this.scene;
         this.locked = false;

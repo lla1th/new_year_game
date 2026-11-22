@@ -47,3 +47,15 @@ export function ejectWrong(s: GarlandState): { state: GarlandState; returned: Bu
     const solved = sockets.every((c, i) => c === GARLAND_TARGET[i]);
     return { state: { ...s, sockets, solved }, returned };
 }
+
+/**
+ * What happens when the last socket is filled: solved, or the wrong bulbs leave the garland at once
+ * (`returned` go back to the inventory; the blinking on screen is only decoration).
+ */
+export function completeGarland(s: GarlandState):
+    { result: 'incomplete' | 'solved' | 'wrong'; state: GarlandState; returned: BulbColor[]; wrongIdx: number[] } {
+    const check = checkGarland(s);
+    if (!check.complete) return { result: 'incomplete', state: s, returned: [], wrongIdx: [] };
+    const r = ejectWrong(s);
+    return { result: check.solved ? 'solved' : 'wrong', state: r.state, returned: r.returned, wrongIdx: check.wrongIdx };
+}

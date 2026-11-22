@@ -2,6 +2,7 @@ import { Scene, GameObjects } from 'phaser';
 import { bus } from '../../events';
 import { GAME_HEIGHT, GAME_WIDTH, type ItemId, type PuzzleId, type SpeakerId } from '../data/types';
 import type { Vec2 } from '../nav/geometry';
+import { closeResult } from './overlayClose';
 import type { GameStateModel } from '../../state/GameStateModel';
 
 export const PANEL_W = 1200;
@@ -35,6 +36,9 @@ export abstract class OverlayScreen {
 
     /** Closes the screen; openPuzzle → true. */
     solve(): void { this.finishFn?.(true); }
+
+    /** True once the puzzle is solved (even while its success animation still runs). Close-ups without a puzzle: false. */
+    isSolved(): boolean { return false; }
 
     /** Closes the screen; openPuzzle → false. The puzzle state is kept until the end of the level. */
     close(): void { this.finishFn?.(false); }
@@ -106,7 +110,8 @@ export class OverlayScene extends Scene {
         this.finished = true;
         this.data_.screen.attach(this.data_.screen.scene, this.data_.services, null);
         const cb = this.data_.onFinish;
+        const result = closeResult(solved, this.data_.screen);   // closing during the success animation still counts
         this.scene.stop();
-        cb(solved);
+        cb(result);
     }
 }
