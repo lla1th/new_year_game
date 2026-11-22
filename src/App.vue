@@ -5,7 +5,7 @@ import { bus } from './events';
 import { loadData } from './game/data/loadData';
 import { getGameData, setGameData } from './game/data/gameData';
 import { GAME_HEIGHT, GAME_WIDTH, type CursorKind, type ItemId, type LevelId } from './game/data/types';
-import { setPaused, startLevel, stopLevel } from './game/controller';
+import { isTransitioning, setPaused, startLevel, stopLevel } from './game/controller';
 import { isDebug } from './game/debug';
 import { gameState } from './state/gameState';
 import { loadGame } from './state/SaveService';
@@ -89,7 +89,7 @@ function creditsDone () {
 }
 
 function pause (on: boolean) {
-    if (uiState.screen !== 'game' || uiState.ending) return;   // no pause over the card / credits
+    if (uiState.screen !== 'game' || uiState.ending || (on && isTransitioning())) return;   // no pause over the card / credits / a transition
     uiState.paused = on;
     setPaused(on);
     getAudio()?.setPaused(on);   // music at 30 %

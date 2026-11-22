@@ -1,5 +1,5 @@
 import type { GameObjects } from 'phaser';
-import { ensureTexture } from '../assets/placeholder';
+import { ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { getGameData } from '../data/gameData';
 import type { Vec2 } from '../nav/geometry';
 import { OverlayScreen, registerScreen } from '../scenes/OverlayScene';
@@ -15,7 +15,8 @@ class FridgeScreen extends OverlayScreen {
     create(container: GameObjects.Container): void {
         const s = this.scene;
         const state = this.services.state;
-        container.add(s.add.image(0, 0, ensureTexture(s, 'w1_fridge_close', 1000, 700, 'fridge')));
+        // the real close-up picture is drawn by OverlayScene under the panel; here only the placeholder
+        if (!s.textures.exists('w1_fridge_close') || isPlaceholder('w1_fridge_close')) container.add(s.add.image(0, 0, ensureTexture(s, 'w1_fridge_close', 1000, 700, 'fridge')));
         const available = !state.hasItem('ITEM_SAUSAGE') && !state.hasFlag('L01_SPITZ_FREED');
         if (!available) return;   // empty shelf
         const key = ensureTexture(s, 'l01_sausage', 260, 110, t('item.ITEM_SAUSAGE.name'));

@@ -130,6 +130,8 @@ export class LevelScene extends Scene
 
     get isWalking (): boolean { return this.walk !== null; }
 
+    get isTransitioning (): boolean { return this.transitioning; }
+
     get isBusy (): boolean { return this.busy || this.scriptPhase || this.talking > 0 || this.loading || this.transitioning; }
 
     get currentLevel (): LevelScript | null { return this.script; }
@@ -248,6 +250,7 @@ export class LevelScene extends Scene
     private async brushTransition (load: () => Promise<void>): Promise<void>
     {
         this.transitioning = true;
+        const gen = this.levelGeneration;   // the load below bumps it by one; anything else = the scene was stopped
         try {
             const image = await new Promise<HTMLImageElement>(resolve => this.game.renderer.snapshot(img => resolve(img as HTMLImageElement)));
             const actors = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Image => !!a && a.visible)
@@ -259,6 +262,7 @@ export class LevelScene extends Scene
             const ts = this.scene.get('TransitionScene') as TransitionScene;
             this.playSfx('sfx_transition');
             await load();
+            if (this.levelGeneration !== gen + 1) return;   // the scene was stopped / restarted during the load
             const hidden = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Image => !!a && a.visible);
             hidden.forEach(a => a.setAlpha(0));
             await ts.reveal();
@@ -266,7 +270,9 @@ export class LevelScene extends Scene
             hidden.forEach(a => a.setAlpha(1));
         } finally {
             this.transitioning = false;
+            if (this.scene.isActive('TransitionScene') || this.scene.isPaused('TransitionScene')) this.scene.stop('TransitionScene');
         }
+        if (this.levelGeneration !== gen + 1) { this.heldEnter = null; return; }   // stopped / restarted meanwhile
         this.updateMusic();
         const enter = this.heldEnter;
         this.heldEnter = null;
@@ -360,6 +366,9 @@ export class LevelScene extends Scene
             this.actionHotspot = null;
             this.busy = false;
             this.scriptPhase = false;
+            this.transitioning = false;
+            this.heldEnter = null;
+            if (this.scene.isActive('TransitionScene') || this.scene.isPaused('TransitionScene')) this.scene.stop('TransitionScene');
             this.cancelWalk();
             this.stopBob();
             for (const off of this.offBus) off();

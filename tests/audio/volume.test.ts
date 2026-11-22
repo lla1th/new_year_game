@@ -111,3 +111,19 @@ describe('AudioManager', () => {
     expect(f.playing()).toHaveLength(0);
   });
 });
+
+test('music requested before its file finished loading starts once the files arrive (refresh)', () => {
+  const files: string[] = [];
+  const sounds: SoundLike[] = [];
+  const mgr: SoundManagerLike = {
+    add: (key, cfg) => { const s = { key, volume: cfg.volume ?? 1, isPlaying: false, play() { this.isPlaying = true; }, stop() { this.isPlaying = false; }, destroy() {}, setVolume(v: number) { this.volume = v; } }; sounds.push(s); return s; },
+    play: () => true,
+  };
+  const am = new AudioManager(mgr, k => files.includes(k), () => 0);
+  am.playMusic('mus_menu');
+  am.unlock();                       // the first click comes before mus_menu is loaded
+  expect(sounds).toHaveLength(0);
+  files.push('mus_menu');
+  am.refresh();                      // BootScene: audio files loaded
+  expect(sounds.filter(s => s.isPlaying).map(s => s.key)).toEqual(['mus_menu']);
+});

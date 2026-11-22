@@ -53,6 +53,12 @@ export class AudioManager {
         this.mgr.play(key, { volume: v });
     }
 
+    /** New files were loaded: start the wanted music / ambience if they were missing before. */
+    refresh(): void {
+        this.startWanted();
+        this.syncAmbient();
+    }
+
     /** Background noise of the level (null = none). */
     playAmbient(key: string | null): void {
         this.ambientWanted = key;

@@ -18,13 +18,20 @@ function levelScene (): LevelScene | null {
 export function startLevel (level: LevelId, screen?: string | null): void {
     if (!game) return;
     if (game.scene.isActive('OverlayScene')) game.scene.stop('OverlayScene');
+    if (game.scene.isActive('TransitionScene')) game.scene.stop('TransitionScene');
     game.scene.start('LevelScene', { script: LEVELS[level], screen: screen ?? undefined });
 }
 
 export function stopLevel (): void {
     if (!game) return;
+    if (game.scene.isActive('TransitionScene')) game.scene.stop('TransitionScene');
     if (game.scene.isActive('OverlayScene')) game.scene.stop('OverlayScene');
     if (game.scene.isActive('LevelScene') || game.scene.isPaused('LevelScene')) game.scene.stop('LevelScene');
+}
+
+/** True while the brush transition runs (pause / menu are not offered then). */
+export function isTransitioning (): boolean {
+    return levelScene()?.isTransitioning ?? false;
 }
 
 export function setPaused (paused: boolean): void {
