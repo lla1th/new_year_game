@@ -2,6 +2,8 @@ import { AUTO, Game, Scale, Types } from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH } from './data/types';
 import { BootScene } from './scenes/BootScene';
 import { LevelScene } from './scenes/LevelScene';
+import { OverlayScene } from './scenes/OverlayScene';
+import './levels/visuals';
 
 const config: Types.Core.GameConfig = {
     type: AUTO,
@@ -13,7 +15,7 @@ const config: Types.Core.GameConfig = {
         width: GAME_WIDTH,
         height: GAME_HEIGHT,
     },
-    scene: [BootScene, LevelScene],
+    scene: [BootScene, LevelScene, OverlayScene],
 };
 
 const StartGame = (parent: string): Game => {

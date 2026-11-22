@@ -15,6 +15,7 @@ import { hitTestHotspots, isHotspotActive } from '../systems/hotspots';
 import { gameState } from '../../state/gameState';
 import { saveGame } from '../../state/SaveService';
 import { getAnim, getCutscene, getLevelVisual } from './registry';
+import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
 export class WalkInterruptedError extends Error {
@@ -44,6 +45,9 @@ const SPITZ_H = 90;
 const SPRITE_PLACEHOLDER_W = 64;
 const SPRITE_PLACEHOLDER_H = 128;
 const OUTLINE_DEPTH = 900_000;
+const ZOOM_MS = 500;
+const ZOOM_LEVEL = 1.6;
+const CAPTION_DEPTH = 950_000;
 const DEBUG_DEPTH = 1_000_000;
 
 export class LevelScene extends Scene
@@ -90,6 +94,9 @@ export class LevelScene extends Scene
     private outlineGfx: GameObjects.Graphics;
     private debugGfx: GameObjects.Graphics | null = null;
     private offBus: (() => void)[] = [];
+    private actionHotspot: HotspotDef | null = null;
+    private screens = new Map<PuzzleId, OverlayScreen>();
+    private skipCutscene: (() => void) | null = null;
 
     constructor ()
     {
@@ -111,6 +118,9 @@ export class LevelScene extends Scene
     get currentLevel (): LevelScript | null { return this.script; }
 
     get currentScreenId (): string { return this.screenId; }
+
+    /** Game state for level visuals and animations. */
+    registryState (): typeof gameState { return gameState; }
 
     /** A sprite placed through the Tiled `sprites` layer, by its name. */
     getSprite (name: string): GameObjects.Image | undefined { return this.sprites.get(name); }
@@ -177,7 +187,9 @@ export class LevelScene extends Scene
             this.tweens.killAll();
             this.children.removeAll(true);
             this.sprites.clear();
+            this.screens.clear();
             this.spitz = null;
+            this.cameras.main.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
             this.busy = false;
             this.scriptPhase = false;
             this.hoverId = null;
@@ -334,6 +346,7 @@ export class LevelScene extends Scene
 
     private onPointerDown (p: Input.Pointer)
     {
+        if (this.skipCutscene) { this.skipCutscene(); return; }   // any click skips a cutscene
         if (this.loading || !this.map) return;
         const pt = { x: p.worldX, y: p.worldY };
         if (p.rightButtonDown()) { this.inspectAt(pt); return; }
@@ -439,6 +452,7 @@ export class LevelScene extends Scene
     {
         if (this.busy) return;
         this.busy = true;
+        this.actionHotspot = h;
         const gen = this.levelGeneration;
         try {
             const s = this.scriptFor(h);
@@ -458,7 +472,7 @@ export class LevelScene extends Scene
                     : this.itemSteps(s, a.itemId);
             await this.runScript(steps);
         } finally {
-            if (gen === this.levelGeneration) this.busy = false;
+            if (gen === this.levelGeneration) { this.busy = false; this.actionHotspot = null; }
         }
     }
 
@@ -546,18 +560,81 @@ export class LevelScene extends Scene
         });
     }
 
-    /** Overlay screens arrive in Task 7. */
-    openPuzzle (puzzleId: PuzzleId): Promise<boolean>
+    /**
+     * Zooms the camera to the hotspot being used (0.5 s) and opens the overlay screen on top.
+     * Resolves true if the screen was solved, false if closed. Solving a real puzzle (P-xx) saves a checkpoint.
+     */
+    async openPuzzle (puzzleId: PuzzleId): Promise<boolean>
     {
-        console.warn(`[LevelScene] puzzle "${puzzleId}" is not implemented yet`);
-        return Promise.resolve(false);
+        let screen = this.screens.get(puzzleId);
+        if (!screen) {
+            const created = createScreen(puzzleId);
+            if (!created) { console.warn(`[LevelScene] no overlay screen "${puzzleId}"`); return false; }
+            screen = created;
+            this.screens.set(puzzleId, screen);
+        }
+        const cam = this.cameras.main;
+        const h = this.actionHotspot;
+        if (h) {
+            const c = centroid(h.shape);
+            await new Promise<void>(resolve => {
+                cam.pan(c.x, c.y, ZOOM_MS, 'Sine.easeInOut');
+                cam.zoomTo(ZOOM_LEVEL, ZOOM_MS, 'Sine.easeInOut', false, (_c: unknown, progress: number) => { if (progress >= 1) resolve(); });
+            });
+        }
+        bus.emit('puzzle:open', { puzzleId });
+        const solved = await new Promise<boolean>(resolve => {
+            const data: OverlaySceneData = {
+                screen: screen!,
+                services: {
+                    state: gameState,
+                    progress: () => { this.hints?.notifyProgress(); this.refreshVisuals(); },
+                    say: (speaker, key) => this.say(speaker, key),
+                },
+                onFinish: resolve,
+            };
+            this.scene.launch('OverlayScene', data);
+            this.scene.bringToTop('OverlayScene');
+        });
+        cam.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+        bus.emit('puzzle:close', { puzzleId, solved });
+        if (solved) {
+            this.hints?.notifyProgress();
+            if (puzzleId.startsWith('P-')) this.checkpoint();
+        }
+        this.refreshVisuals();
+        return solved;
     }
 
-    playCutscene (name: string): Promise<void>
+    /** Plays a registered cutscene; any click or the skip button ends it at once (with its final state). */
+    async playCutscene (name: string): Promise<void>
     {
         const fn = getCutscene(name);
-        if (!fn) { console.warn(`[LevelScene] unknown cutscene "${name}"`); return Promise.resolve(); }
-        return fn(this, new Promise<void>(() => {})).then(() => this.refreshVisuals());
+        if (!fn) { console.warn(`[LevelScene] unknown cutscene "${name}"`); return; }
+        let skip!: () => void;
+        const skipped = new Promise<void>(resolve => { skip = resolve; });
+        const label = getGameData()?.texts.t('ui.skip') ?? 'Skip';
+        const btn = this.add.text(GAME_WIDTH - 32, GAME_HEIGHT - 32, `${label} ▶▶`, {
+            fontFamily: 'sans-serif', fontSize: '32px', color: '#ffffff', backgroundColor: '#00000099', padding: { x: 16, y: 8 },
+        }).setOrigin(1, 1).setDepth(CAPTION_DEPTH + 1).setScrollFactor(0);
+        this.skipCutscene = () => { this.skipCutscene = null; skip(); };
+        try {
+            await fn(this, skipped);
+        } finally {
+            this.skipCutscene = null;
+            btn.destroy();
+            this.refreshVisuals();
+        }
+    }
+
+    /** Caption at the top of the screen for cutscenes (text key from ru.json). Returns the text object. */
+    caption (key: string): GameObjects.Text
+    {
+        const text = getGameData()?.texts.t(key) ?? key;
+        return this.add.text(GAME_WIDTH / 2, 80, text, {
+            fontFamily: 'sans-serif', fontSize: '40px', color: '#ffffff', backgroundColor: '#000000aa', padding: { x: 24, y: 12 },
+            align: 'center', wordWrap: { width: 1600 },
+        }).setOrigin(0.5, 0).setDepth(CAPTION_DEPTH).setScrollFactor(0);
     }
 
     checkpoint (): void
@@ -730,6 +807,12 @@ export class LevelScene extends Scene
             for (const p of this.path) g.fillCircle(p.x, p.y, 5);
         }
     }
+}
+
+function centroid (poly: readonly Vec2[]): Vec2
+{
+    const n = poly.length || 1;
+    return { x: poly.reduce((a, p) => a + p.x, 0) / n, y: poly.reduce((a, p) => a + p.y, 0) / n };
 }
 
 function ignoreInterrupt (e: unknown): void

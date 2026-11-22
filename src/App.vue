@@ -28,7 +28,11 @@ function inspectItem (id: ItemId) {
 
 const offs: (() => void)[] = [];
 onMounted(async () => {
-    offs.push(bus.on('cursor', ({ kind }) => { uiState.cursor = CURSORS[kind] ?? 'default'; }));
+    offs.push(
+        bus.on('cursor', ({ kind }) => { uiState.cursor = CURSORS[kind] ?? 'default'; }),
+        bus.on('puzzle:open', () => { uiState.puzzleOpen = true; uiState.cursor = 'default'; }),
+        bus.on('puzzle:close', () => { uiState.puzzleOpen = false; }),
+    );
     try {
         setGameData(await loadData());
         uiState.screen = 'game';
@@ -47,7 +51,8 @@ onUnmounted(() => offs.forEach(off => off()));
         <div v-if="uiState.screen === 'error'" class="msg">Load error</div>
         <div v-if="uiState.screen === 'game'" class="stage" :style="stageStyle">
             <Hud @pause="uiState.paused = !uiState.paused" />
-            <Inventory @inspect="inspectItem" />
+            <!-- Hidden on overlay screens that take no items (P-02 will opt in, M2). -->
+            <div v-show="!uiState.puzzleOpen" class="layer"><Inventory @inspect="inspectItem" /></div>
             <DialogBox ref="dialogBox" />
         </div>
     </div>
@@ -56,5 +61,6 @@ onUnmounted(() => offs.forEach(off => off()));
 <style scoped>
 .root { position: relative; width: 100%; height: 100%; }
 .stage { position: absolute; transform-origin: 0 0; pointer-events: none; overflow: hidden; font-family: sans-serif; user-select: none; }
+.layer { position: absolute; inset: 0; pointer-events: none; }
 .msg { color: #fff; font: 24px sans-serif; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 </style>
