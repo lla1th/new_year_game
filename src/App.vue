@@ -9,9 +9,12 @@ import { isDebug } from './game/debug';
 import { gameState } from './state/gameState';
 import { loadGame } from './state/SaveService';
 import { startScreen } from './game/levels';
+import { startStateFor } from './game/levels/startState';
 import { PUZZLES_WITH_ITEMS } from './puzzles/itemPuzzles';
 import PhaserGame from './PhaserGame.vue';
+import Credits from './ui/Credits.vue';
 import DebugPanel from './ui/DebugPanel.vue';
+import EndingCard from './ui/EndingCard.vue';
 import DialogBox from './ui/DialogBox.vue';
 import Hud from './ui/Hud.vue';
 import Inventory from './ui/Inventory.vue';
@@ -47,7 +50,9 @@ function play (level: LevelId, screen?: string | null) {
 }
 
 function newGame () {
+    const completed = loadGame()?.completed ?? false;   // the level select stays open after the game was completed once
     gameState.reset();
+    gameState.completed = completed;
     play('L01');
 }
 
@@ -59,10 +64,24 @@ function continueGame () {
 }
 
 function selectLevel (id: LevelId) {
-    const completed = loadGame()?.completed ?? false;
+    const start = startStateFor(id);   // only the items this level needs and the parts of the levels before it
     gameState.reset();
-    gameState.completed = completed;
+    gameState.completed = true;
+    gameState.inventory = start.inventory;
+    gameState.parts = start.parts;
+    gameState.flags = start.flags;
     play(id);
+}
+
+function endingNext () {
+    uiState.ending = 'credits';
+    bus.emit('ending:credits');
+}
+
+function creditsDone () {
+    if (uiState.ending !== 'credits') return;
+    uiState.ending = null;
+    bus.emit('ending:post');
 }
 
 function pause (on: boolean) {
@@ -73,6 +92,8 @@ function pause (on: boolean) {
 
 function toMenu () {
     stopLevel();
+    uiState.ending = null;
+    uiState.puzzleTakesItems = false;
     uiState.paused = false;
     uiState.dialogActive = false;
     uiState.puzzleOpen = false;
@@ -97,6 +118,8 @@ onMounted(async () => {
             uiState.cursor = 'default';
         }),
         bus.on('puzzle:close', () => { uiState.puzzleOpen = false; uiState.puzzleTakesItems = false; }),
+        bus.on('ending:card', () => { uiState.ending = 'card'; }),
+        bus.on('ending:done', () => toMenu()),
         bus.on('checkpoint', () => {
             uiState.checkpointVisible = true;
             if (checkpointTimer) clearTimeout(checkpointTimer);
@@ -134,11 +157,13 @@ onUnmounted(() => {
             @mousedown.stop @touchstart.stop
         >
             <template v-if="uiState.screen === 'game'">
-                <Hud @pause="pause(true)" />
+                <Hud v-show="!uiState.ending" @pause="pause(true)" />
                 <!-- Hidden on overlay screens that take no items. -->
-                <div v-show="!uiState.puzzleOpen || uiState.puzzleTakesItems" class="layer"><Inventory @inspect="inspectItem" /></div>
+                <div v-show="!uiState.ending && (!uiState.puzzleOpen || uiState.puzzleTakesItems)" class="layer"><Inventory @inspect="inspectItem" /></div>
                 <DialogBox ref="dialogBox" />
                 <DebugPanel v-if="debug" />
+                <EndingCard v-if="uiState.ending === 'card'" @next="endingNext" />
+                <Credits v-if="uiState.ending === 'credits'" @done="creditsDone" />
                 <PauseMenu v-if="uiState.paused" @resume="pause(false)" @to-menu="toMenu" />
             </template>
             <MainMenu v-else :key="menuKey" @start="newGame" @continue="continueGame" @level="selectLevel" />

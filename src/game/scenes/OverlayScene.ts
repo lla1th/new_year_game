@@ -1,6 +1,6 @@
 import { Scene, GameObjects } from 'phaser';
 import { bus } from '../../events';
-import { GAME_HEIGHT, GAME_WIDTH, type ItemId, type PuzzleId, type SpeakerId } from '../data/types';
+import { GAME_HEIGHT, GAME_WIDTH, type ItemId, type PartId, type PuzzleId, type SpeakerId } from '../data/types';
 import type { Vec2 } from '../nav/geometry';
 import { closeResult } from './overlayClose';
 import type { GameStateModel } from '../../state/GameStateModel';
@@ -33,6 +33,9 @@ export abstract class OverlayScreen {
      * (only for screens listed in PUZZLES_WITH_ITEMS). Not handled → the item simply stays in its slot.
      */
     dropItem?(itemId: ItemId, p: Vec2): void;
+
+    /** Optional: a Clock part was dropped from the HUD indicator at game point `p` (L08). */
+    dropPart?(partId: PartId, p: Vec2): void;
 
     /** Closes the screen; openPuzzle → true. */
     solve(): void { this.finishFn?.(true); }
@@ -101,7 +104,9 @@ export class OverlayScene extends Scene {
 
         screen.attach(this, services, solved => this.finish(solved));
         screen.create(container);
-        this.offDrop = bus.on('item:drop', ({ itemId, x, y }) => screen.dropItem?.(itemId, { x, y }));
+        const offItem = bus.on('item:drop', ({ itemId, x, y }) => screen.dropItem?.(itemId, { x, y }));
+        const offPart = bus.on('part:drop', ({ partId, x, y }) => screen.dropPart?.(partId, { x, y }));
+        this.offDrop = () => { offItem(); offPart(); };
         this.events.once('shutdown', () => { this.offDrop?.(); this.offDrop = null; });
     }
 

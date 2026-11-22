@@ -13,4 +13,5 @@ export const uiState = reactive({
     checkpointVisible: false,
     puzzleOpen: false,
     puzzleTakesItems: false,
+    ending: null as null | 'card' | 'credits',
 });

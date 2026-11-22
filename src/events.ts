@@ -1,4 +1,4 @@
-import type { CursorKind, ItemId, LevelId, PuzzleId, SpeakerId } from './game/data/types';
+import type { CursorKind, ItemId, LevelId, PartId, PuzzleId, SpeakerId } from './game/data/types';
 
 export type GameEvents = {
     'say': { speaker: SpeakerId; textKey: string };
@@ -16,6 +16,9 @@ export type GameEvents = {
     'checkpoint': void;
     'ending:card': void;           // M3
     'ending:credits': void;        // M3
+    'ending:post': void;           // credits finished → post-credits scene (Vue → Phaser)
+    'ending:done': void;           // post-credits scene finished → main menu (Phaser → Vue)
+    'part:drop': { partId: PartId; x: number; y: number };   // a Clock part dropped from the indicator (game coordinates)
 };
 
 type Listener<P> = (p: P) => void;

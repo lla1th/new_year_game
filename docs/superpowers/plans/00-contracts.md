@@ -147,6 +147,9 @@ export type GameEvents = {
   'checkpoint': void;
   'ending:card': void;           // M3: показать открытку
   'ending:credits': void;        // M3
+  'ending:post': void;           // M3: титры закончились → сцена после титров (Vue → Phaser)
+  'ending:done': void;           // M3: сцена после титров закончилась → главное меню (Phaser → Vue)
+  'part:drop': { partId: PartId; x: number; y: number };   // M3: деталь из индикатора Часов брошена на сцену (L08)
 };
 export class TypedEmitter<E extends Record<string, unknown>> {
   on<K extends keyof E>(k: K, fn: (p: E[K]) => void): () => void;   // возвращает отписку
@@ -184,7 +187,7 @@ export type DialogsFile = Record<string, DialogLine[]>;
 // src/game/script/types.ts
 export type Step =
   | { say: SpeakerId; key: string } | { dialog: string }
-  | { giveItem: ItemId } | { removeItem: ItemId } | { givePart: PartId }
+  | { giveItem: ItemId } | { removeItem: ItemId } | { givePart: PartId } | { removePart: PartId }  // M3: removePart
   | { setFlag: FlagId } | { anim: string } | { sfx: string }
   | { walkTo: string }                     // имя точки из слоя points
   | { openPuzzle: PuzzleId; onSolved?: Step[] }   // M2: onSolved — только если экран решён

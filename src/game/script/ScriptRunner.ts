@@ -47,6 +47,7 @@ export class ScriptRunner {
         if ('giveItem' in step) { c.state.addItem(step.giveItem); c.progress(); return; }
         if ('removeItem' in step) { c.state.removeItem(step.removeItem); c.progress(); return; }
         if ('givePart' in step) { c.state.addPart(step.givePart); c.progress(); return; }
+        if ('removePart' in step) { c.state.removePart(step.removePart); c.progress(); return; }
         if ('setFlag' in step) { c.state.setFlag(step.setFlag); c.progress(); return; }
         if ('anim' in step) return c.anim(step.anim);
         if ('sfx' in step) { c.sfx(step.sfx); return; }

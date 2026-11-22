@@ -23,3 +23,6 @@ registerScreen('P-08', () => new FifteenScreen());
 import { DrawingScreen } from './DrawingScreen';
 
 registerScreen('drawing', () => new DrawingScreen());
+import { ClockScreen } from './ClockScreen';
+
+registerScreen('clock', () => new ClockScreen());

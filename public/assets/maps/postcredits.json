@@ -1,0 +1,240 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 6,
+ "nextobjectid": 8,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "img/world1/l01_bg.png"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "floor"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "POST"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_menu"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": true
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 80,
+     "y": 540,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1760,
+       "y": 0
+      },
+      {
+       "x": 1760,
+       "y": 460
+      },
+      {
+       "x": 0,
+       "y": 460
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "blockers",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "tree_base",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 140,
+     "y": 540,
+     "width": 180,
+     "height": 120
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": []
+  },
+  {
+   "id": 4,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 3,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 960,
+     "y": 860,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 4,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 880,
+     "y": 880,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "sprites",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 5,
+     "name": "spitz_sleep",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 300,
+     "y": 700,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 701
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "post_spitz_sleep"
+      }
+     ]
+    },
+    {
+     "id": 6,
+     "name": "cat_sleep",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 420,
+     "y": 700,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 701
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "post_cat_sleep"
+      }
+     ]
+    },
+    {
+     "id": 7,
+     "name": "snail",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1080,
+     "y": 420,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 421
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "post_snail"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

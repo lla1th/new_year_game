@@ -82,5 +82,11 @@
       "speaker": "ksyusha",
       "key": "l07.dlg.ksy.2"
     }
+  ],
+  "l08_snail": [
+    {
+      "speaker": "snail",
+      "key": "l08.dlg.snail.1"
+    }
   ]
 }

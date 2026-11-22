@@ -7,3 +7,4 @@ import '../cutscenes/world1_2';
 import './L04.visual';
 import './L06.visual';
 import './L07.visual';
+import './L08.visual';

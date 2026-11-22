@@ -19,7 +19,10 @@ export class GameStateModel {
     completed = false;
 
     hasFlag(f: FlagId): boolean { return this.flags[f] === true; }
-    setFlag(f: FlagId): void { this.flags[f] = true; }
+    setFlag(f: FlagId): void {
+        this.flags[f] = true;
+        if (f === 'GAME_COMPLETED') this.completed = true;   // the level select opens after the game is completed
+    }
 
     hasItem(i: ItemId): boolean { return this.inventory.includes(i); }
 

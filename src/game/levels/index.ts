@@ -7,22 +7,7 @@ import { L04 } from './L04';
 import { L05 } from './L05';
 import { L06 } from './L06';
 import { L07 } from './L07';
-
-/** Placeholder for levels that are not built yet: a room with a "to be continued" sign. */
-function toBeContinued(levelId: LevelId): LevelScript {
-    return {
-        levelId,
-        firstScreen: 'tbc',
-        goals: [],
-        screens: {
-            tbc: {
-                map: 'assets/maps/TBC.json',
-                onEnter: [{ say: 'ksyusha', key: 'l02.tbc' }],
-                hotspots: [{ hotspot: 'sign', onInspect: [{ say: 'ksyusha', key: 'l02.tbc.inspect' }] }],
-            },
-        },
-    };
-}
+import { L08 } from './L08';
 
 /** Screen to start a level on from a save: an unknown (old or tampered) screen id falls back to the first screen. */
 export function startScreen(level: LevelId, screenId: string | null): string | undefined {
@@ -37,5 +22,5 @@ export const LEVELS: Record<LevelId, LevelScript> = {
     L05,
     L06,
     L07,
-    L08: toBeContinued('L08'),
+    L08,
 };

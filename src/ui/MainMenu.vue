@@ -3,11 +3,11 @@ import { computed, ref } from 'vue';
 import { getGameData } from '../game/data/gameData';
 import type { LevelId } from '../game/data/types';
 import { loadGame } from '../state/SaveService';
+import LevelSelect from './LevelSelect.vue';
 import SettingsPanel from './SettingsPanel.vue';
 
 const emit = defineEmits<{ start: []; continue: []; level: [id: LevelId] }>();
 const t = (k: string) => getGameData()!.texts.t(k);
-const LEVEL_IDS: LevelId[] = ['L01', 'L02', 'L03', 'L04', 'L05', 'L06', 'L07', 'L08'];
 
 const save = ref(loadGame());
 const view = ref<'main' | 'confirm' | 'levels' | 'settings'>('main');
@@ -39,10 +39,7 @@ function onStart () {
             <button data-test="confirm-yes" @click="emit('start')">{{ t('ui.yes') }}</button>
             <button data-test="confirm-no" @click="view = 'main'">{{ t('ui.no') }}</button>
         </div>
-        <div v-else-if="view === 'levels'" class="buttons levels">
-            <button v-for="id in LEVEL_IDS" :key="id" :data-test="`level-${id}`" @click="emit('level', id)">{{ id }} · {{ t(`ui.level.${id}`) }}</button>
-            <button @click="view = 'main'">{{ t('ui.back') }}</button>
-        </div>
+        <LevelSelect v-else-if="view === 'levels'" @level="id => emit('level', id)" @back="view = 'main'" />
         <SettingsPanel v-else @back="view = 'main'" />
     </div>
 </template>
@@ -55,7 +52,6 @@ function onStart () {
 h1 { position: relative; margin: 0; font-size: 96px; color: #ffd75e; text-shadow: 0 6px 0 #7a3b12, 0 0 24px rgba(255, 215, 94, .5); }
 .buttons { position: relative; display: flex; flex-direction: column; gap: 20px; align-items: center; }
 .buttons p { font-size: 40px; margin: 0 0 12px; }
-.levels { display: grid; grid-template-columns: 1fr 1fr; }
 button { min-width: 440px; font: bold 40px sans-serif; padding: 16px 32px; border-radius: 16px; border: 4px solid #f3e3b5; background: rgba(45, 58, 122, .9); color: #fff; cursor: pointer; }
 button:hover { background: #ffd75e; color: #1d2240; }
 </style>

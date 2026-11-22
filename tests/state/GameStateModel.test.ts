@@ -49,3 +49,10 @@ describe('GameStateModel', () => {
     expect(s.hasItem('ITEM_MANDARIN')).toBe(true);
   });
 });
+
+test('GAME_COMPLETED marks the game as completed (level select); reset keeps nothing', () => {
+  const s = new GameStateModel();
+  s.setFlag('GAME_COMPLETED');
+  expect(s.completed).toBe(true);
+  expect(s.toSaveData().completed).toBe(true);
+});

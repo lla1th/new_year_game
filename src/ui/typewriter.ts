@@ -8,3 +8,11 @@ export function charsVisible(elapsedMs: number, speed: TextSpeed, total: number)
     if (elapsedMs <= 0) return 0;
     return Math.min(total, Math.floor((elapsedMs * TEXT_SPEED_CPS[speed]) / 1000));
 }
+
+/** The ending card prints slower than normal lines. */
+export const CARD_CPS = 25;
+
+export function charsVisibleCps(elapsedMs: number, cps: number, total: number): number {
+    if (elapsedMs <= 0) return 0;
+    return Math.min(total, Math.floor((elapsedMs * cps) / 1000));
+}

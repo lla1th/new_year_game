@@ -2,7 +2,7 @@ import type { FlagId, ItemId, LevelId, PartId, PuzzleId, SpeakerId } from '../da
 
 export type Step =
     | { say: SpeakerId; key: string } | { dialog: string }
-    | { giveItem: ItemId } | { removeItem: ItemId } | { givePart: PartId }
+    | { giveItem: ItemId } | { removeItem: ItemId } | { givePart: PartId } | { removePart: PartId }
     | { setFlag: FlagId } | { anim: string } | { sfx: string }
     | { walkTo: string }                     // point name from the `points` layer
     | { openPuzzle: PuzzleId; onSolved?: Step[] }   // onSolved runs only if the screen was solved
