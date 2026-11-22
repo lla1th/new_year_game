@@ -8,3 +8,6 @@ import { FrescoScreen } from './FrescoScreen';
 
 registerScreen('P-03', () => new BellsScreen());
 registerScreen('fresco', () => new FrescoScreen());
+import { PipesScreen } from './PipesScreen';
+
+registerScreen('P-04', () => new PipesScreen());
