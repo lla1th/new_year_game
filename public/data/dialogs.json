@@ -64,5 +64,23 @@
       "speaker": "nika",
       "key": "l06.dlg.friends.2"
     }
+  ],
+  "l07_reconcile": [
+    {
+      "speaker": "cat",
+      "key": "l07.dlg.cat.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l07.dlg.ksy.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l07.dlg.spitz.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l07.dlg.ksy.2"
+    }
   ]
 }

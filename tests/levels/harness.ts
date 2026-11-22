@@ -6,6 +6,7 @@ import { GameStateModel } from '../../src/state/GameStateModel';
 import type { ItemId, PuzzleId } from '../../src/game/data/types';
 import { parseTiledMap } from '../../src/game/map/parseTiledMap';
 import { NavGrid } from '../../src/game/nav/NavGrid';
+import { combineItems } from '../../src/puzzles/logic/combine';
 
 export const readJson = (p: string) => JSON.parse(readFileSync(new URL(`../../public/${p}`, import.meta.url), 'utf8'));
 export const ru: Record<string, string> = readJson('data/texts/ru.json');
@@ -48,6 +49,12 @@ export function harness(level: LevelScript, opts: { puzzles?: Partial<Record<Puz
     inspect: (id: string) => runner.run(inspectSteps(level.levelId, id, script(id))),
     use: (id: string, item: ItemId) => runner.run(itemSteps(script(id), item, () => 'common.wrongItem.1')),
     count: (item: ItemId) => state.inventory.filter(i => i === item).length,
+    /** Same as LevelScene.onCombine. */
+    combine: (a: ItemId, b: ItemId) => {
+      const r = state.hasItem(a) && state.hasItem(b) ? combineItems(a, b) : null;
+      if (!r) { log.push('say:ksyusha:common.cantCombine'); return; }
+      state.removeItem(a); state.removeItem(b); state.addItem(r);
+    },
   };
 }
 

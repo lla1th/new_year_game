@@ -20,3 +20,6 @@ registerScreen('P-06', () => new ComicScreen());
 import { FifteenScreen } from './FifteenScreen';
 
 registerScreen('P-08', () => new FifteenScreen());
+import { DrawingScreen } from './DrawingScreen';
+
+registerScreen('drawing', () => new DrawingScreen());
