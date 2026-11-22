@@ -4,6 +4,9 @@ import { BootScene } from './scenes/BootScene';
 import { LevelScene } from './scenes/LevelScene';
 import { OverlayScene } from './scenes/OverlayScene';
 import './levels/visuals';
+import { LEVELS } from './levels';
+
+LevelScene.resolveLevel = id => LEVELS[id];
 
 const config: Types.Core.GameConfig = {
     type: AUTO,

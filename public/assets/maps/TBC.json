@@ -1,0 +1,167 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 4,
+ "nextobjectid": 5,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "img/tbc_bg.png"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "floor"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "TBC"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_menu"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": false
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 160,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1600,
+       "y": 0
+      },
+      {
+       "x": 1600,
+       "y": 420
+      },
+      {
+       "x": 0,
+       "y": 420
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "sign",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 860,
+     "y": 240,
+     "width": 200,
+     "height": 260,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 960
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 640
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "eye"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 3,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 600,
+     "y": 800,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 4,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 500,
+     "y": 820,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  }
+ ]
+}

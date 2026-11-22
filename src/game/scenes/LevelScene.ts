@@ -1,7 +1,7 @@
 import { Scene, type GameObjects, type Input, type Tweens } from 'phaser';
 import { bus } from '../../events';
 import { GAME_HEIGHT, GAME_WIDTH, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
-import { ensureTexture } from '../assets/placeholder';
+import { colorFromKey, ensureTexture } from '../assets/placeholder';
 import { getGameData } from '../data/gameData';
 import { isDebug } from '../debug';
 import { parseTiledMap, type HotspotDef, type LevelMap } from '../map/parseTiledMap';
@@ -10,6 +10,7 @@ import { facingFromVector } from '../nav/facing';
 import { distance, type Vec2 } from '../nav/geometry';
 import { ScriptRunner, type ScriptContext } from '../script/ScriptRunner';
 import type { HotspotScript, LevelScript, ScreenScript, Step } from '../script/types';
+import { inspectSteps, itemSteps, useSteps } from '../script/selectSteps';
 import { HintSystem } from '../systems/HintSystem';
 import { hitTestHotspots, isHotspotActive } from '../systems/hotspots';
 import { gameState } from '../../state/gameState';
@@ -302,8 +303,10 @@ export class LevelScene extends Scene
 
     private buildScene (bgKey: string)
     {
+        const bgMissing = !this.textures.exists(bgKey);
         ensureTexture(this, bgKey, GAME_WIDTH, GAME_HEIGHT, this.map.background);
         this.add.image(0, 0, bgKey).setOrigin(0, 0).setDepth(-1);
+        if (bgMissing) this.drawPlaceholderObjects();
         for (const s of this.map.sprites) {
             const key = ensureTexture(this, s.texture, SPRITE_PLACEHOLDER_W, SPRITE_PLACEHOLDER_H, s.name);
             this.sprites.set(s.name, this.add.image(s.pos.x, s.pos.y, key).setOrigin(0.5, 1).setDepth(s.depthY));
@@ -326,6 +329,22 @@ export class LevelScene extends Scene
         this.refreshVisuals();
         this.syncSprite();
         this.drawDebug();
+    }
+
+    /** Without real art: hotspots are drawn as labelled boxes so the level can be played on placeholders. */
+    private drawPlaceholderObjects ()
+    {
+        const g = this.add.graphics().setDepth(0);
+        for (const h of this.map.hotspots) {
+            g.fillStyle(colorFromKey(h.id), 0.55);
+            g.lineStyle(3, 0x000000, 0.6);
+            tracePath(g, h.shape, true);
+            g.fillPath();
+            g.strokePath();
+            const c = centroid(h.shape);
+            this.add.text(c.x, c.y, h.id, { fontFamily: 'sans-serif', fontSize: '24px', color: '#ffffff', stroke: '#000000', strokeThickness: 4 })
+                .setOrigin(0.5).setDepth(0);
+        }
     }
 
     private loadFiles (queue: (l: Phaser.Loader.LoaderPlugin) => void): Promise<void>
@@ -422,30 +441,12 @@ export class LevelScene extends Scene
         return this.screen ? this.runner.pickScript(this.screen.hotspots, h.id) : undefined;
     }
 
-    private inspectSteps (h: HotspotDef, s: HotspotScript | undefined): Step[]
+    private pickWrongKey (): string
     {
-        const lvl = (this.script?.levelId ?? 'L01').toLowerCase();
-        return s?.onInspect ?? [{ say: 'ksyusha', key: `${lvl}.${h.id}.inspect` }];
-    }
-
-    private useSteps (h: HotspotDef, s: HotspotScript | undefined): Step[]
-    {
-        const steps = s?.onUse;
-        if (!steps) return this.inspectSteps(h, s);
-        // An item source works once: if its item is already in the inventory, only the inspect text remains.
-        const given = steps.find((st): st is { giveItem: ItemId } => 'giveItem' in st);
-        if (given && gameState.hasItem(given.giveItem)) return this.inspectSteps(h, s);
-        return steps;
-    }
-
-    private itemSteps (s: HotspotScript | undefined, itemId: ItemId): Step[]
-    {
-        const steps = s?.onItem?.[itemId];
-        if (steps) return steps;
         const tb = getGameData()?.texts;
         const key = tb ? tb.randomVariant('common.wrongItem', Math.random, this.lastWrongKey).key : 'common.wrongItem.1';
         this.lastWrongKey = key;
-        return [{ say: 'ksyusha', key }];
+        return key;
     }
 
     private async interact (h: HotspotDef, a: { kind: 'use' } | { kind: 'inspect' } | { kind: 'item'; itemId: ItemId })
@@ -467,9 +468,10 @@ export class LevelScene extends Scene
                 this.setFacing(h.facing);
                 await this.showPose('use', USE_POSE_MS);
             }
-            const steps = a.kind === 'inspect' ? this.inspectSteps(h, s)
-                : a.kind === 'use' ? this.useSteps(h, s)
-                    : this.itemSteps(s, a.itemId);
+            const lvl = this.script?.levelId ?? 'L01';
+            const steps = a.kind === 'inspect' ? inspectSteps(lvl, h.id, s)
+                : a.kind === 'use' ? useSteps(lvl, h.id, s, gameState)
+                    : itemSteps(s, a.itemId, () => this.pickWrongKey());
             await this.runScript(steps);
         } finally {
             if (gen === this.levelGeneration) { this.busy = false; this.actionHotspot = null; }

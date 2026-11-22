@@ -1,14 +1,7 @@
 import { Scene } from 'phaser';
-import type { LevelScript } from '../script/types';
+import { LEVELS } from '../levels';
 
-/** Temporary start-up until the main menu (Task 9): the M0 test map as a one-screen level. */
-const TEST_LEVEL: LevelScript = {
-    levelId: 'L01',
-    firstScreen: 'main',
-    goals: [],
-    screens: { main: { map: 'assets/maps/test.json', hotspots: [] } },
-};
-
+/** Temporary start-up until the main menu (Task 9): starts L01. */
 export class BootScene extends Scene
 {
     constructor ()
@@ -18,6 +11,6 @@ export class BootScene extends Scene
 
     create ()
     {
-        this.scene.start('LevelScene', { script: TEST_LEVEL });
+        this.scene.start('LevelScene', { script: LEVELS.L01 });
     }
 }
