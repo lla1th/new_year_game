@@ -18,6 +18,7 @@ export type GameEvents = {
     'ending:credits': void;        // M3
     'ending:post': void;           // credits finished → post-credits scene (Vue → Phaser)
     'ending:done': void;           // post-credits scene finished → main menu (Phaser → Vue)
+    'loading': { progress: number | null };   // level loading 0..1; null = done (loading screen)
     'part:drop': { partId: PartId; x: number; y: number };   // a Clock part dropped from the indicator (game coordinates)
 };
 

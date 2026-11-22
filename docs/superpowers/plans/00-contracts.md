@@ -149,6 +149,7 @@ export type GameEvents = {
   'ending:credits': void;        // M3
   'ending:post': void;           // M3: титры закончились → сцена после титров (Vue → Phaser)
   'ending:done': void;           // M3: сцена после титров закончилась → главное меню (Phaser → Vue)
+  'loading': { progress: number | null };   // M5: загрузка уровня 0..1, null — готово (экран загрузки)
   'part:drop': { partId: PartId; x: number; y: number };   // M3: деталь из индикатора Часов брошена на сцену (L08)
 };
 export class TypedEmitter<E extends Record<string, unknown>> {

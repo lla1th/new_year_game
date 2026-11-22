@@ -21,6 +21,7 @@ import Hud from './ui/Hud.vue';
 import Inventory from './ui/Inventory.vue';
 import MainMenu from './ui/MainMenu.vue';
 import PauseMenu from './ui/PauseMenu.vue';
+import LoadingOverlay from './ui/LoadingOverlay.vue';
 import RotateOverlay from './ui/RotateOverlay.vue';
 import { isFullscreen } from './ui/fullscreen';
 import { useStageRect } from './ui/stage';
@@ -193,7 +194,7 @@ onUnmounted(() => {
     <div class="root" :style="{ cursor: uiState.screen === 'game' ? uiState.cursor : 'default' }">
         <RotateOverlay @change="onRotate" />
         <PhaserGame v-if="uiState.screen === 'menu' || uiState.screen === 'game'" @ready="menuAudio" />
-        <div v-if="uiState.screen === 'loading'" class="msg">…</div>
+        <div v-if="uiState.screen === 'loading'" class="msg" data-test="app-loading"><span class="flake">❄</span></div>
         <div v-if="uiState.screen === 'error'" class="msg">Load error. Please reload the page.</div>
         <!--
             Phaser listens to mousedown/touchstart on window and treats clicks on DOM UI as clicks on the game.
@@ -211,6 +212,7 @@ onUnmounted(() => {
                 <DebugPanel v-if="debug" />
                 <EndingCard v-if="uiState.ending === 'card'" @next="endingNext" />
                 <Credits v-if="uiState.ending === 'credits'" @done="creditsDone" />
+                <LoadingOverlay />
                 <PauseMenu v-if="uiState.paused" @resume="pause(false)" @to-menu="toMenu" />
             </template>
             <MainMenu v-else :key="menuKey" @start="newGame" @continue="continueGame" @level="selectLevel" />
@@ -222,5 +224,7 @@ onUnmounted(() => {
 .root { position: relative; width: 100%; height: 100%; }
 .stage { position: absolute; transform-origin: 0 0; pointer-events: none; overflow: hidden; font-family: sans-serif; user-select: none; }
 .layer { position: absolute; inset: 0; pointer-events: none; }
+.flake { display: inline-block; font-size: 72px; color: #cfefff; animation: spin 3s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .msg { color: #fff; font: 24px sans-serif; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 </style>

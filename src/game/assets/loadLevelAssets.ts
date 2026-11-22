@@ -55,6 +55,7 @@ function httpProbe(kind: 'image' | 'audio') {
  */
 export async function loadLevelAssets(
     scene: AssetSceneLike, level: LevelId, manifest: Manifest, probe?: (url: string, kind: 'image' | 'audio') => Promise<boolean>,
+    onProgress?: (p: number) => void,
 ): Promise<{ missing: string[] }> {
     const wanted = assetsForLevel(manifest, level).filter(e =>
         !failed.has(e.key) && (e.kind === 'image' ? !scene.textures.exists(e.key) : !scene.cache.audio.exists(e.key)));
@@ -63,16 +64,20 @@ export async function loadLevelAssets(
     const check = probe ?? ((url: string, kind: 'image' | 'audio') => httpProbe(kind)(url));
     const missing: string[] = [];
     const queue: { key: string; kind: 'image' | 'audio'; urls: string[]; pixelArt?: boolean }[] = [];
+    let checked = 0;
     await Promise.all(wanted.map(async e => {
         const urls = e.kind === 'image' ? [`${base}assets/${e.path}`] : audioUrls(`${base}assets/${e.path}`);
         const ok = await Promise.all(urls.map(u => check(u, e.kind)));
         const present = urls.filter((_, i) => ok[i]);
         if (present.length === 0) missing.push(e.key);
         else queue.push({ key: e.key, kind: e.kind, urls: present, pixelArt: e.pixelArt });
+        onProgress?.(0.2 * (++checked / wanted.length));   // checking: first 20 %
     }));
     if (queue.length > 0) {
         await new Promise<void>(resolve => {
-            scene.load.once('complete', () => resolve());
+            const onLoad = (v: number) => onProgress?.(0.2 + 0.8 * v);
+            scene.load.on('progress', onLoad);
+            scene.load.once('complete', () => { scene.load.off('progress', onLoad); resolve(); });
             for (const q of queue) {
                 if (q.kind === 'image') scene.load.image(q.key, q.urls[0]);
                 else scene.load.audio(q.key, q.urls);

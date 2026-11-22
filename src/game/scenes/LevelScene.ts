@@ -223,7 +223,8 @@ export class LevelScene extends Scene
             this.nav = new NavGrid(this.map.walkable, this.map.blockers, 16, GAME_WIDTH, GAME_HEIGHT);
             const bgKey = this.map.background;   // a key of public/data/assets.json
             const manifest = getGameData()?.manifest;
-            if (manifest) await loadLevelAssets(this, script.levelId, manifest);
+            bus.emit('loading', { progress: 0 });
+            if (manifest) await loadLevelAssets(this, script.levelId, manifest, undefined, p => bus.emit('loading', { progress: p }));
 
             this.script = script;
             this.screenId = screenId;
@@ -234,6 +235,7 @@ export class LevelScene extends Scene
             this.hints = new HintSystem(script.goals, f => gameState.hasFlag(f), () => this.time.now);
         } finally {
             this.loading = false;
+            bus.emit('loading', { progress: null });
         }
         this.checkpoint();
         this.updateMusic();   // during a brush transition the new music starts when it is over
