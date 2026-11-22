@@ -19,6 +19,7 @@ import { saveGame } from '../../state/SaveService';
 import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registry';
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 import { openShortcut } from './overlayClose';
+import { TransitionScene, type TransitionData } from './TransitionScene';
 import { combineItems } from '../../puzzles/logic/combine';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
@@ -76,6 +77,8 @@ export class LevelScene extends Scene
     private runner: ScriptRunner;
     hints: HintSystem | null = null;
     private loading = false;
+    private transitioning = false;
+    private heldEnter: Step[] | null = null;
     private levelGeneration = 0;
 
     // characters
@@ -125,7 +128,7 @@ export class LevelScene extends Scene
 
     get isWalking (): boolean { return this.walk !== null; }
 
-    get isBusy (): boolean { return this.busy || this.scriptPhase || this.talking > 0 || this.loading; }
+    get isBusy (): boolean { return this.busy || this.scriptPhase || this.talking > 0 || this.loading || this.transitioning; }
 
     get currentLevel (): LevelScript | null { return this.script; }
 
@@ -229,7 +232,47 @@ export class LevelScene extends Scene
         }
         this.checkpoint();
         bus.emit('scene:ready', { levelId: script.levelId, screenId: screen ?? null });
-        if (screenScript.onEnter?.length) void this.runScript(screenScript.onEnter);
+        if (screenScript.onEnter?.length) {
+            if (this.transitioning) this.heldEnter = screenScript.onEnter;   // runs when the brush transition is over
+            else void this.runScript(screenScript.onEnter);
+        }
+    }
+
+    /**
+     * «Перерисовка кистью» between worlds (end of L03, end of L05, entering L08), ≈2.5 s, input blocked:
+     * snapshot of the old frame on top → the new world loads underneath → the snapshot is erased with brush strokes.
+     */
+    private async brushTransition (load: () => Promise<void>): Promise<void>
+    {
+        this.transitioning = true;
+        try {
+            const image = await new Promise<HTMLImageElement>(resolve => this.game.renderer.snapshot(img => resolve(img as HTMLImageElement)));
+            const actors = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Image => !!a && a.visible)
+                .map(a => ({ texture: a.texture.key, flipX: a.flipX, scale: a.scaleX, pos: { x: a.x, y: a.y } }));
+            const data: TransitionData = { image, actors };
+            this.scene.launch('TransitionScene', data);
+            this.scene.bringToTop('TransitionScene');
+            await new Promise<void>(resolve => this.time.delayedCall(50, () => resolve()));   // let it draw the old frame
+            const ts = this.scene.get('TransitionScene') as TransitionScene;
+            this.playSfx('sfx_transition');
+            await load();
+            const hidden = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Image => !!a && a.visible);
+            hidden.forEach(a => a.setAlpha(0));
+            await ts.reveal();
+            await ts.finish(hidden.map(a => ({ x: a.x, y: a.y })));
+            hidden.forEach(a => a.setAlpha(1));
+        } finally {
+            this.transitioning = false;
+        }
+        const enter = this.heldEnter;
+        this.heldEnter = null;
+        if (enter) void this.runScript(enter);
+    }
+
+    /** Sound effect (routed to the AudioManager). */
+    playSfx (name: string): void
+    {
+        if (isDebug()) console.debug(`[sfx] ${name}`);
     }
 
     /** Camera fade out (true) / in (false), FADE_MS. */
@@ -460,7 +503,7 @@ export class LevelScene extends Scene
 
     private primaryAt (pt: Vec2)
     {
-        if (this.scriptPhase || this.talking > 0 || this.loading) return;
+        if (this.scriptPhase || this.talking > 0 || this.loading || this.transitioning) return;
         const h = this.hotspotAt(pt);
         if (h) {
             if (this.busy) return;   // already acting on a hotspot: ignore repeated clicks
@@ -473,7 +516,7 @@ export class LevelScene extends Scene
 
     private inspectAt (pt: Vec2)
     {
-        if (this.busy || this.scriptPhase || this.talking > 0 || this.loading) return;
+        if (this.busy || this.scriptPhase || this.talking > 0 || this.loading || this.transitioning) return;
         const h = this.hotspotAt(pt);
         if (h) void this.interact(h, { kind: 'inspect' });
     }
@@ -596,9 +639,14 @@ export class LevelScene extends Scene
             goto: async (level, screen) => {
                 const next = LevelScene.resolveLevel(level);
                 if (!next) { console.warn(`[LevelScene] level ${level} is not available`); return; }
-                await this.fade(true);   // 0.4 s fade (the brush transition between worlds arrives in M4)
-                await this.loadLevel(next, screen);
-                await this.fade(false);
+                const from = this.script ? LEVEL_STYLE[this.script.levelId] : null;
+                if (from && from !== LEVEL_STYLE[next.levelId]) {
+                    await this.brushTransition(() => this.loadLevel(next, screen));   // a new world: «перерисовка кистью»
+                } else {
+                    await this.fade(true);   // the same world: 0.4 s fade
+                    await this.loadLevel(next, screen);
+                    await this.fade(false);
+                }
             },
             cutscene: name => this.playCutscene(name),
             wait: ms => new Promise(resolve => this.time.delayedCall(ms, resolve)),

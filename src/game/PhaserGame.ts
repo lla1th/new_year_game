@@ -3,6 +3,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from './data/types';
 import { BootScene } from './scenes/BootScene';
 import { LevelScene } from './scenes/LevelScene';
 import { OverlayScene } from './scenes/OverlayScene';
+import { TransitionScene } from './scenes/TransitionScene';
 import './levels/visuals';
 import { LEVELS } from './levels';
 
@@ -18,7 +19,7 @@ const config: Types.Core.GameConfig = {
         width: GAME_WIDTH,
         height: GAME_HEIGHT,
     },
-    scene: [BootScene, LevelScene, OverlayScene],
+    scene: [BootScene, LevelScene, OverlayScene, TransitionScene],
 };
 
 const StartGame = (parent: string): Game => {
