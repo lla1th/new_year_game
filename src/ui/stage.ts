@@ -8,17 +8,22 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../game/data/types';
 export function useStageRect () {
     const rect = reactive({ left: 0, top: 0, width: GAME_WIDTH, height: GAME_HEIGHT, scale: 1 });
     const update = () => {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+        // The game is fitted inside #game-container (= the safe area); without it, inside the window.
+        const box = document.getElementById('game-container')?.getBoundingClientRect();
+        const x = box?.left ?? 0;
+        const y = box?.top ?? 0;
+        const w = box?.width || window.innerWidth;
+        const h = box?.height || window.innerHeight;
         const scale = Math.min(w / GAME_WIDTH, h / GAME_HEIGHT);
         rect.scale = scale;
         rect.width = GAME_WIDTH * scale;
         rect.height = GAME_HEIGHT * scale;
-        rect.left = (w - rect.width) / 2;
-        rect.top = (h - rect.height) / 2;
+        rect.left = x + (w - rect.width) / 2;
+        rect.top = y + (h - rect.height) / 2;
     };
-    onMounted(() => { update(); window.addEventListener('resize', update); });
-    onUnmounted(() => window.removeEventListener('resize', update));
+    const later = () => { update(); requestAnimationFrame(update); };
+    onMounted(() => { later(); window.addEventListener('resize', later); window.addEventListener('orientationchange', later); });
+    onUnmounted(() => { window.removeEventListener('resize', later); window.removeEventListener('orientationchange', later); });
     return rect;
 }
 

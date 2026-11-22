@@ -141,7 +141,7 @@ onUnmounted(reset);
 <style scoped>
 .inventory { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; gap: 16px; pointer-events: auto; transition: opacity .2s; }
 .inventory.disabled { opacity: .45; pointer-events: none; }
-.slot { width: 120px; height: 120px; box-sizing: border-box; border: 4px solid #f3e3b5; border-radius: 16px; background: rgba(20, 24, 48, .75); padding: 8px; touch-action: none; cursor: grab; }
+.slot { width: max(120px, var(--min-touch, 0px)); height: max(120px, var(--min-touch, 0px)); box-sizing: border-box; border: 4px solid #f3e3b5; border-radius: 16px; background: rgba(20, 24, 48, .75); padding: 8px; touch-action: none; cursor: grab; }
 .slot.lifted { opacity: .35; }
 .ghost { position: absolute; width: 120px; height: 120px; pointer-events: none; opacity: .9; z-index: 10; }
 </style>

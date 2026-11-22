@@ -84,11 +84,11 @@ expect(classifyPress(900, 40)).toBe('drag');
 - Create: `src/ui/RotateOverlay.vue`
 - Modify: `index.html`, `src/App.vue`, `src/ui/Hud.vue`, `src/ui/SettingsPanel.vue`
 
-- [ ] **Step 1: `RotateOverlay`**: при `matchMedia('(orientation: portrait)')` на сенсорном устройстве — полноэкранная заглушка «Поверните телефон» с анимацией, игра на паузе (`AudioManager.setPaused(true)`, ввод заблокирован); при возврате в горизонталь — продолжение с того же места.
-- [ ] **Step 2: Безопасные зоны**: `viewport-fit=cover` в `index.html`; HUD и инвентарь с отступами `env(safe-area-inset-*)`; все кнопки ≥ 44×44 CSS-пикселя.
-- [ ] **Step 3: Полный экран**: кнопка в настройках скрыта, если Fullscreen API недоступен (iPhone Safari).
-- [ ] **Step 4: Проверка (Playwright MCP, эмуляция устройств):** iPhone (горизонтально/вертикально), Pixel, iPad — HUD не перекрыт вырезом, заглушка поворота работает, перетаскивание пальцем работает. Затем — **на реальных телефонах автора** (Android Chrome, iOS Safari): попросить автора пройти L01–L02 и сообщить проблемы.
-- [ ] **Step 5: Commit** — `feat: адаптировать игру под телефоны`
+- [x] **Step 1: `RotateOverlay`**: при `matchMedia('(orientation: portrait)')` на сенсорном устройстве — полноэкранная заглушка «Поверните телефон» с анимацией, игра на паузе (`AudioManager.setPaused(true)`, ввод заблокирован); при возврате в горизонталь — продолжение с того же места.
+- [x] **Step 2: Безопасные зоны**: `viewport-fit=cover` в `index.html`; HUD и инвентарь с отступами `env(safe-area-inset-*)`; все кнопки ≥ 44×44 CSS-пикселя.
+- [x] **Step 3: Полный экран**: кнопка в настройках скрыта, если Fullscreen API недоступен (iPhone Safari).
+- [x] **Step 4: Проверка (Playwright MCP, эмуляция устройств):** iPhone (горизонтально/вертикально), Pixel, iPad — HUD не перекрыт вырезом, заглушка поворота работает, перетаскивание пальцем работает. Затем — **на реальных телефонах автора** (Android Chrome, iOS Safari): попросить автора пройти L01–L02 и сообщить проблемы.
+- [x] **Step 5: Commit** — `feat: адаптировать игру под телефоны`
 
 ---
 

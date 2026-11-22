@@ -122,7 +122,7 @@ defineExpose({ sayLocal });
 .name { font: bold 30px sans-serif; color: #ffd75e; margin-bottom: 6px; }
 .text { font: 30px/1.3 sans-serif; white-space: pre-wrap; }
 .choices { display: flex; gap: 16px; margin-top: auto; }
-.choice { font: 28px sans-serif; padding: 8px 20px; background: #2d3a7a; color: #fff; border: 3px solid #f3e3b5; border-radius: 10px; cursor: pointer; }
+.choice { font: 28px sans-serif; padding: 8px 20px; min-height: var(--min-touch, 0px); background: #2d3a7a; color: #fff; border: 3px solid #f3e3b5; border-radius: 10px; cursor: pointer; }
 .next { position: absolute; right: 24px; bottom: 12px; font-size: 32px; color: #ffd75e; animation: blink 1s infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 </style>

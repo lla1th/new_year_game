@@ -21,6 +21,7 @@ import Hud from './ui/Hud.vue';
 import Inventory from './ui/Inventory.vue';
 import MainMenu from './ui/MainMenu.vue';
 import PauseMenu from './ui/PauseMenu.vue';
+import RotateOverlay from './ui/RotateOverlay.vue';
 import { isFullscreen } from './ui/fullscreen';
 import { useStageRect } from './ui/stage';
 import { uiState } from './ui/uiState';
@@ -38,6 +39,8 @@ const menuKey = ref(0);
 const stageStyle = computed(() => ({
     left: `${stage.left}px`, top: `${stage.top}px`, width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`,
     transform: `scale(${stage.scale})`,
+    // touch targets at least 44×44 CSS px (UI_UX §6), whatever the scale of the 1920×1080 layer
+    '--min-touch': `${Math.ceil(44 / Math.max(stage.scale, 0.01))}px`,
 }));
 
 function inspectItem (id: ItemId) {
@@ -86,6 +89,21 @@ function creditsDone () {
     if (uiState.ending !== 'credits') return;
     uiState.ending = null;
     bus.emit('ending:post');
+}
+
+/** Portrait phone: the game is paused under the rotate screen and resumes as it was (unless paused by the player). */
+let pausedByRotation = false;
+function onRotate (portrait: boolean) {
+    if (uiState.screen !== 'game') return;
+    if (portrait && !uiState.paused) {
+        pausedByRotation = true;
+        setPaused(true);
+        getAudio()?.setPaused(true);
+    } else if (!portrait && pausedByRotation) {
+        pausedByRotation = false;
+        setPaused(uiState.paused);
+        getAudio()?.setPaused(uiState.paused);
+    }
 }
 
 function pause (on: boolean) {
@@ -173,6 +191,7 @@ onUnmounted(() => {
 
 <template>
     <div class="root" :style="{ cursor: uiState.screen === 'game' ? uiState.cursor : 'default' }">
+        <RotateOverlay @change="onRotate" />
         <PhaserGame v-if="uiState.screen === 'menu' || uiState.screen === 'game'" @ready="menuAudio" />
         <div v-if="uiState.screen === 'loading'" class="msg">…</div>
         <div v-if="uiState.screen === 'error'" class="msg">Load error. Please reload the page.</div>
