@@ -31,6 +31,7 @@ export const L01: LevelScript = {
                             { setFlag: 'L01_SPITZ_FREED' },
                             { dialog: 'l01_intro' },
                             { setFlag: 'L01_PORTAL_OPEN' },
+                            { checkpoint: true },   // P-01 solved (autosave after every puzzle)
                         ],
                     },
                 },

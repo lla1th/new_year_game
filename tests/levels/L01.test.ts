@@ -68,6 +68,8 @@ describe('L01 / P-01 scenarios', () => {
     expect(state.hasItem('ITEM_SAUSAGE')).toBe(false);
     expect(log).toContain('dialog:l01_intro');
     expect(log.indexOf('anim:spitz_out')).toBeLessThan(log.indexOf('dialog:l01_intro'));
+    // P-01 is a puzzle: a checkpoint after it (ACCEPTANCE_CRITERIA: autosave after every puzzle)
+    expect(log.lastIndexOf('checkpoint')).toBeGreaterThan(log.indexOf('dialog:l01_intro'));
   });
 
   test('3. mandarin, then sausage: success', async () => {
