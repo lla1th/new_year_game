@@ -1,0 +1,80 @@
+{
+  "ITEM_MANDARIN": {
+    "icon": "img/items/ITEM_MANDARIN.png",
+    "nameKey": "item.ITEM_MANDARIN.name",
+    "inspectKey": "item.ITEM_MANDARIN.inspect",
+    "style": "w1"
+  },
+  "ITEM_SAUSAGE": {
+    "icon": "img/items/ITEM_SAUSAGE.png",
+    "nameKey": "item.ITEM_SAUSAGE.name",
+    "inspectKey": "item.ITEM_SAUSAGE.inspect",
+    "style": "w1"
+  },
+  "ITEM_BULB_GREEN": {
+    "icon": "img/items/ITEM_BULB_GREEN.png",
+    "nameKey": "item.ITEM_BULB_GREEN.name",
+    "inspectKey": "item.ITEM_BULB_GREEN.inspect",
+    "style": "w1"
+  },
+  "ITEM_BULB_GOLD": {
+    "icon": "img/items/ITEM_BULB_GOLD.png",
+    "nameKey": "item.ITEM_BULB_GOLD.name",
+    "inspectKey": "item.ITEM_BULB_GOLD.inspect",
+    "style": "w1"
+  },
+  "ITEM_BULB_BLUE": {
+    "icon": "img/items/ITEM_BULB_BLUE.png",
+    "nameKey": "item.ITEM_BULB_BLUE.name",
+    "inspectKey": "item.ITEM_BULB_BLUE.inspect",
+    "style": "w1"
+  },
+  "ITEM_GATE_KEY": {
+    "icon": "img/items/ITEM_GATE_KEY.png",
+    "nameKey": "item.ITEM_GATE_KEY.name",
+    "inspectKey": "item.ITEM_GATE_KEY.inspect",
+    "style": "w1"
+  },
+  "ITEM_COCOA": {
+    "icon": "img/items/ITEM_COCOA.png",
+    "nameKey": "item.ITEM_COCOA.name",
+    "inspectKey": "item.ITEM_COCOA.inspect",
+    "style": "w1"
+  },
+  "ITEM_CANDY_CANE": {
+    "icon": "img/items/ITEM_CANDY_CANE.png",
+    "nameKey": "item.ITEM_CANDY_CANE.name",
+    "inspectKey": "item.ITEM_CANDY_CANE.inspect",
+    "style": "w2"
+  },
+  "ITEM_VALVE": {
+    "icon": "img/items/ITEM_VALVE.png",
+    "nameKey": "item.ITEM_VALVE.name",
+    "inspectKey": "item.ITEM_VALVE.inspect",
+    "style": "w2"
+  },
+  "ITEM_MITTENS": {
+    "icon": "img/items/ITEM_MITTENS.png",
+    "nameKey": "item.ITEM_MITTENS.name",
+    "inspectKey": "item.ITEM_MITTENS.inspect",
+    "style": "w2"
+  },
+  "ITEM_RIBBON": {
+    "icon": "img/items/ITEM_RIBBON.png",
+    "nameKey": "item.ITEM_RIBBON.name",
+    "inspectKey": "item.ITEM_RIBBON.inspect",
+    "style": "w3"
+  },
+  "ITEM_GINGER_MEDAL": {
+    "icon": "img/items/ITEM_GINGER_MEDAL.png",
+    "nameKey": "item.ITEM_GINGER_MEDAL.name",
+    "inspectKey": "item.ITEM_GINGER_MEDAL.inspect",
+    "style": "w3"
+  },
+  "ITEM_KEEPER_MEDAL": {
+    "icon": "img/items/ITEM_KEEPER_MEDAL.png",
+    "nameKey": "item.ITEM_KEEPER_MEDAL.name",
+    "inspectKey": "item.ITEM_KEEPER_MEDAL.inspect",
+    "style": "w3"
+  }
+}

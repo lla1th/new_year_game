@@ -1,0 +1,28 @@
+{
+  "l01_intro": [
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.2"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.3"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.intro.4"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.5"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.6"
+    }
+  ]
+}
