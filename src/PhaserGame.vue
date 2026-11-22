@@ -2,14 +2,17 @@
 import { onMounted, onUnmounted } from 'vue';
 import type { Game } from 'phaser';
 import StartGame from './game/PhaserGame';
+import { attachGame } from './game/controller';
 
 let game: Game | null = null;
 
 onMounted(() => {
     game = StartGame('game-container');
+    attachGame(game);
 });
 
 onUnmounted(() => {
+    attachGame(null);
     game?.destroy(true);
     game = null;
 });

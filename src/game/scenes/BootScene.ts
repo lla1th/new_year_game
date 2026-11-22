@@ -1,16 +1,10 @@
 import { Scene } from 'phaser';
-import { LEVELS } from '../levels';
 
-/** Temporary start-up until the main menu (Task 9): starts L01. */
+/** Idle until the main menu starts a level (see controller.startLevel). */
 export class BootScene extends Scene
 {
     constructor ()
     {
         super('BootScene');
-    }
-
-    create ()
-    {
-        this.scene.start('LevelScene', { script: LEVELS.L01 });
     }
 }
