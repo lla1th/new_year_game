@@ -18,6 +18,7 @@ import { saveGame } from '../../state/SaveService';
 import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registry';
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 import { openShortcut } from './overlayClose';
+import { combineItems } from '../../puzzles/logic/combine';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
 export class WalkInterruptedError extends Error {
@@ -276,10 +277,7 @@ export class LevelScene extends Scene
             bus.on('item:drop', ({ itemId, x, y }) => this.onItemDrop(itemId, { x, y })),
             bus.on('highlight:all', () => { this.highlightUntil = this.time.now + HIGHLIGHT_MS; }),
             bus.on('hint:request', () => this.onHintRequest()),
-            bus.on('item:combine', () => {
-                // The only valid pair (L07) arrives in M3; everything else does not combine.
-                if (!this.isBusy) void this.runScript([{ say: 'ksyusha', key: 'common.cantCombine' }]);
-            }),
+            bus.on('item:combine', ({ a, b }) => this.onCombine(a, b)),
         );
         this.time.addEvent({ delay: 1000, loop: true, callback: () => this.onHintTick() });
         this.events.once('shutdown', () => {
@@ -466,6 +464,23 @@ export class LevelScene extends Scene
         if (this.busy || this.scriptPhase || this.talking > 0 || this.loading) return;
         const h = this.hotspotAt(pt);
         if (h) void this.interact(h, { kind: 'inspect' });
+    }
+
+    /** Inventory item dropped on another one: the valid pair turns into a new item, anything else "does not combine". */
+    private onCombine (a: ItemId, b: ItemId)
+    {
+        if (this.isBusy || !gameState.hasItem(a) || !gameState.hasItem(b)) return;
+        const result = combineItems(a, b);
+        if (!result) {
+            void this.runScript([{ say: 'ksyusha', key: 'common.cantCombine' }]);
+            return;
+        }
+        gameState.removeItem(a);
+        gameState.removeItem(b);
+        gameState.addItem(result);
+        if (isDebug()) console.debug('[sfx] sfx_combine');
+        this.hints?.notifyProgress();
+        this.refreshVisuals();
     }
 
     private onItemDrop (itemId: ItemId, pt: Vec2)
