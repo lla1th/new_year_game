@@ -239,6 +239,10 @@ export class LevelScene extends Scene
             bus.on('item:drop', ({ itemId, x, y }) => this.onItemDrop(itemId, { x, y })),
             bus.on('highlight:all', () => { this.highlightUntil = this.time.now + HIGHLIGHT_MS; }),
             bus.on('hint:request', () => this.onHintRequest()),
+            bus.on('item:combine', () => {
+                // The only valid pair (L07) arrives in M3; everything else does not combine.
+                if (!this.isBusy) void this.runScript([{ say: 'ksyusha', key: 'common.cantCombine' }]);
+            }),
         );
         this.time.addEvent({ delay: 1000, loop: true, callback: () => this.onHintTick() });
         this.events.once('shutdown', () => {

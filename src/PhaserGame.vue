@@ -1,41 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
-import { EventBus } from './game/EventBus';
+import { onMounted, onUnmounted } from 'vue';
+import type { Game } from 'phaser';
 import StartGame from './game/PhaserGame';
-import Phaser from 'phaser';
 
-// Save the current scene instance
-const scene = ref();
-const game = ref();
-
-const emit = defineEmits(['current-active-scene']);
+let game: Game | null = null;
 
 onMounted(() => {
-
-    game.value = StartGame('game-container');
-    
-    EventBus.on('current-scene-ready', (scene_instance: Phaser.Scene) => {
-        
-        emit('current-active-scene', scene_instance);
-    
-        scene.value = scene_instance;
-    
-    });
-
+    game = StartGame('game-container');
 });
 
 onUnmounted(() => {
-
-    if (game.value)
-    {
-        game.value.destroy(true);
-        game.value = null;
-    }
-
+    game?.destroy(true);
+    game = null;
 });
-
-defineExpose({ scene, game });
-
 </script>
 
 <template>
