@@ -11,3 +11,6 @@ registerScreen('fresco', () => new FrescoScreen());
 import { PipesScreen } from './PipesScreen';
 
 registerScreen('P-04', () => new PipesScreen());
+import { IceScreen } from './IceScreen';
+
+registerScreen('P-05', () => new IceScreen());
