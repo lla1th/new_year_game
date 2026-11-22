@@ -1,0 +1,281 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 5,
+ "nextobjectid": 9,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "img/world1/l03_top_bg.png"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "floor"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "L03"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_world1"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": true
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 160,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1600,
+       "y": 0
+      },
+      {
+       "x": 1600,
+       "y": 360
+      },
+      {
+       "x": 0,
+       "y": 360
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "bells",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 560,
+     "y": 300,
+     "width": 800,
+     "height": 300,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 960
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 720
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "cat_beam",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 760,
+     "y": 80,
+     "width": 400,
+     "height": 150,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 960
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 720
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "eye"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "stairs_down",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 160,
+     "y": 460,
+     "width": 200,
+     "height": 260,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 330
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 800
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ul"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 5,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 460,
+     "y": 880,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 6,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 380,
+     "y": 900,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 7,
+     "name": "clock_face",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1700,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "sprites",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 8,
+     "name": "cat",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 960,
+     "y": 225,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 226
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "cat_w1_idle"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

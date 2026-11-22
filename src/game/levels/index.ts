@@ -2,6 +2,7 @@ import type { LevelId } from '../data/types';
 import type { LevelScript } from '../script/types';
 import { L01 } from './L01';
 import { L02 } from './L02';
+import { L03 } from './L03';
 
 /** Placeholder for levels that are not built yet: a room with a "to be continued" sign. */
 function toBeContinued(levelId: LevelId): LevelScript {
@@ -27,7 +28,7 @@ export function startScreen(level: LevelId, screenId: string | null): string | u
 export const LEVELS: Record<LevelId, LevelScript> = {
     L01,
     L02,
-    L03: toBeContinued('L03'),
+    L03,
     L04: toBeContinued('L04'),
     L05: toBeContinued('L05'),
     L06: toBeContinued('L06'),

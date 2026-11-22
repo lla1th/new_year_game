@@ -1,0 +1,304 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 6,
+ "nextobjectid": 10,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "img/world1/l03_floor1_bg.png"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "floor"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "L03"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_world1"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": true
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 100,
+     "y": 620,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 380
+      },
+      {
+       "x": 0,
+       "y": 380
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "blockers",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "stairs_base",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1320,
+     "y": 620,
+     "width": 260,
+     "height": 40
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 3,
+     "name": "fresco",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 300,
+     "y": 200,
+     "width": 400,
+     "height": 320,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 500
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 690
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "eye"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "stairs_up",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1300,
+     "y": 180,
+     "width": 280,
+     "height": 440,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 1440
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 700
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "owl",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1150,
+     "y": 430,
+     "width": 140,
+     "height": 190,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 1220
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 700
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "talk"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 6,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 820,
+     "y": 900,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 7,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 740,
+     "y": 920,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 8,
+     "name": "owl_wall",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1060,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "sprites",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 9,
+     "name": "owl",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1220,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 641
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "l03_owl"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
