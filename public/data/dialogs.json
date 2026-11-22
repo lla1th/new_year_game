@@ -24,5 +24,19 @@
       "speaker": "spitz",
       "key": "l01.dlg.intro.6"
     }
+  ],
+  "l02_nika": [
+    {
+      "speaker": "nika",
+      "key": "l02.dlg.nika.1"
+    },
+    {
+      "speaker": "nika",
+      "key": "l02.dlg.nika.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.dlg.nika.3"
+    }
   ]
 }

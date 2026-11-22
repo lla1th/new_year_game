@@ -82,3 +82,48 @@ describe('ScriptRunner abort', () => {
     expect(ctx.state.hasFlag('L01_SPITZ_FREED')).toBe(false);
   });
 });
+
+describe('ScriptRunner M2 steps', () => {
+  test('openPuzzle runs onSolved only when the puzzle is solved', async () => {
+    const { ctx, log } = fakeCtx();
+    const runner = new ScriptRunner(ctx);
+    let solved = false;
+    ctx.openPuzzle = async id => { log.push(`puzzle:${id}`); return solved; };
+    await runner.run([{ openPuzzle: 'P-02', onSolved: [{ setFlag: 'L02_GARLAND_DONE' }] }]);
+    expect(ctx.state.hasFlag('L02_GARLAND_DONE')).toBe(false);
+    solved = true;
+    await runner.run([{ openPuzzle: 'P-02', onSolved: [{ setFlag: 'L02_GARLAND_DONE' }] }]);
+    expect(ctx.state.hasFlag('L02_GARLAND_DONE')).toBe(true);
+  });
+
+  test('ifFlag / ifItem choose then or else', async () => {
+    const { ctx, log } = fakeCtx();
+    const runner = new ScriptRunner(ctx);
+    await runner.run([{ ifItem: 'ITEM_MITTENS', then: [{ say: 'ksyusha', key: 'yes' }], else: [{ say: 'ksyusha', key: 'no' }] }]);
+    ctx.state.addItem('ITEM_MITTENS');
+    await runner.run([{ ifItem: 'ITEM_MITTENS', then: [{ say: 'ksyusha', key: 'yes' }] }]);
+    await runner.run([{ ifFlag: 'L05_ENTERED', then: [{ say: 'ksyusha', key: 'f' }] }]);
+    ctx.state.setFlag('L05_ENTERED');
+    await runner.run([{ ifFlag: 'L05_ENTERED', then: [{ say: 'ksyusha', key: 'f2' }], else: [{ say: 'ksyusha', key: 'nf' }] }]);
+    expect(log).toEqual(['say:ksyusha:no', 'say:ksyusha:yes', 'say:ksyusha:f2']);
+  });
+
+  test('alive() also stops nested steps', async () => {
+    const { ctx, log } = fakeCtx();
+    const runner = new ScriptRunner(ctx);
+    let alive = true;
+    ctx.say = async (s, k) => { log.push(`say:${s}:${k}`); alive = false; };
+    await runner.run([{ ifItem: 'ITEM_MITTENS', then: [], else: [{ say: 'ksyusha', key: 'a' }, { setFlag: 'L05_ENTERED' }] }], () => alive);
+    expect(ctx.state.hasFlag('L05_ENTERED')).toBe(false);
+  });
+});
+
+describe('leadsAway', () => {
+  test('a use that ends in goto (even nested) shows the exit cursor', async () => {
+    const { leadsAway } = await import('../../src/game/script/selectSteps');
+    expect(leadsAway([{ say: 'ksyusha', key: 'a' }])).toBe(false);
+    expect(leadsAway([{ setFlag: 'L01_PORTAL_ENTERED' }, { goto: { level: 'L02' } }])).toBe(true);
+    expect(leadsAway([{ ifFlag: 'L05_ENTERED', then: [{ goto: { level: 'L06' } }] }])).toBe(true);
+    expect(leadsAway([{ openPuzzle: 'P-03', onSolved: [{ goto: { level: 'L04' } }] }])).toBe(false);
+  });
+});

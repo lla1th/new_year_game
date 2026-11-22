@@ -5,8 +5,11 @@ export type Step =
     | { giveItem: ItemId } | { removeItem: ItemId } | { givePart: PartId }
     | { setFlag: FlagId } | { anim: string } | { sfx: string }
     | { walkTo: string }                     // point name from the `points` layer
-    | { openPuzzle: PuzzleId } | { goto: { level: LevelId; screen?: string } }
-    | { cutscene: string } | { wait: number } | { checkpoint: true };
+    | { openPuzzle: PuzzleId; onSolved?: Step[] }   // onSolved runs only if the screen was solved
+    | { goto: { level: LevelId; screen?: string } }
+    | { cutscene: string } | { wait: number } | { checkpoint: true }
+    | { ifFlag: FlagId; then: Step[]; else?: Step[] }
+    | { ifItem: ItemId; then: Step[]; else?: Step[] };
 
 export interface HotspotScript {
     hotspot: string;

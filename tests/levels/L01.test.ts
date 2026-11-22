@@ -176,7 +176,7 @@ describe('L01 data consistency', () => {
 
   test('LEVELS has all 8 levels; placeholders load a valid map', () => {
     expect(Object.keys(LEVELS)).toEqual(['L01', 'L02', 'L03', 'L04', 'L05', 'L06', 'L07', 'L08']);
-    const tbc = parseTiledMap(readJson(LEVELS.L02.screens.tbc.map));
+    const tbc = parseTiledMap(readJson(LEVELS.L08.screens.tbc.map));
     expect(new NavGrid(tbc.walkable, tbc.blockers).isWalkable(tbc.points.spawn)).toBe(true);
     expect(ru['l02.tbc']).toBeDefined();
   });

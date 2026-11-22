@@ -23,3 +23,10 @@ export function useSteps(levelId: LevelId, hotspotId: string, s: HotspotScript |
 export function itemSteps(s: HotspotScript | undefined, itemId: ItemId, pickWrongKey: () => string): Step[] {
     return s?.onItem?.[itemId] ?? [{ say: 'ksyusha', key: pickWrongKey() }];
 }
+
+/** True if using the hotspot takes Ksyusha to another level/screen (exit cursor). Puzzle rewards do not count. */
+export function leadsAway(steps: Step[]): boolean {
+    return steps.some(st => 'goto' in st
+        || ('ifFlag' in st && (leadsAway(st.then) || leadsAway(st.else ?? [])))
+        || ('ifItem' in st && (leadsAway(st.then) || leadsAway(st.else ?? []))));
+}

@@ -29,7 +29,7 @@ export type PartId = 'PART_SPRING' | 'PART_GEAR' | 'PART_HANDS';
 
 export const FLAG_IDS = [
   'L01_SPITZ_FREED', 'L01_PORTAL_OPEN', 'L01_PORTAL_ENTERED',
-  'L02_SNOWMAN_SAD', 'L02_SNOWMAN_HAPPY', 'L02_CAROUSEL_SPUN', 'L02_GARLAND_DONE', 'L02_GATE_OPEN',
+  'L02_SNOWMAN_SAD', 'L02_SNOWMAN_HAPPY', 'L02_CAROUSEL_SPUN', 'L02_BULB_GREEN_TAKEN', 'L02_BULB_BLUE_TAKEN', 'L02_GARLAND_DONE', 'L02_GATE_OPEN',
   'L03_DOOR_OPEN', 'L03_OWL_AWAKE', 'L03_FRESCO_SEEN', 'L03_BELLS_DONE',
   'L04_VALVE_TAKEN', 'L04_VALVE_INSTALLED', 'L04_PIPES_DONE',
   'L05_ENTERED', 'L05_CRATES_DONE',
@@ -187,8 +187,11 @@ export type Step =
   | { giveItem: ItemId } | { removeItem: ItemId } | { givePart: PartId }
   | { setFlag: FlagId } | { anim: string } | { sfx: string }
   | { walkTo: string }                     // имя точки из слоя points
-  | { openPuzzle: PuzzleId } | { goto: { level: LevelId; screen?: string } }
-  | { cutscene: string } | { wait: number } | { checkpoint: true };
+  | { openPuzzle: PuzzleId; onSolved?: Step[] }   // M2: onSolved — только если экран решён
+  | { goto: { level: LevelId; screen?: string } }
+  | { cutscene: string } | { wait: number } | { checkpoint: true }
+  | { ifFlag: FlagId; then: Step[]; else?: Step[] }  // M2: условные шаги
+  | { ifItem: ItemId; then: Step[]; else?: Step[] };
 export interface HotspotScript {
   hotspot: string;
   onInspect?: Step[];                       // по умолчанию: say ksyusha `<lvl>.<hotspot>.inspect` (lvl = 'l01'…)

@@ -1,6 +1,6 @@
 import { Scene, type GameObjects, type Input, type Tweens } from 'phaser';
 import { bus } from '../../events';
-import { GAME_HEIGHT, GAME_WIDTH, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
+import { GAME_HEIGHT, GAME_WIDTH, type CursorKind, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
 import { colorFromKey, ensureTexture } from '../assets/placeholder';
 import { getGameData } from '../data/gameData';
 import { isDebug } from '../debug';
@@ -10,12 +10,12 @@ import { facingFromVector } from '../nav/facing';
 import { distance, type Vec2 } from '../nav/geometry';
 import { ScriptRunner, type ScriptContext } from '../script/ScriptRunner';
 import type { HotspotScript, LevelScript, ScreenScript, Step } from '../script/types';
-import { inspectSteps, itemSteps, useSteps } from '../script/selectSteps';
+import { inspectSteps, itemSteps, leadsAway, useSteps } from '../script/selectSteps';
 import { HintSystem } from '../systems/HintSystem';
 import { hitTestHotspots, isHotspotActive } from '../systems/hotspots';
 import { gameState } from '../../state/gameState';
 import { saveGame } from '../../state/SaveService';
-import { getAnim, getCutscene, getLevelVisual } from './registry';
+import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registry';
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
@@ -47,6 +47,7 @@ const SPRITE_PLACEHOLDER_W = 64;
 const SPRITE_PLACEHOLDER_H = 128;
 const OUTLINE_DEPTH = 900_000;
 const ZOOM_MS = 500;
+const FADE_MS = 400;
 const ZOOM_LEVEL = 1.6;
 const CAPTION_DEPTH = 950_000;
 const DEBUG_DEPTH = 1_000_000;
@@ -88,7 +89,7 @@ export class LevelScene extends Scene
     private scriptPhase = false;        // the script part of an action / onEnter / cutscene is running
     private talking = 0;                // say/dialog in progress
     private hoverId: string | null = null;
-    private cursorKind = 'default';
+    private cursorKind: CursorKind = 'default';
     private highlightUntil = 0;
     private lastWrongKey: string | undefined;
     private touch: { pt: Vec2; timer: { remove: () => void } } | null = null;
@@ -98,7 +99,8 @@ export class LevelScene extends Scene
     private actionHotspot: HotspotDef | null = null;
     private screens = new Map<PuzzleId, OverlayScreen>();
     private skipCutscene: (() => void) | null = null;
-    private pendingTalk = new Set<() => void>();   // resolvers of say/dialog promises waiting for the UI
+    private pendingTalk = new Set<() => void>();
+    private placeholderBoxes: { h: HotspotDef; objs: GameObjects.Components.Visible[] }[] = [];   // resolvers of say/dialog promises waiting for the UI
 
     constructor ()
     {
@@ -190,6 +192,7 @@ export class LevelScene extends Scene
             this.children.removeAll(true);
             this.sprites.clear();
             this.screens.clear();
+            this.placeholderBoxes = [];
             this.spitz = null;
             this.cameras.main.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
             this.busy = false;
@@ -219,9 +222,24 @@ export class LevelScene extends Scene
         if (screenScript.onEnter?.length) void this.runScript(screenScript.onEnter);
     }
 
+    /** Camera fade out (true) / in (false), FADE_MS. */
+    private fade (out: boolean): Promise<void>
+    {
+        const cam = this.cameras.main;
+        return new Promise(resolve => {
+            cam.once(out ? 'camerafadeoutcomplete' : 'camerafadeincomplete', () => resolve());
+            if (out) cam.fadeOut(FADE_MS, 0, 0, 0);
+            else cam.fadeIn(FADE_MS, 0, 0, 0);
+        });
+    }
+
     /** Re-applies level visuals (call after state changes outside scripts). */
     refreshVisuals (): void
     {
+        for (const { h, objs } of this.placeholderBoxes) {
+            const on = isHotspotActive(h, f => gameState.hasFlag(f));
+            for (const o of objs) o.setVisible(on);
+        }
         if (this.script) getLevelVisual(this.script.levelId)?.(this);
     }
 
@@ -349,16 +367,17 @@ export class LevelScene extends Scene
     /** Without real art: hotspots are drawn as labelled boxes so the level can be played on placeholders. */
     private drawPlaceholderObjects ()
     {
-        const g = this.add.graphics().setDepth(0);
         for (const h of this.map.hotspots) {
+            const g = this.add.graphics().setDepth(0);
             g.fillStyle(colorFromKey(h.id), 0.55);
             g.lineStyle(3, 0x000000, 0.6);
             tracePath(g, h.shape, true);
             g.fillPath();
             g.strokePath();
             const c = centroid(h.shape);
-            this.add.text(c.x, c.y, h.id, { fontFamily: 'sans-serif', fontSize: '24px', color: '#ffffff', stroke: '#000000', strokeThickness: 4 })
+            const label = this.add.text(c.x, c.y, h.id, { fontFamily: 'sans-serif', fontSize: '24px', color: '#ffffff', stroke: '#000000', strokeThickness: 4 })
                 .setOrigin(0.5).setDepth(0);
+            this.placeholderBoxes.push({ h, objs: [g, label] });
         }
     }
 
@@ -409,11 +428,18 @@ export class LevelScene extends Scene
         const h = this.isBusy ? null : this.hotspotAt({ x: p.worldX, y: p.worldY });
         const id = h?.id ?? null;
         if (id !== this.hoverId) this.hoverId = id;
-        const kind = h ? h.cursor : 'default';
+        const kind = h ? this.cursorFor(h) : 'default';
         if (kind !== this.cursorKind) {
             this.cursorKind = kind;
             bus.emit('cursor', { kind });
         }
+    }
+
+    /** Hotspots whose current use leads to another screen show the exit cursor. */
+    private cursorFor (h: HotspotDef): CursorKind
+    {
+        const steps = useSteps(this.script?.levelId ?? 'L01', h.id, this.scriptFor(h), gameState);
+        return leadsAway(steps) ? 'exit' : h.cursor;
     }
 
     private hotspotAt (pt: Vec2): HotspotDef | null
@@ -542,7 +568,9 @@ export class LevelScene extends Scene
             goto: async (level, screen) => {
                 const next = LevelScene.resolveLevel(level);
                 if (!next) { console.warn(`[LevelScene] level ${level} is not available`); return; }
+                await this.fade(true);   // 0.4 s fade (the brush transition between worlds arrives in M4)
                 await this.loadLevel(next, screen);
+                await this.fade(false);
             },
             cutscene: name => this.playCutscene(name),
             wait: ms => new Promise(resolve => this.time.delayedCall(ms, resolve)),
@@ -624,10 +652,7 @@ export class LevelScene extends Scene
         });
         cam.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
         bus.emit('puzzle:close', { puzzleId, solved });
-        if (solved) {
-            this.hints?.notifyProgress();
-            if (puzzleId.startsWith('P-')) this.checkpoint();
-        }
+        if (solved) this.hints?.notifyProgress();   // checkpoints come from the scripts' { checkpoint: true }
         this.refreshVisuals();
         return solved;
     }
@@ -680,14 +705,22 @@ export class LevelScene extends Scene
     {
         if (this.isBusy || !this.hints) return;
         const key = this.hints.nextHint();
-        if (key) void this.runScript([{ say: this.hintSpeaker(), key }]);
+        if (key) this.sayHint(key);
+    }
+
+    private sayHint (key: string)
+    {
+        const lvl = this.script?.levelId;
+        const keys = (lvl && getHintResolver(lvl)?.(key, this)) || [key];
+        const speaker = this.hintSpeaker();
+        void this.runScript(keys.map(k => ({ say: speaker, key: k })));
     }
 
     private onHintTick ()
     {
         if (this.isBusy || this.isWalking || !this.hints) return;
         const key = this.hints.tick();
-        if (key) void this.runScript([{ say: this.hintSpeaker(), key }]);
+        if (key) this.sayHint(key);
     }
 
     // --- walking internals --------------------------------------------------
