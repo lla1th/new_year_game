@@ -14,3 +14,6 @@ registerScreen('P-04', () => new PipesScreen());
 import { IceScreen } from './IceScreen';
 
 registerScreen('P-05', () => new IceScreen());
+import { ComicScreen } from './ComicScreen';
+
+registerScreen('P-06', () => new ComicScreen());
