@@ -24,7 +24,10 @@ import { isFullscreen } from './ui/fullscreen';
 import { useStageRect } from './ui/stage';
 import { uiState } from './ui/uiState';
 
-const CURSORS: Record<CursorKind, string> = { default: 'default', hand: 'pointer', eye: 'zoom-in', gear: 'pointer', talk: 'pointer', exit: 'e-resize' };
+const CURSOR_FALLBACK: Record<CursorKind, string> = { default: 'default', hand: 'pointer', eye: 'zoom-in', gear: 'pointer', talk: 'pointer', exit: 'e-resize' };
+/** 32×32 cursor pictures (ASSET_REQUIREMENTS §4); the browser falls back to the system cursor while a file is missing. */
+const CURSORS = Object.fromEntries(Object.entries(CURSOR_FALLBACK).map(([k, v]) =>
+    [k, `url(${import.meta.env.BASE_URL}assets/img/ui/cursor_${k}.png) 4 4, ${v}`])) as Record<CursorKind, string>;
 const CHECKPOINT_ICON_MS = 1500;
 
 const stage = useStageRect();
