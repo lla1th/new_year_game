@@ -9,6 +9,6 @@ export class BootScene extends Scene
 
     create ()
     {
-        // Empty for now: M0 Task 4 starts LevelScene from here.
+        this.scene.start('LevelScene', { mapPath: 'assets/maps/test.json' });
     }
 }
