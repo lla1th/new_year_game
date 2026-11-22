@@ -22,8 +22,27 @@ export function useStageRect () {
         rect.top = y + (h - rect.height) / 2;
     };
     const later = () => { update(); requestAnimationFrame(update); };
-    onMounted(() => { later(); window.addEventListener('resize', later); window.addEventListener('orientationchange', later); });
-    onUnmounted(() => { window.removeEventListener('resize', later); window.removeEventListener('orientationchange', later); });
+    // #game-container appears only after the loading screen (and is re-created with the game): watch for it
+    // and follow its size, so the UI layer never stays fitted to the whole window instead of the safe area.
+    let watched: Element | null = null;
+    const resizeObs = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(later);
+    const domObs = typeof MutationObserver === 'undefined' ? null : new MutationObserver(() => {
+        const el = document.getElementById('game-container');
+        if (el === watched) return;
+        if (watched) resizeObs?.unobserve(watched);
+        watched = el;
+        if (el) resizeObs?.observe(el);
+        later();
+    });
+    onMounted(() => {
+        later();
+        window.addEventListener('resize', later); window.addEventListener('orientationchange', later);
+        domObs?.observe(document.body, { childList: true, subtree: true });
+    });
+    onUnmounted(() => {
+        window.removeEventListener('resize', later); window.removeEventListener('orientationchange', later);
+        domObs?.disconnect(); resizeObs?.disconnect();
+    });
     return rect;
 }
 

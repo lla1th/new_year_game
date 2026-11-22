@@ -23,7 +23,7 @@ import { TransitionScene, type TransitionData } from './TransitionScene';
 import { getAudio } from '../audio/AudioManager';
 import { ambientForLevel, musicForLevel } from '../audio/volume';
 import { combineItems } from '../../puzzles/logic/combine';
-import { classifyPress, DRAG_THRESHOLD_PX, LONG_PRESS_MS } from '../../ui/input/press';
+import { releaseAction, DRAG_THRESHOLD_PX, LONG_PRESS_MS } from '../../ui/input/press';
 
 /** Rejection reason of walkTo() when the walk is replaced by a new one. */
 export class WalkInterruptedError extends Error {
@@ -512,8 +512,9 @@ export class LevelScene extends Scene
         if (!t) return;
         t.timer.remove();
         this.touch = null;
-        const kind = classifyPress(this.time.now - t.t0, t.dragged ? Infinity : this.movedCss(p, t.pt));
-        if (kind !== 'tap') return;   // 'long' was handled by the timer; 'drag' (scroll gesture) never uses a hotspot
+        const action = releaseAction(this.time.now - t.t0, t.dragged ? Infinity : this.movedCss(p, t.pt), p.wasCanceled);
+        if (action === 'inspect') { this.inspectAt(t.pt); return; }   // released before the long-press timer ticked
+        if (action !== 'use') return;   // cancelled touch or drag (scroll gesture) never uses a hotspot
         const h = this.hotspotAt(t.pt);
         if (h) this.tapFlash = { id: h.id, until: this.time.now + 400 };   // phones: the first tap briefly outlines it
         this.primaryAt(t.pt);

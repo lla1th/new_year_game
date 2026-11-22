@@ -31,3 +31,7 @@ coverage
 
 # superpowers workspace
 .superpowers/
+
+# Playwright
+test-results/
+playwright-report/
