@@ -12,4 +12,5 @@ export const uiState = reactive({
     cursor: 'default' as string,
     checkpointVisible: false,
     puzzleOpen: false,
+    puzzleTakesItems: false,
 });

@@ -9,6 +9,7 @@ import { isDebug } from './game/debug';
 import { gameState } from './state/gameState';
 import { loadGame } from './state/SaveService';
 import { startScreen } from './game/levels';
+import { PUZZLES_WITH_ITEMS } from './puzzles/itemPuzzles';
 import PhaserGame from './PhaserGame.vue';
 import DebugPanel from './ui/DebugPanel.vue';
 import DialogBox from './ui/DialogBox.vue';
@@ -90,8 +91,12 @@ const onFsChange = () => { uiState.settings.fullscreen = isFullscreen(); };
 onMounted(async () => {
     offs.push(
         bus.on('cursor', ({ kind }) => { uiState.cursor = CURSORS[kind] ?? 'default'; }),
-        bus.on('puzzle:open', () => { uiState.puzzleOpen = true; uiState.cursor = 'default'; }),
-        bus.on('puzzle:close', () => { uiState.puzzleOpen = false; }),
+        bus.on('puzzle:open', ({ puzzleId }) => {
+            uiState.puzzleOpen = true;
+            uiState.puzzleTakesItems = PUZZLES_WITH_ITEMS.includes(puzzleId);
+            uiState.cursor = 'default';
+        }),
+        bus.on('puzzle:close', () => { uiState.puzzleOpen = false; uiState.puzzleTakesItems = false; }),
         bus.on('checkpoint', () => {
             uiState.checkpointVisible = true;
             if (checkpointTimer) clearTimeout(checkpointTimer);
@@ -120,11 +125,18 @@ onUnmounted(() => {
         <PhaserGame v-if="uiState.screen === 'menu' || uiState.screen === 'game'" />
         <div v-if="uiState.screen === 'loading'" class="msg">…</div>
         <div v-if="uiState.screen === 'error'" class="msg">Load error. Please reload the page.</div>
-        <div v-if="uiState.screen === 'menu' || uiState.screen === 'game'" class="stage" :style="stageStyle">
+        <!--
+            Phaser listens to mousedown/touchstart on window and treats clicks on DOM UI as clicks on the game.
+            Stopping propagation here keeps clicks on Vue UI (dialog, HUD, inventory, menus) away from the scene.
+        -->
+        <div
+            v-if="uiState.screen === 'menu' || uiState.screen === 'game'" class="stage" :style="stageStyle"
+            @mousedown.stop @touchstart.stop
+        >
             <template v-if="uiState.screen === 'game'">
                 <Hud @pause="pause(true)" />
-                <!-- Hidden on overlay screens that take no items (P-02 will opt in, M2). -->
-                <div v-show="!uiState.puzzleOpen" class="layer"><Inventory @inspect="inspectItem" /></div>
+                <!-- Hidden on overlay screens that take no items. -->
+                <div v-show="!uiState.puzzleOpen || uiState.puzzleTakesItems" class="layer"><Inventory @inspect="inspectItem" /></div>
                 <DialogBox ref="dialogBox" />
                 <DebugPanel v-if="debug" />
                 <PauseMenu v-if="uiState.paused" @resume="pause(false)" @to-menu="toMenu" />

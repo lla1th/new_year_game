@@ -1,5 +1,7 @@
 import { Scene, GameObjects } from 'phaser';
-import { GAME_HEIGHT, GAME_WIDTH, type PuzzleId, type SpeakerId } from '../data/types';
+import { bus } from '../../events';
+import { GAME_HEIGHT, GAME_WIDTH, type ItemId, type PuzzleId, type SpeakerId } from '../data/types';
+import type { Vec2 } from '../nav/geometry';
 import type { GameStateModel } from '../../state/GameStateModel';
 
 export const PANEL_W = 1200;
@@ -23,6 +25,12 @@ export abstract class OverlayScreen {
 
     /** Build the screen inside `container` (origin = panel centre, panel is PANEL_W×PANEL_H). */
     abstract create(container: GameObjects.Container): void;
+
+    /**
+     * Optional: an inventory item was dropped at game point `p` while this screen is open
+     * (only for screens listed in PUZZLES_WITH_ITEMS). Not handled → the item simply stays in its slot.
+     */
+    dropItem?(itemId: ItemId, p: Vec2): void;
 
     /** Closes the screen; openPuzzle → true. */
     solve(): void { this.finishFn?.(true); }
@@ -58,6 +66,7 @@ export interface OverlaySceneData {
 export class OverlayScene extends Scene {
     private data_: OverlaySceneData;
     private finished = false;
+    private offDrop: (() => void) | null = null;
 
     constructor() {
         super('OverlayScene');
@@ -87,6 +96,8 @@ export class OverlayScene extends Scene {
 
         screen.attach(this, services, solved => this.finish(solved));
         screen.create(container);
+        this.offDrop = bus.on('item:drop', ({ itemId, x, y }) => screen.dropItem?.(itemId, { x, y }));
+        this.events.once('shutdown', () => { this.offDrop?.(); this.offDrop = null; });
     }
 
     private finish(solved: boolean) {
