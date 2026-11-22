@@ -20,9 +20,16 @@ export interface ScriptContext {
 export class ScriptRunner {
     constructor(private readonly ctx: ScriptContext) {}
 
-    /** Runs steps one after another; setFlag/giveItem/removeItem/givePart call ctx.progress(). */
-    async run(steps: Step[]): Promise<void> {
-        for (const step of steps) await this.runStep(step);
+    /**
+     * Runs steps one after another; setFlag/giveItem/removeItem/givePart call ctx.progress().
+     * `alive` (optional) is checked before every step: once it returns false (scene stopped, level changed)
+     * the rest of the script is dropped.
+     */
+    async run(steps: Step[], alive: () => boolean = () => true): Promise<void> {
+        for (const step of steps) {
+            if (!alive()) return;
+            await this.runStep(step);
+        }
     }
 
     /** First script for `hotspot` whose when/unless conditions match the current flags. */

@@ -8,6 +8,7 @@ import { setPaused, startLevel, stopLevel } from './game/controller';
 import { isDebug } from './game/debug';
 import { gameState } from './state/gameState';
 import { loadGame } from './state/SaveService';
+import { startScreen } from './game/levels';
 import PhaserGame from './PhaserGame.vue';
 import DebugPanel from './ui/DebugPanel.vue';
 import DialogBox from './ui/DialogBox.vue';
@@ -53,7 +54,7 @@ function continueGame () {
     const save = loadGame();
     if (!save) { menuKey.value++; return; }
     gameState.loadFrom(save);   // an unfinished puzzle starts over: puzzle state is not saved
-    play(save.levelId, save.screenId);
+    play(save.levelId, startScreen(save.levelId, save.screenId));
 }
 
 function selectLevel (id: LevelId) {

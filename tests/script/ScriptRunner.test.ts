@@ -70,3 +70,15 @@ describe('ScriptRunner', () => {
     expect(runner.pickScript(list2, 'nothing')).toBeUndefined();
   });
 });
+
+describe('ScriptRunner abort', () => {
+  test('stops between steps once alive() turns false (scene stopped / level changed)', async () => {
+    const { ctx, log } = fakeCtx();
+    const runner = new ScriptRunner(ctx);
+    let alive = true;
+    ctx.say = async (s, k) => { log.push(`say:${s}:${k}`); alive = false; };
+    await runner.run([{ say: 'spitz', key: 'a' }, { setFlag: 'L01_SPITZ_FREED' }, { dialog: 'l01_intro' }], () => alive);
+    expect(log).toEqual(['say:spitz:a']);
+    expect(ctx.state.hasFlag('L01_SPITZ_FREED')).toBe(false);
+  });
+});

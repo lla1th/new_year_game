@@ -3,7 +3,7 @@ import { ensureTexture } from '../assets/placeholder';
 import { getGameData } from '../data/gameData';
 import type { Vec2 } from '../nav/geometry';
 import { OverlayScreen, registerScreen } from '../scenes/OverlayScene';
-import type { LevelScene } from '../scenes/LevelScene';
+import { characterName, type LevelScene } from '../scenes/LevelScene';
 import { registerAnim, registerCutscene, registerLevelVisual } from '../scenes/registry';
 
 const t = (key: string) => getGameData()?.texts.t(key) ?? key;
@@ -105,7 +105,7 @@ registerCutscene('l01_intro', async (scene, skipped) => {
         if (isSkipped) return;
         cap.setText(t('l01.cutscene.4'));
         scene.setFacing('dr');
-        const sp = scene.add.image(windowP.x, windowP.y, ensureTexture(scene, 'spitz_dr_idle', 120, 90, 'Шпиц')).setDepth(6000);
+        const sp = scene.add.image(windowP.x, windowP.y, ensureTexture(scene, 'spitz_dr_idle', 120, 90, characterName('spitz'))).setDepth(6000);
         objs.push(sp);
         await Promise.race([
             new Promise<void>(r => scene.tweens.add({ targets: sp, x: sofaP.x, y: sofaP.y, angle: 720, duration: 1600, ease: 'Quad.easeIn', onComplete: () => r() })),

@@ -217,7 +217,8 @@ export interface ScriptContext {
 }
 export class ScriptRunner {
   constructor(ctx: ScriptContext);
-  run(steps: Step[]): Promise<void>;               // шаги последовательно; setFlag/giveItem/removeItem/givePart вызывают ctx.progress()
+  run(steps: Step[], alive?: () => boolean): Promise<void>; // шаги последовательно; setFlag/giveItem/removeItem/givePart вызывают ctx.progress();
+                                                   // alive() проверяется перед каждым шагом — false (сцена остановлена, уровень сменился) обрывает скрипт
   pickScript(list: HotspotScript[], hotspot: string): HotspotScript | undefined;  // учитывает when/unless
 }
 ```

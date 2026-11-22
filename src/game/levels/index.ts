@@ -18,6 +18,11 @@ function toBeContinued(levelId: LevelId): LevelScript {
     };
 }
 
+/** Screen to start a level on from a save: an unknown (old or tampered) screen id falls back to the first screen. */
+export function startScreen(level: LevelId, screenId: string | null): string | undefined {
+    return screenId !== null && screenId in LEVELS[level].screens ? screenId : undefined;
+}
+
 export const LEVELS: Record<LevelId, LevelScript> = {
     L01,
     L02: toBeContinued('L02'),

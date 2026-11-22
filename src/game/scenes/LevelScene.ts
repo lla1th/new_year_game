@@ -98,6 +98,7 @@ export class LevelScene extends Scene
     private actionHotspot: HotspotDef | null = null;
     private screens = new Map<PuzzleId, OverlayScreen>();
     private skipCutscene: (() => void) | null = null;
+    private pendingTalk = new Set<() => void>();   // resolvers of say/dialog promises waiting for the UI
 
     constructor ()
     {
@@ -145,7 +146,7 @@ export class LevelScene extends Scene
     showSpitz (p: Vec2): GameObjects.Image
     {
         if (!this.spitz) {
-            ensureTexture(this, 'spitz_dr_idle', SPITZ_W, SPITZ_H, 'Шпиц');
+            ensureTexture(this, 'spitz_dr_idle', SPITZ_W, SPITZ_H, characterName('spitz'));
             this.spitz = this.add.image(p.x, p.y, 'spitz_dr_idle').setOrigin(0.5, 1);
         }
         this.spitz.setVisible(true).setPosition(p.x, p.y).setDepth(p.y);
@@ -194,6 +195,7 @@ export class LevelScene extends Scene
             this.busy = false;
             this.scriptPhase = false;
             this.hoverId = null;
+            this.actionHotspot = null;
 
             const mapKey = `map:${screenScript.map}`;
             await this.loadFiles(l => { if (!this.cache.json.exists(mapKey)) l.json(mapKey, screenScript.map); });
@@ -238,6 +240,9 @@ export class LevelScene extends Scene
         this.debugGfx = null;
         this.spitz = null;
         this.sprites = new Map();
+        this.skipCutscene = null;
+        this.actionHotspot = null;
+        this.pendingTalk = new Set();
     }
 
     create ()
@@ -259,6 +264,16 @@ export class LevelScene extends Scene
         );
         this.time.addEvent({ delay: 1000, loop: true, callback: () => this.onHintTick() });
         this.events.once('shutdown', () => {
+            // Drop everything that belongs to the stopped game: running scripts end at their next step,
+            // pending say/dialog listeners are removed so a later "say:done" cannot resume them.
+            this.levelGeneration++;
+            for (const release of [...this.pendingTalk]) release();
+            this.pendingTalk.clear();
+            this.talking = 0;
+            this.skipCutscene = null;
+            this.actionHotspot = null;
+            this.busy = false;
+            this.scriptPhase = false;
             this.cancelWalk();
             this.stopBob();
             for (const off of this.offBus) off();
@@ -312,7 +327,7 @@ export class LevelScene extends Scene
             this.sprites.set(s.name, this.add.image(s.pos.x, s.pos.y, key).setOrigin(0.5, 1).setDepth(s.depthY));
         }
         for (const dir of ['dr', 'ur'] as const) {
-            for (const pose of ['idle', 'use'] as const) ensureTexture(this, `ksyusha_${dir}_${pose}`, KSYUSHA_W, KSYUSHA_H, 'Ксюша');
+            for (const pose of ['idle', 'use'] as const) ensureTexture(this, `ksyusha_${dir}_${pose}`, KSYUSHA_W, KSYUSHA_H, characterName('ksyusha'));
         }
         const spawn = this.map.points.spawn ?? this.nav.nearestWalkable({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 }) ?? { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 };
         this.pos = { x: spawn.x, y: spawn.y };
@@ -484,7 +499,7 @@ export class LevelScene extends Scene
         const gen = this.levelGeneration;
         this.scriptPhase = true;
         try {
-            await this.runner.run(steps);
+            await this.runner.run(steps, () => gen === this.levelGeneration);
         } catch (e) {
             console.error('[LevelScene] script failed', e);
         } finally {
@@ -541,24 +556,32 @@ export class LevelScene extends Scene
 
     say (speaker: SpeakerId, key: string): Promise<void>
     {
-        this.talking++;
-        return new Promise(resolve => {
-            const off = bus.on('say:done', () => { off(); this.talking--; resolve(); });
-            bus.emit('say', { speaker, textKey: key });
-        });
+        return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key }));
     }
 
     dialog (dialogId: string): Promise<void>
     {
+        return this.talk(
+            done => bus.on('dialog:end', e => { if (e.dialogId === dialogId) done(); }),
+            () => bus.emit('dialog:start', { dialogId }),
+        );
+    }
+
+    /** Waits for the UI to finish a line/dialog; released early (resolved) when the scene stops. */
+    private talk (listen: (done: () => void) => () => void, start: () => void): Promise<void>
+    {
         this.talking++;
         return new Promise(resolve => {
-            const off = bus.on('dialog:end', e => {
-                if (e.dialogId !== dialogId) return;
+            let off: () => void = () => {};
+            const release = () => {
+                if (!this.pendingTalk.delete(release)) return;
                 off();
-                this.talking--;
+                this.talking = Math.max(0, this.talking - 1);
                 resolve();
-            });
-            bus.emit('dialog:start', { dialogId });
+            };
+            this.pendingTalk.add(release);
+            off = listen(release);
+            start();
         });
     }
 
@@ -809,6 +832,12 @@ export class LevelScene extends Scene
             for (const p of this.path) g.fillCircle(p.x, p.y, 5);
         }
     }
+}
+
+/** Placeholder label for a character: the name from characters.json (no Russian strings in code). */
+export function characterName (id: SpeakerId): string
+{
+    return getGameData()?.characters.names[id] ?? id;
 }
 
 function centroid (poly: readonly Vec2[]): Vec2
