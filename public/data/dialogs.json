@@ -38,5 +38,21 @@
       "speaker": "ksyusha",
       "key": "l02.dlg.nika.3"
     }
+  ],
+  "l04_lekha_intro": [
+    {
+      "speaker": "lekha",
+      "key": "l04.dlg.lekha.1"
+    },
+    {
+      "speaker": "lekha",
+      "key": "l04.dlg.lekha.2"
+    }
+  ],
+  "l04_lekha_done": [
+    {
+      "speaker": "lekha",
+      "key": "l04.dlg.lekha.3"
+    }
   ]
 }

@@ -4,3 +4,4 @@ import '../../puzzles/screens';
 import './L02.visual';
 import './L03.visual';
 import '../cutscenes/world1_2';
+import './L04.visual';

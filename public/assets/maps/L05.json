@@ -1,0 +1,293 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 5,
+ "nextobjectid": 10,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "img/world2/l05_bg.png"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "metal"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "L05"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_world2"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": false
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 100,
+     "y": 620,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 380
+      },
+      {
+       "x": 0,
+       "y": 380
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "ice_floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 520,
+     "y": 660,
+     "width": 880,
+     "height": 300,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 440
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 800
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "dr"
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "cat_shelf",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 760,
+     "y": 80,
+     "width": 400,
+     "height": 160,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 460
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 700
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "eye"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "fridge_portal",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1560,
+     "y": 220,
+     "width": 240,
+     "height": 400,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 1600
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 690
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "eye"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 5,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 240,
+     "y": 860,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 6,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 180,
+     "y": 900,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 7,
+     "name": "shelf_top",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 960,
+     "y": 250,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 8,
+     "name": "fridge_in",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1680,
+     "y": 420,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "sprites",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 9,
+     "name": "cat",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 960,
+     "y": 235,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 236
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "cat_w2_idle"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -617,15 +617,23 @@ export class LevelScene extends Scene
      * Zooms the camera to the hotspot being used (0.5 s) and opens the overlay screen on top.
      * Resolves true if the screen was solved, false if closed. Solving a real puzzle (P-xx) saves a checkpoint.
      */
-    async openPuzzle (puzzleId: PuzzleId): Promise<boolean>
+    /** The overlay screen instance of this level (created on demand; keeps its state until the level ends). */
+    ensureScreen (puzzleId: PuzzleId): OverlayScreen | null
     {
         let screen = this.screens.get(puzzleId);
         if (!screen) {
             const created = createScreen(puzzleId);
-            if (!created) { console.warn(`[LevelScene] no overlay screen "${puzzleId}"`); return false; }
+            if (!created) return null;
             screen = created;
             this.screens.set(puzzleId, screen);
         }
+        return screen;
+    }
+
+    async openPuzzle (puzzleId: PuzzleId): Promise<boolean>
+    {
+        const screen = this.ensureScreen(puzzleId);
+        if (!screen) { console.warn(`[LevelScene] no overlay screen "${puzzleId}"`); return false; }
         const cam = this.cameras.main;
         const h = this.actionHotspot;
         if (h) {
@@ -638,7 +646,7 @@ export class LevelScene extends Scene
         bus.emit('puzzle:open', { puzzleId });
         const solved = await new Promise<boolean>(resolve => {
             const data: OverlaySceneData = {
-                screen: screen!,
+                screen,
                 services: {
                     state: gameState,
                     progress: () => { this.hints?.notifyProgress(); this.refreshVisuals(); },
