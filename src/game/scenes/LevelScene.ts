@@ -250,6 +250,9 @@ export class LevelScene extends Scene
     init (data: LevelSceneData)
     {
         this.pendingStart = data ?? {};
+        // A fresh start (new game, Continue, level select) begins with fresh puzzles; goto inside a level keeps them.
+        this.screens = new Map();
+        this.script = null;
         this.path = [];
         this.walk = null;
         this.bobTweens = [];

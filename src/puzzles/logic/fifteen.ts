@@ -119,6 +119,14 @@ export class HelpTimer {
         this.start = this.now();
     }
 
+    /**
+     * The screen was opened again: an offer that was never answered (closed while «Помочь?» was shown,
+     * or while the auto-solve was playing) comes back right away.
+     */
+    reopen(): void {
+        if (this.waiting) this.offerNow();
+    }
+
     /** Force an offer now (hint step 3). */
     offerNow(): void {
         this.start = this.now() - this.delayMs;

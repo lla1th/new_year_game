@@ -63,3 +63,12 @@ describe('P-08 fifteen (3×3)', () => {
     t = 3000; expect(h.shouldOffer()).toBe(true);
   });
 });
+
+test('an offer interrupted by closing the screen comes back on reopening', () => {
+  let t = 0; const h = new HelpTimer(() => t);
+  t = 300_000; expect(h.shouldOffer()).toBe(true);     // «Помочь?» shown, then the screen is closed without an answer
+  t = 400_000; h.reopen();
+  expect(h.shouldOffer()).toBe(true);                   // offered again at once
+  h.decline(); h.reopen();                              // an answered offer is not repeated early
+  t = 400_001; expect(h.shouldOffer()).toBe(false);
+});

@@ -50,6 +50,7 @@ export class FifteenScreen extends OverlayScreen {
         this.helpUi = [];
         this.ensurePicture();
         if (!this.timer) this.timer = new HelpTimer(wallClock, helpDelay());   // counts from the first opening
+        else this.timer.reopen();   // an unanswered / interrupted offer comes back
         container.add(s.add.rectangle(BOARD_X, BOARD_Y, BOARD + 16, BOARD + 16, 0x5d4037).setStrokeStyle(6, 0xffd54f));
         this.tiles.clear();
         this.board.forEach((v, i) => { if (v !== 0) this.addTile(v, i); });
@@ -162,6 +163,7 @@ export class FifteenScreen extends OverlayScreen {
     /** «Да»: the solution is played move by move, 250 ms per move; player clicks are off meanwhile. */
     private autoSolve(): void {
         if (this.solved) return;
+        // the timer stays 'waiting' during the auto-solve: if the screen is closed midway, reopening offers help again
         this.auto = true;
         const moves = solveBoard(this.board);
         const step = (k: number) => {

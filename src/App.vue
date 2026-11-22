@@ -85,7 +85,7 @@ function creditsDone () {
 }
 
 function pause (on: boolean) {
-    if (uiState.screen !== 'game') return;
+    if (uiState.screen !== 'game' || uiState.ending) return;   // no pause over the card / credits
     uiState.paused = on;
     setPaused(on);
 }
