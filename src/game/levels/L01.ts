@@ -6,7 +6,7 @@ export const L01: LevelScript = {
     firstScreen: 'apartment',
     goals: [
         { flag: 'L01_SPITZ_FREED', hintKeys: ['hint.P-01.1', 'hint.P-01.2', 'hint.P-01.3'] },
-        { flag: 'L01_PORTAL_OPEN', hintKeys: ['hint.l01.portal', 'hint.l01.portal', 'hint.l01.portal'] },
+        { flag: 'L01_PORTAL_ENTERED', hintKeys: ['hint.l01.portal', 'hint.l01.portal', 'hint.l01.portal'] },
     ],
     screens: {
         apartment: {
@@ -43,7 +43,7 @@ export const L01: LevelScript = {
                     hotspot: 'terrarium',
                     when: 'L01_PORTAL_OPEN',
                     onInspect: [{ say: 'ksyusha', key: 'l01.terrarium.portal.inspect' }],
-                    onUse: [{ anim: 'portal' }, { goto: { level: 'L02' } }],
+                    onUse: [{ setFlag: 'L01_PORTAL_ENTERED' }, { anim: 'portal' }, { goto: { level: 'L02' } }],
                 },
             ],
         },

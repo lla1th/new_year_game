@@ -112,6 +112,7 @@ describe('L01 / P-01 scenarios', () => {
     log.length = 0;
     await click('terrarium');
     expect(log).toEqual(['anim:portal', 'goto:L02:']);
+    expect(state.hasFlag('L01_PORTAL_ENTERED')).toBe(true);
   });
 
   test('after freeing, the sofa only has its new inspect text', async () => {
@@ -131,6 +132,18 @@ describe('L01 / P-01 scenarios', () => {
     await inspect('wall_clock');
     expect(log).toEqual(['say:ksyusha:l01.wall_clock.inspect']);
   });
+});
+
+test('portal hint is the current goal after the dialog, until the portal is entered', async () => {
+  const { HintSystem } = await import('../../src/game/systems/HintSystem');
+  const h = new HintSystem(L01.goals, f => state.hasFlag(f), () => 0);
+  state.setFlag('L01_SPITZ_FREED');
+  state.setFlag('L01_PORTAL_OPEN');
+  h.notifyProgress();
+  expect(h.nextHint()).toBe('hint.l01.portal');
+  await click('terrarium');
+  h.notifyProgress();
+  expect(h.currentGoal()).toBeNull();
 });
 
 describe('L01 data consistency', () => {
