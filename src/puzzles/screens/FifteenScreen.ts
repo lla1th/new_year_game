@@ -1,6 +1,7 @@
 import type { GameObjects } from 'phaser';
 import { getGameData } from '../../game/data/gameData';
 import { isDebug } from '../../game/debug';
+import { isPlaceholder } from '../../game/assets/placeholder';
 import { characterName } from '../../game/scenes/LevelScene';
 import { OverlayScreen } from '../../game/scenes/OverlayScene';
 import { HELP_DELAY_MS, HelpTimer, canMove, isSolved as boardSolved, moveTile, shuffleBoard, solveBoard, type Board } from '../logic/fifteen';
@@ -12,6 +13,7 @@ const BOARD_Y = -30;
 const SLIDE_MS = 120;
 const AUTO_MS = 250;
 const PICTURE = 'p08_picture';
+const REAL_PICTURE = 'fin_p08_picture';
 
 /** Real time: the overlay scene (and its clock) is recreated on every opening. */
 const wallClock = () => performance.now();
@@ -68,6 +70,17 @@ export class FifteenScreen extends OverlayScreen {
     private ensurePicture(): void {
         const s = this.scene;
         if (s.textures.exists(PICTURE)) return;
+        // The real picture (900×900, ASSET_REQUIREMENTS §2) is cut into 9 frames; otherwise a placeholder is drawn.
+        if (s.textures.exists(REAL_PICTURE) && !isPlaceholder(REAL_PICTURE)) {
+            const src = s.textures.get(REAL_PICTURE).getSourceImage() as HTMLImageElement;
+            const tex = s.textures.createCanvas(PICTURE, TILE * 3, TILE * 3);
+            if (tex) {
+                tex.context.drawImage(src, 0, 0, TILE * 3, TILE * 3);
+                for (let v = 1; v <= 9; v++) tex.add(String(v), 0, ((v - 1) % 3) * TILE, Math.floor((v - 1) / 3) * TILE, TILE, TILE);
+                tex.refresh();
+                return;
+            }
+        }
         const size = TILE * 3;
         const tex = s.textures.createCanvas(PICTURE, size, size);
         if (!tex) return;

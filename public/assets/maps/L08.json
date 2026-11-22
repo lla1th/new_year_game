@@ -17,7 +17,7 @@
   {
    "name": "background",
    "type": "string",
-   "value": "img/finale/l08_bg.png"
+   "value": "fin_square_bg"
   },
   {
    "name": "footsteps",

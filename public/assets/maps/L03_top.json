@@ -17,7 +17,7 @@
   {
    "name": "background",
    "type": "string",
-   "value": "img/world1/l03_top_bg.png"
+   "value": "w1_top_bg"
   },
   {
    "name": "footsteps",

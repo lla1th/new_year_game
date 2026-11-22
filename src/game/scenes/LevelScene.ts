@@ -1,7 +1,8 @@
 import { Scene, type GameObjects, type Input, type Tweens } from 'phaser';
 import { bus } from '../../events';
-import { GAME_HEIGHT, GAME_WIDTH, type CursorKind, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
-import { colorFromKey, ensureTexture } from '../assets/placeholder';
+import { GAME_HEIGHT, GAME_WIDTH, LEVEL_STYLE, type CursorKind, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
+import { colorFromKey, ensureTexture, isPlaceholder } from '../assets/placeholder';
+import { loadLevelAssets } from '../assets/loadLevelAssets';
 import { getGameData } from '../data/gameData';
 import { isDebug } from '../debug';
 import { parseTiledMap, type HotspotDef, type LevelMap } from '../map/parseTiledMap';
@@ -54,6 +55,11 @@ const ZOOM_LEVEL = 1.6;
 const CAPTION_DEPTH = 950_000;
 const DEBUG_DEPTH = 1_000_000;
 
+type Pose = 'idle' | 'use' | 'talk' | 'hihik';
+const POSES: readonly Pose[] = ['idle', 'use', 'talk', 'hihik'];
+/** World 1 sprites are drawn small (≈48–56 px high) and shown ×4 with sharp pixels. */
+const PIXEL_SCALE = 4;
+
 export class LevelScene extends Scene
 {
     static resolveLevel: LevelResolver = () => undefined;
@@ -77,7 +83,7 @@ export class LevelScene extends Scene
     spitz: GameObjects.Image | null = null;
     private pos: Vec2 = { x: 0, y: 0 };
     private facing: Facing = 'dr';
-    private pose: 'idle' | 'use' = 'idle';
+    private pose: Pose = 'idle';
     private trail: Vec2[] = [];
 
     // walking
@@ -150,8 +156,9 @@ export class LevelScene extends Scene
     showSpitz (p: Vec2): GameObjects.Image
     {
         if (!this.spitz) {
-            ensureTexture(this, 'spitz_dr_idle', SPITZ_W, SPITZ_H, characterName('spitz'));
-            this.spitz = this.add.image(p.x, p.y, 'spitz_dr_idle').setOrigin(0.5, 1);
+            const key = `spitz_${this.charStyle()}_idle`;
+            ensureTexture(this, key, SPITZ_W, SPITZ_H, characterName('spitz'));
+            this.spitz = this.add.image(p.x, p.y, key).setOrigin(0.5, 1).setScale(this.spriteScale(key));
         }
         this.spitz.setVisible(true).setPosition(p.x, p.y).setDepth(p.y);
         this.trail = [{ x: p.x, y: p.y }, { ...this.pos }];
@@ -206,8 +213,9 @@ export class LevelScene extends Scene
             await this.loadFiles(l => { if (!this.cache.json.exists(mapKey)) l.json(mapKey, screenScript.map); });
             this.map = parseTiledMap(this.cache.json.get(mapKey));
             this.nav = new NavGrid(this.map.walkable, this.map.blockers, 16, GAME_WIDTH, GAME_HEIGHT);
-            const bgKey = `bg:${this.map.background}`;
-            await this.loadFiles(l => { if (!this.textures.exists(bgKey)) l.image(bgKey, `assets/${this.map.background}`); });
+            const bgKey = this.map.background;   // a key of public/data/assets.json
+            const manifest = getGameData()?.manifest;
+            if (manifest) await loadLevelAssets(this, script.levelId, manifest);
 
             this.script = script;
             this.screenId = screenId;
@@ -340,20 +348,21 @@ export class LevelScene extends Scene
     {
         const bgMissing = !this.textures.exists(bgKey);
         ensureTexture(this, bgKey, GAME_WIDTH, GAME_HEIGHT, this.map.background);
-        this.add.image(0, 0, bgKey).setOrigin(0, 0).setDepth(-1);
+        // world 1 backgrounds are 480×270 and are shown ×4 (NEAREST filtering set by the loader)
+        this.add.image(0, 0, bgKey).setOrigin(0, 0).setDepth(-1).setDisplaySize(GAME_WIDTH, GAME_HEIGHT);
         if (bgMissing) this.drawPlaceholderObjects();
         for (const s of this.map.sprites) {
             const key = ensureTexture(this, s.texture, SPRITE_PLACEHOLDER_W, SPRITE_PLACEHOLDER_H, s.name);
-            this.sprites.set(s.name, this.add.image(s.pos.x, s.pos.y, key).setOrigin(0.5, 1).setDepth(s.depthY));
+            this.sprites.set(s.name, this.add.image(s.pos.x, s.pos.y, key).setOrigin(0.5, 1).setDepth(s.depthY).setScale(this.spriteScale(key)));
         }
-        for (const dir of ['dr', 'ur'] as const) {
-            for (const pose of ['idle', 'use'] as const) ensureTexture(this, `ksyusha_${dir}_${pose}`, KSYUSHA_W, KSYUSHA_H, characterName('ksyusha'));
+        for (const up of [false, true]) {
+            for (const pose of POSES) ensureTexture(this, this.ksyushaKey(up, pose), KSYUSHA_W, KSYUSHA_H, characterName('ksyusha'));
         }
         const spawn = this.map.points.spawn ?? this.nav.nearestWalkable({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 }) ?? { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 };
         this.pos = { x: spawn.x, y: spawn.y };
         this.trail = [{ ...this.pos }];
         this.pose = 'idle';
-        this.ksyusha = this.add.image(this.pos.x, this.pos.y, 'ksyusha_dr_idle').setOrigin(0.5, 1);
+        this.ksyusha = this.add.image(this.pos.x, this.pos.y, this.ksyushaKey(false, 'idle')).setOrigin(0.5, 1);
         this.setFacing('dr');
         this.outlineGfx = this.add.graphics().setDepth(OUTLINE_DEPTH);
         this.debugGfx = isDebug() ? this.add.graphics().setDepth(DEBUG_DEPTH) : null;
@@ -552,7 +561,7 @@ export class LevelScene extends Scene
         }
     }
 
-    private showPose (pose: 'idle' | 'use', ms: number): Promise<void>
+    private showPose (pose: Pose, ms: number): Promise<void>
     {
         this.pose = pose;
         this.applyTexture();
@@ -603,7 +612,14 @@ export class LevelScene extends Scene
 
     say (speaker: SpeakerId, key: string): Promise<void>
     {
-        return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key }));
+        // Ksyusha speaks in the talk pose; a «Хихик» line uses the hihik pose.
+        const own = speaker === 'ksyusha' && !!this.ksyusha && this.pose === 'idle';
+        if (own) {
+            this.pose = isHihik(getGameData()?.texts.t(key) ?? '') ? 'hihik' : 'talk';
+            this.applyTexture();
+        }
+        return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key }))
+            .then(() => { if (own && this.pose !== 'idle') { this.pose = 'idle'; this.applyTexture(); } });
     }
 
     dialog (dialogId: string): Promise<void>
@@ -674,6 +690,7 @@ export class LevelScene extends Scene
                     sfx: name => { if (isDebug()) console.debug(`[sfx] ${name}`); },
                 },
                 onFinish: resolve,
+                bgKey: CLOSEUP_BG[puzzleId],
             };
             this.scene.launch('OverlayScene', data);
             this.scene.bringToTop('OverlayScene');
@@ -800,8 +817,32 @@ export class LevelScene extends Scene
     {
         if (!this.ksyusha) return;
         const up = this.facing === 'ur' || this.facing === 'ul';
-        this.ksyusha.setTexture(`ksyusha_${up ? 'ur' : 'dr'}_${this.pose}`);
+        const key = this.ksyushaKey(up, this.pose);
+        this.ksyusha.setTexture(key).setScale(this.spriteScale(key));
         this.ksyusha.setFlipX(this.facing === 'dl' || this.facing === 'ul');   // left poses mirror the right ones
+    }
+
+    /** Art style of the characters on this screen: w1/w2/w3; the finale uses world 3, the post-credits scene world 1. */
+    charStyle (): 'w1' | 'w2' | 'w3'
+    {
+        if (this.screenId === 'post') return 'w1';
+        const s = this.script ? LEVEL_STYLE[this.script.levelId] : 'w1';
+        return s === 'fin' ? 'w3' : s;
+    }
+
+    /** Pose textures (ASSET_REQUIREMENTS §1): dr_idle, ur_idle, dr_use, dr_talk, dr_hihik; left = mirrored. */
+    private ksyushaKey (up: boolean, pose: Pose): string
+    {
+        const dir = pose === 'idle' && up ? 'ur' : 'dr';
+        return `ksyusha_${this.charStyle()}_${dir}_${pose}`;
+    }
+
+    /** Real world-1 pixel sprites are scaled ×4; placeholders and other worlds stay 1:1. */
+    private spriteScale (key: string): number
+    {
+        if (isPlaceholder(key)) return 1;
+        const e = getGameData()?.manifest.entries.find(x => x.key === key);
+        return e?.pixelArt ? PIXEL_SCALE : 1;
     }
 
     private syncSprite ()
@@ -901,6 +942,19 @@ export function characterName (id: SpeakerId): string
 {
     return getGameData()?.characters.names[id] ?? id;
 }
+
+/** «Хихик» lines get the hihik pose and the sparkle sound. */
+export function isHihik (text: string): boolean
+{
+    return /хихик/i.test(text);
+}
+
+/** Background picture of each close-up screen (ASSET_REQUIREMENTS §2), drawn under the screen when it exists. */
+const CLOSEUP_BG: Partial<Record<PuzzleId, string>> = {
+    fridge: 'w1_fridge_close', 'P-02': 'w1_garland_close', fresco: 'w1_fresco_close', 'P-03': 'w1_bells_close',
+    'P-04': 'w2_pipes_close', 'P-05': 'w2_ice_close', 'P-06': 'w3_page_close', drawing: 'w3_drawing_close',
+    clock: 'fin_clock_close', 'P-08': 'fin_box_close',
+};
 
 function centroid (poly: readonly Vec2[]): Vec2
 {

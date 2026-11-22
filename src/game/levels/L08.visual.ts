@@ -29,7 +29,7 @@ registerCutscene('midnight', async (scene, skipped) => {
     const sky = scene.map.points.sky ?? { x: 960, y: 200 };
     const catSpot = scene.map.points.cat_spot ?? { x: 1500, y: 820 };
     try {
-        const cat = scene.add.image(catSpot.x, catSpot.y, ensureTexture(scene, 'cat_fin_idle', 120, 90, characterName('cat'))).setOrigin(0.5, 1).setDepth(catSpot.y);
+        const cat = scene.add.image(catSpot.x, catSpot.y, ensureTexture(scene, 'cat_fin_happy_medal', 120, 90, characterName('cat'))).setOrigin(0.5, 1).setDepth(catSpot.y);
         objs.push(cat);
         if (scene.spitz) scene.tweens.add({ targets: scene.spitz, x: catSpot.x - 110, y: catSpot.y, duration: 800 });
         const strike = scene.add.text(sky.x, sky.y, '', { fontFamily: 'Impact, sans-serif', fontSize: '96px', color: '#ffd54f', stroke: '#3e2723', strokeThickness: 10 }).setOrigin(0.5).setDepth(950_000);

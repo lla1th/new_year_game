@@ -15,7 +15,7 @@ class FridgeScreen extends OverlayScreen {
     create(container: GameObjects.Container): void {
         const s = this.scene;
         const state = this.services.state;
-        container.add(s.add.image(0, 0, ensureTexture(s, 'l01_fridge_closeup', 1000, 700, 'fridge')));
+        container.add(s.add.image(0, 0, ensureTexture(s, 'w1_fridge_close', 1000, 700, 'fridge')));
         const available = !state.hasItem('ITEM_SAUSAGE') && !state.hasFlag('L01_SPITZ_FREED');
         if (!available) return;   // empty shelf
         const key = ensureTexture(s, 'l01_sausage', 260, 110, t('item.ITEM_SAUSAGE.name'));
@@ -105,7 +105,7 @@ registerCutscene('l01_intro', async (scene, skipped) => {
         if (isSkipped) return;
         cap.setText(t('l01.cutscene.4'));
         scene.setFacing('dr');
-        const sp = scene.add.image(windowP.x, windowP.y, ensureTexture(scene, 'spitz_dr_idle', 120, 90, characterName('spitz'))).setDepth(6000);
+        const sp = scene.add.image(windowP.x, windowP.y, ensureTexture(scene, 'spitz_w1_idle', 120, 90, characterName('spitz'))).setDepth(6000);
         objs.push(sp);
         await Promise.race([
             new Promise<void>(r => scene.tweens.add({ targets: sp, x: sofaP.x, y: sofaP.y, angle: 720, duration: 1600, ease: 'Quad.easeIn', onComplete: () => r() })),

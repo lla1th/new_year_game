@@ -31,8 +31,16 @@ export function colorFromKey(key: string): number {
  * Returns `key`. If no texture with this key is in the cache, first creates a placeholder:
  * a w×h rectangle coloured from the key with `label` written on it.
  */
+const placeholders = new Set<string>();
+
+/** True if `key` is a placeholder drawn by ensureTexture (no real picture was loaded). */
+export function isPlaceholder(key: string): boolean {
+    return placeholders.has(key);
+}
+
 export function ensureTexture(scene: Scene, key: string, w: number, h: number, label: string): string {
     if (scene.textures.exists(key)) return key;
+    placeholders.add(key);
     const tex = scene.textures.createCanvas(key, w, h);
     if (!tex) return key;
     const ctx = tex.context;

@@ -3,6 +3,7 @@ import { bus } from '../../events';
 import { GAME_HEIGHT, GAME_WIDTH, type ItemId, type PartId, type PuzzleId, type SpeakerId } from '../data/types';
 import type { Vec2 } from '../nav/geometry';
 import { closeResult } from './overlayClose';
+import { isPlaceholder } from '../assets/placeholder';
 import type { GameStateModel } from '../../state/GameStateModel';
 
 export const PANEL_W = 1200;
@@ -68,6 +69,8 @@ export interface OverlaySceneData {
     screen: OverlayScreen;
     services: OverlayServices;
     onFinish: (solved: boolean) => void;
+    /** Close-up background picture (manifest key); drawn only if the file was loaded. */
+    bgKey?: string;
 }
 
 /** Runs on top of LevelScene: dimmed background, panel, close button, and the screen itself. */
@@ -94,6 +97,8 @@ export class OverlayScene extends Scene {
         const cy = GAME_HEIGHT / 2 - 40;
         // The panel swallows clicks so they do not reach the background.
         this.add.rectangle(cx, cy, PANEL_W, PANEL_H, 0x1d2240, 1).setStrokeStyle(6, 0xf3e3b5).setInteractive();
+        const bg = this.data_.bgKey;
+        if (bg && this.textures.exists(bg) && !isPlaceholder(bg)) this.add.image(cx, cy, bg).setDisplaySize(PANEL_W - 12, PANEL_H - 12);
         const container = this.add.container(cx, cy);
 
         const close = this.add.text(cx + PANEL_W / 2 - 20, cy - PANEL_H / 2 + 20, '✕', {

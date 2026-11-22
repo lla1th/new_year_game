@@ -65,7 +65,7 @@ export function loadLevelAssets(scene: Phaser.Scene, level: LevelId): Promise<{ 
 // ошибка загрузки файла → ключ в missing + console.warn; далее везде ensureTexture(key)
 ```
 
-- [ ] **Step 1: Тесты**
+- [x] **Step 1: Тесты**
 
 ```ts
 const m = parseManifest({ entries: [
@@ -76,9 +76,9 @@ expect(assetsForLevel(m,'L04').map(e => e.key)).toEqual(['ui_slot']);
 expect(() => parseManifest({ entries: [{ key: 1 }] })).toThrow();
 ```
 
-- [ ] **Step 2–4:** FAIL → реализовать (`loadLevelAssets` — сверить с Context7 события ошибок загрузчика Phaser 4) → PASS.
-- [ ] **Step 5: Заполнить манифест** всеми ключами из `ASSET_REQUIREMENTS.md` (пути по соглашению об именах оттуда же). Пока файлов нет — игра на заглушках, как раньше.
-- [ ] **Step 6: Commit** — `feat: добавить манифест ассетов с фолбэком на заглушки`
+- [x] **Step 2–4:** FAIL → реализовать (`loadLevelAssets` — сверить с Context7 события ошибок загрузчика Phaser 4) → PASS.
+- [x] **Step 5: Заполнить манифест** всеми ключами из `ASSET_REQUIREMENTS.md` (пути по соглашению об именах оттуда же). Пока файлов нет — игра на заглушках, как раньше.
+- [x] **Step 6: Commit** — `feat: добавить манифест ассетов с фолбэком на заглушки`
 
 ---
 
