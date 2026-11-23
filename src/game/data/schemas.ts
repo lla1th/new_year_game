@@ -19,3 +19,9 @@ export interface TalkTopic {
 }
 export interface TalkDef { speaker: SpeakerId; topics: TalkTopic[] }
 export type TalksFile = Record<string, TalkDef>;
+
+/** public/data/gallery.json — тир S-02b (поля автора). */
+export interface GalleryFile {
+    rules: { shots: number; points: { red: number; gold: number; black: number }; fallbackTop: number };
+    board: { name: string | null; points: number | null }[];
+}

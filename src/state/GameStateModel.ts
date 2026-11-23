@@ -29,6 +29,9 @@ export class GameStateModel {
         if (f === 'GAME_COMPLETED') this.completed = true;   // the level select opens after the game is completed
     }
 
+    /** Для временных состояний вроде «насос полон» (флаг снимается). */
+    clearFlag(f: FlagId): void { delete this.flags[f]; }
+
     hasItem(i: ItemId): boolean { return this.inventory.includes(i); }
 
     /** false if the inventory is full or the item is already there. */

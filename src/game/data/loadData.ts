@@ -1,8 +1,8 @@
 import { TextBank } from './TextBank';
-import type { CharactersFile, DialogsFile, ItemsFile, TalksFile } from './schemas';
+import type { CharactersFile, DialogsFile, GalleryFile, ItemsFile, TalksFile } from './schemas';
 import { parseManifest, type Manifest } from '../assets/manifest';
 
-export interface GameData { texts: TextBank; items: ItemsFile; characters: CharactersFile; dialogs: DialogsFile; talks: TalksFile; manifest: Manifest }
+export interface GameData { texts: TextBank; items: ItemsFile; characters: CharactersFile; dialogs: DialogsFile; talks: TalksFile; gallery: GalleryFile; manifest: Manifest }
 
 async function fetchJson<T>(path: string): Promise<T> {
     const url = `${import.meta.env.BASE_URL}data/${path}`;
@@ -13,12 +13,13 @@ async function fetchJson<T>(path: string): Promise<T> {
 
 /** Loads texts and data files from public/data (respects Vite's base URL). */
 export async function loadData(): Promise<GameData> {
-    const [ru, items, characters, dialogs, talks, assets] = await Promise.all([
+    const [ru, items, characters, dialogs, talks, gallery, assets] = await Promise.all([
         fetchJson<Record<string, string>>('texts/ru.json'),
         fetchJson<ItemsFile>('items.json'),
         fetchJson<CharactersFile>('characters.json'),
         fetchJson<DialogsFile>('dialogs.json'),
         fetchJson<TalksFile>('talks.json'),
+        fetchJson<GalleryFile>('gallery.json'),
         fetchJson<unknown>('assets.json').catch((e: unknown) => { console.warn('[assets] no manifest, placeholders only', e); return { entries: [] }; }),
     ]);
     let manifest: Manifest = { entries: [] };
@@ -27,5 +28,5 @@ export async function loadData(): Promise<GameData> {
     } catch (e) {
         console.warn('[assets] broken manifest, placeholders only', e);   // the game still runs on placeholders
     }
-    return { texts: new TextBank(ru, characters.names), items, characters, dialogs, talks, manifest };
+    return { texts: new TextBank(ru, characters.names), items, characters, dialogs, talks, gallery, manifest };
 }

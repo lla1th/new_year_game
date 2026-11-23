@@ -1,8 +1,10 @@
 // Registers the puzzle screens (P-02…) as overlay screens.
 import { registerScreen } from '../../game/scenes/OverlayScene';
-import { GarlandScreen } from './GarlandScreen';
+import { GeneratorScreen } from './GeneratorScreen';
+import { GalleryScreen } from './GalleryScreen';
 
-registerScreen('P-02', () => new GarlandScreen());
+registerScreen('P-02', () => new GeneratorScreen());
+registerScreen('S-02b', () => new GalleryScreen());
 import { BellsScreen } from './BellsScreen';
 import { FrescoScreen } from './FrescoScreen';
 

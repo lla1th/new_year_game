@@ -38,6 +38,9 @@ export abstract class OverlayScreen {
     /** Optional: a Clock part was dropped from the HUD indicator at game point `p` (L08). */
     dropPart?(partId: PartId, p: Vec2): void;
 
+    /** Optional: called once when the screen is closed (`solved` = the result passed to openPuzzle). */
+    onClosed?(solved: boolean): void;
+
     /** Closes the screen; openPuzzle → true. */
     solve(): void { this.finishFn?.(true); }
 
@@ -121,6 +124,7 @@ export class OverlayScene extends Scene {
         this.data_.screen.attach(this.data_.screen.scene, this.data_.services, null);
         const cb = this.data_.onFinish;
         const result = closeResult(solved, this.data_.screen);   // closing during the success animation still counts
+        this.data_.screen.onClosed?.(result);
         this.scene.stop();
         cb(result);
     }
