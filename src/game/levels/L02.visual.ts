@@ -1,30 +1,23 @@
-import type { GameObjects } from 'phaser';
-import { ensureTexture } from '../assets/placeholder';
-import type { Vec2 } from '../nav/geometry';
-import { characterName, type LevelScene } from '../scenes/LevelScene';
-import { registerAnim, registerCutscene, registerHintResolver, registerLevelVisual } from '../scenes/registry';
+import { registerAnim, registerLevelVisual } from '../scenes/registry';
 
-const point = (scene: LevelScene, name: string, fallback: Vec2): Vec2 => scene.map.points[name] ?? fallback;
-
+/** Sprites of the fair follow the flags (placeholders now; real pictures need no code changes). */
 registerLevelVisual('L02', scene => {
     const st = scene.registryState();
-    scene.getSprite('bulb_green')?.setVisible(!st.hasFlag('L02_BULB_GREEN_TAKEN'));
-    scene.getSprite('snowman_nose')?.setVisible(!st.hasFlag('L02_SNOWMAN_SAD'));
-    scene.getSprite('snowman_mandarin')?.setVisible(st.hasFlag('L02_SNOWMAN_HAPPY'));
-    scene.getSprite('bulb_blue')?.setVisible(st.hasFlag('L02_CAROUSEL_SPUN') && !st.hasFlag('L02_BULB_BLUE_TAKEN'));
-    scene.getSprite('nika_ice')?.setVisible(!st.hasFlag('L02_GARLAND_DONE'));
-    scene.getSprite('gate_bars')?.setVisible(!st.hasFlag('L02_GATE_OPEN'));
-});
-
-/** Hint step 2 names only the places of bulbs that are not found yet (P-02). */
-registerHintResolver('L02', (key, scene) => {
-    if (key !== 'hint.P-02.2') return null;
-    const st = scene.registryState();
-    const missing: string[] = [];
-    if (!st.hasFlag('L02_BULB_GREEN_TAKEN')) missing.push('hint.P-02.2.green');
-    if (!st.hasFlag('L02_SNOWMAN_SAD')) missing.push('hint.P-02.2.gold');
-    if (!st.hasFlag('L02_BULB_BLUE_TAKEN')) missing.push('hint.P-02.2.blue');
-    return [...missing, 'hint.P-02.2'];
+    const show = (name: string, visible: boolean) => scene.getSprite(name)?.setVisible(visible);
+    const alive = st.hasFlag('L02_FAIR_ALIVE');
+    show('gate_bars', !st.hasFlag('L02_GATE_OPEN'));
+    show('vendor_ice', !alive);
+    show('lantern_bulb', !st.hasFlag('L02_BULB_RED_TAKEN'));
+    show('booth_key', !st.hasFlag('L02_SHED_KEY_TAKEN'));
+    show('frozen_walkers', !alive);
+    show('walkers', alive);
+    show('tent_ice', !alive);
+    show('nika_ice', !alive);
+    show('snowman_nose', !st.hasFlag('L02_SNOWMAN_SAD'));
+    show('snowman_mandarin', st.hasFlag('L02_SNOWMAN_HAPPY'));
+    show('bulb_blue', st.hasFlag('L02_CAROUSEL_SPUN') && !st.hasFlag('L02_BULB_BLUE_TAKEN'));
+    show('pump_hose', !st.hasFlag('L02_PUMP_TAKEN'));
+    show('cat', !st.hasFlag('L02_CAT_SCENE_DONE'));
 });
 
 registerAnim('carousel_spin', scene => new Promise<void>(resolve => {
@@ -32,32 +25,21 @@ registerAnim('carousel_spin', scene => new Promise<void>(resolve => {
     scene.time.delayedCall(600, () => resolve());
 }));
 
-registerAnim('nika_thaw', scene => new Promise<void>(resolve => {
-    const ice = scene.getSprite('nika_ice');
-    if (!ice) { resolve(); return; }
-    scene.tweens.add({ targets: ice, alpha: 0, duration: 900, onComplete: () => { ice.setVisible(false).setAlpha(1); resolve(); } });
+/** The monkey climbs down for the foil and back up (0.6 s). */
+registerAnim('monkey_swap', scene => new Promise<void>(resolve => {
+    const monkey = scene.getSprite('monkey');
+    if (!monkey) { resolve(); return; }
+    scene.tweens.add({ targets: monkey, y: monkey.y + 140, duration: 300, yoyo: true, onComplete: () => resolve() });
 }));
 
-/** «Дразнилка»: the cat with the Spring on the stall roof, a taunt, a jump over the gate. */
-registerCutscene('l02_tease', async (scene, skipped) => {
-    let isSkipped = false;
-    void skipped.then(() => { isSkipped = true; });
-    const roof = point(scene, 'cat_roof', { x: 960, y: 290 });
-    const gate = point(scene, 'cat_gate', { x: 530, y: 150 });
-    const cat = scene.add.image(roof.x, roof.y, ensureTexture(scene, 'cat_w1_idle', 120, 90, characterName('cat'))).setDepth(5000);
-    const objs: GameObjects.GameObject[] = [cat];
-    try {
-        await Promise.race([new Promise<void>(r => scene.tweens.add({ targets: cat, alpha: { from: 0, to: 1 }, duration: 400, onComplete: () => r() })), skipped]);
-        if (isSkipped) return;
-        await Promise.race([scene.say('cat', 'l02.dlg.cat.1'), skipped]);
-        if (isSkipped) return;
-        await Promise.race([
-            new Promise<void>(r => scene.tweens.add({ targets: cat, x: gate.x, y: gate.y - 120, duration: 700, ease: 'Quad.easeOut', yoyo: false, onComplete: () => r() })),
-            skipped,
-        ]);
-        if (isSkipped) return;
-        await Promise.race([new Promise<void>(r => scene.tweens.add({ targets: cat, y: gate.y + 80, alpha: 0, duration: 400, onComplete: () => r() })), skipped]);
-    } finally {
-        for (const o of objs) { scene.tweens.killTweensOf(o); o.destroy(); }
-    }
-});
+/** The cat jumps into the «hole in space» next to the unfinished teleporter and disappears. */
+registerAnim('cat_jump', scene => new Promise<void>(resolve => {
+    const cat = scene.getSprite('cat');
+    const hole = scene.map.points.cat_hole;
+    if (!cat || !hole) { resolve(); return; }
+    const scale = cat.scale;   // real world-1 sprites are shown ×4
+    scene.tweens.add({
+        targets: cat, x: hole.x, y: hole.y, scale: scale * 0.2, duration: 700, ease: 'Quad.easeIn',
+        onComplete: () => { cat.setVisible(false).setScale(scale); resolve(); },
+    });
+}));

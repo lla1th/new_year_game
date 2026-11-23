@@ -1,87 +1,248 @@
-import type { LevelScript } from '../script/types';
+import type { HotspotScript, LevelScript, Step } from '../script/types';
 
-/** L02 «Ярмарка» (LEVEL_DESIGN.md L02, TASK-003…005, TASK-OPT-01; PUZZLE_SPECIFICATIONS.md P-02). */
+const say = (key: string): Step => ({ say: 'ksyusha', key });
+const inspect = (hotspot: string, key = `l02.${hotspot}.inspect`): HotspotScript => ({ hotspot, onInspect: [say(key)] });
+
+/** A way out to another screen of the level: inspect says a short line, use goes there. */
+const exit = (hotspot: string, screen: string): HotspotScript => ({
+    hotspot, onInspect: [say('l02.exit.inspect')], onUse: [{ goto: { level: 'L02', screen } }],
+});
+
+/**
+ * L02 «Ярмарка» (SCRIPT §5): five screens. The gate (S-02a) → the tent and the cat → the shed key →
+ * the generator (P-02: three bulbs, the pump, the fuel, the cord) → the fair comes alive → the shooting gallery (S-02b) → Nika.
+ */
 export const L02: LevelScript = {
     levelId: 'L02',
-    firstScreen: 'fair',
+    firstScreen: 'gate',
     goals: [
-        { flag: 'L02_GARLAND_DONE', hintKeys: ['hint.P-02.1', 'hint.P-02.2', 'hint.P-02.3'] },   // step 2 adapts (L02.visual)
-        { flag: 'L02_GATE_OPEN', hintKeys: ['hint.l02.gate', 'hint.l02.gate', 'hint.l02.gate'] },
+        { flag: 'L02_GATE_OPEN', hintKeys: ['hint.S-02a.1', 'hint.S-02a.2', 'hint.S-02a.3'] },
+        { flag: 'L02_CAT_SCENE_DONE', hintKeys: ['hint.l02.tent', 'hint.l02.tent', 'hint.l02.tent'] },
+        { flag: 'L02_SHED_KEY_TAKEN', hintKeys: ['hint.l02.key', 'hint.l02.key', 'hint.l02.key'] },
+        { flag: 'L02_SHED_OPEN', hintKeys: ['hint.l02.shed', 'hint.l02.shed', 'hint.l02.shed'] },
+        { flag: 'L02_GENERATOR_ON', hintKeys: ['hint.P-02.1', 'hint.P-02.2', 'hint.P-02.3'] },
+        { flag: 'L02_FINISHED', hintKeys: ['hint.l02.nika', 'hint.l02.nika', 'hint.l02.nika'] },
     ],
     screens: {
-        fair: {
-            map: 'assets/maps/L02.json',
-            // The tease is not replayed when "Continue" brings the player back after the garland.
-            onEnter: [{ ifFlag: 'L02_GARLAND_DONE', then: [], else: [{ cutscene: 'l02_tease' }] }],
+        // 1. Before the gate: S-02a «Ключ у обезьянки» (variant A: shiny foil for the key).
+        gate: {
+            map: 'assets/maps/L02_gate.json',
+            onEnter: [{ ifFlag: 'L02_GATE_OPEN', then: [], else: [{ dialog: 'l02_arrive' }] }],
             hotspots: [
-                // Green bulb: once (the flag keeps the source "done" even when the bulb is in the garland).
-                { hotspot: 'stall_left', when: 'L02_BULB_GREEN_TAKEN', onInspect: [{ say: 'ksyusha', key: 'l02.stall_left.empty' }] },
-                {
-                    hotspot: 'stall_left',
-                    onUse: [{ giveItem: 'ITEM_BULB_GREEN' }, { setFlag: 'L02_BULB_GREEN_TAKEN' }, { say: 'ksyusha', key: 'l02.stall_left.take' }],
-                },
-                // Snowman: gold bulb nose; optional mandarin.
-                { hotspot: 'snowman', when: 'L02_SNOWMAN_HAPPY', onInspect: [{ say: 'ksyusha', key: 'l02.snowman.happy.inspect' }] },
-                {
-                    hotspot: 'snowman',
-                    when: 'L02_SNOWMAN_SAD',
-                    onInspect: [{ say: 'ksyusha', key: 'l02.snowman.sad.inspect' }],
-                    onItem: {
-                        ITEM_MANDARIN: [
-                            { removeItem: 'ITEM_MANDARIN' }, { setFlag: 'L02_SNOWMAN_HAPPY' },
-                            { sfx: 'sfx_hihik' }, { say: 'ksyusha', key: 'l02.snowman.happy' },
-                        ],
-                    },
-                },
-                {
-                    hotspot: 'snowman',
-                    onUse: [{ giveItem: 'ITEM_BULB_GOLD' }, { setFlag: 'L02_SNOWMAN_SAD' }, { say: 'ksyusha', key: 'l02.snowman.take' }],
-                },
-                // Carousel → blue bulb rolls out.
-                { hotspot: 'carousel', when: 'L02_CAROUSEL_SPUN', onInspect: [{ say: 'ksyusha', key: 'l02.carousel.spun.inspect' }] },
-                { hotspot: 'carousel', onUse: [{ anim: 'carousel_spin' }, { setFlag: 'L02_CAROUSEL_SPUN' }, { say: 'ksyusha', key: 'l02.carousel.spin' }] },
-                // Hidden on the map once taken; the variant guards against a second take anyway.
-                { hotspot: 'bulb_blue', when: 'L02_BULB_BLUE_TAKEN', onInspect: [{ say: 'ksyusha', key: 'l02.carousel.spun.inspect' }] },
-                {
-                    hotspot: 'bulb_blue',
-                    onInspect: [{ say: 'ksyusha', key: 'l02.bulb_blue.inspect' }],
-                    onUse: [{ giveItem: 'ITEM_BULB_BLUE' }, { setFlag: 'L02_BULB_BLUE_TAKEN' }, { say: 'ksyusha', key: 'l02.bulb_blue.take' }],
-                },
-                // Garland: P-02 → Nika thaws → dialog → key and cocoa.
-                { hotspot: 'garland', when: 'L02_GARLAND_DONE', onInspect: [{ say: 'ksyusha', key: 'l02.garland.done.inspect' }] },
-                {
-                    hotspot: 'garland',
-                    onUse: [{
-                        openPuzzle: 'P-02',
-                        onSolved: [
-                            { anim: 'nika_thaw' }, { dialog: 'l02_nika' },
-                            { giveItem: 'ITEM_GATE_KEY' }, { giveItem: 'ITEM_COCOA' },
-                            { setFlag: 'L02_GARLAND_DONE' }, { checkpoint: true },
-                        ],
-                    }],
-                },
-                {
-                    hotspot: 'nika_frozen',
-                    when: 'L02_GARLAND_DONE',
-                    onInspect: [{ say: 'ksyusha', key: 'l02.nika.thawed.inspect' }],
-                    onUse: [{ say: 'nika', key: 'l02.nika.after' }],
-                },
-                // Gate: key → open → exit.
                 {
                     hotspot: 'gate',
                     when: 'L02_GATE_OPEN',
-                    onInspect: [{ say: 'ksyusha', key: 'l02.gate.open.inspect' }],
-                    onUse: [{ goto: { level: 'L03' } }],
+                    onInspect: [say('l02.gate.open.inspect')],
+                    onUse: [{ goto: { level: 'L02', screen: 'entrance' } }],
                 },
                 {
                     hotspot: 'gate',
                     onItem: {
                         ITEM_GATE_KEY: [
                             { removeItem: 'ITEM_GATE_KEY' }, { sfx: 'sfx_gate' },
-                            { setFlag: 'L02_GATE_OPEN' }, { say: 'ksyusha', key: 'l02.gate.open' },
+                            { setFlag: 'L02_GATE_OPEN' }, say('l02.gate.open'),
                         ],
                     },
                 },
+                inspect('chain', 'l02.chain.cut'),
+                {
+                    hotspot: 'pole',
+                    onInspect: [say('l02.pole.inspect')],
+                    onUse: [{ ifFlag: 'L02_GATE_OPEN', then: [{ say: 'monkey', key: 'l02.monkey.hint' }], else: [{ say: 'monkey', key: 'l02.monkey.talk' }] }],
+                    onItem: { ITEM_MANDARIN: [{ say: 'monkey', key: 'l02.monkey.refuse' }] },
+                },
+                {
+                    hotspot: 'crate',
+                    onInspect: [say('l02.crate.inspect')],
+                    onItem: {
+                        ITEM_FOIL: [
+                            { removeItem: 'ITEM_FOIL' }, { anim: 'monkey_swap' }, { giveItem: 'ITEM_GATE_KEY' }, say('l02.monkey.swap'),
+                        ],
+                    },
+                },
+                // The foil: once (the flag keeps the urn «done» after the foil is spent).
+                { hotspot: 'urn', when: 'L02_FOIL_TAKEN', onInspect: [say('l02.urn.inspect')] },
+                {
+                    hotspot: 'urn',
+                    onInspect: [say('l02.urn.inspect')],
+                    onUse: [{ giveItem: 'ITEM_FOIL' }, { setFlag: 'L02_FOIL_TAKEN' }, say('l02.urn.take')],
+                },
+            ],
+        },
+        // 2. Entrance: the frozen vendor (later the owner of the gallery), the lantern bulb, the key booth.
+        entrance: {
+            map: 'assets/maps/L02_entrance.json',
+            hotspots: [
+                {
+                    hotspot: 'vendor',
+                    when: 'L02_FAIR_ALIVE',
+                    onInspect: [{ say: 'vendor', key: 'l02.vendor.board' }],
+                    onUse: [
+                        { ifFlag: 'L02_VENDOR_MET', then: [], else: [
+                            { dialog: 'l02_vendor' }, { say: 'spitz', key: 'l02.spitz.crossout' }, { setFlag: 'L02_VENDOR_MET' },
+                        ] },
+                        { openPuzzle: 'S-02b', onSolved: [{ setFlag: 'L02_GALLERY_WON' }, { checkpoint: true }] },
+                    ],
+                },
+                {
+                    hotspot: 'vendor',
+                    onInspect: [say('l02.vendor.inspect')],
+                    onUse: [{
+                        ifFlag: 'L02_BULB_RED_TAKEN',
+                        then: [{ say: 'spitz', key: 'l02.vendor.silent.2' }],
+                        else: [say('l02.vendor.silent.1')],
+                    }],
+                },
+                { hotspot: 'lantern', when: 'L02_BULB_RED_TAKEN', onInspect: [say('l02.vendor.inspect')] },
+                {
+                    hotspot: 'lantern',
+                    onInspect: [say('l02.lantern.inspect')],
+                    onUse: [{ giveItem: 'ITEM_BULB_RED' }, { setFlag: 'L02_BULB_RED_TAKEN' }, say('l02.lantern.take')],
+                },
+                { hotspot: 'booth', when: 'L02_SHED_KEY_TAKEN', onInspect: [say('l02.booth.empty')] },
+                {
+                    hotspot: 'booth',
+                    when: 'L02_CAT_SCENE_DONE',
+                    onInspect: [say('l02.booth.inspect')],
+                    onUse: [{ giveItem: 'ITEM_SHED_KEY' }, { setFlag: 'L02_SHED_KEY_TAKEN' }, say('l02.key.take')],
+                },
+                inspect('booth'),
+                { hotspot: 'frozen_walkers', onInspect: [say('l02.frozen.inspect')] },
+                { hotspot: 'walkers', onInspect: [say('l02.walkers.inspect')] },
+                exit('exit_gate', 'gate'),
+                exit('exit_right', 'square'),
+            ],
+        },
+        // 3. The square: the tent, the snowman (yellow bulb), the carousel (blue bulb), the snowdrift (pump), the shed.
+        square: {
+            map: 'assets/maps/L02_square.json',
+            hotspots: [
+                { hotspot: 'tent', onInspect: [say('l02.tent.inspect')], onUse: [{ goto: { level: 'L02', screen: 'tent' } }] },
+                { hotspot: 'snowman', when: 'L02_SNOWMAN_HAPPY', onInspect: [say('l02.snowman.happy.inspect')] },
+                {
+                    hotspot: 'snowman',
+                    when: 'L02_SNOWMAN_SAD',
+                    onInspect: [say('l02.snowman.sad.inspect')],
+                    onItem: {
+                        ITEM_MANDARIN: [
+                            { removeItem: 'ITEM_MANDARIN' }, { setFlag: 'L02_SNOWMAN_HAPPY' },
+                            { sfx: 'sfx_hihik' }, say('l02.snowman.happy'),
+                        ],
+                    },
+                },
+                {
+                    hotspot: 'snowman',
+                    onInspect: [say('l02.snowman.inspect'), { say: 'snowman', key: 'l02.snowman.hint' }],
+                    onUse: [{ giveItem: 'ITEM_BULB_YELLOW' }, { setFlag: 'L02_SNOWMAN_SAD' }, say('l02.snowman.take')],
+                },
+                { hotspot: 'carousel', when: 'L02_CAROUSEL_SPUN', onInspect: [say('l02.carousel.spun.inspect')] },
+                {
+                    hotspot: 'carousel',
+                    onInspect: [say('l02.carousel.inspect')],
+                    onUse: [{ anim: 'carousel_spin' }, { setFlag: 'L02_CAROUSEL_SPUN' }, say('l02.carousel.spin')],
+                },
+                {
+                    hotspot: 'bulb_blue',
+                    onInspect: [say('l02.bulb_blue.inspect')],
+                    onUse: [{ giveItem: 'ITEM_BULB_BLUE' }, { setFlag: 'L02_BULB_BLUE_TAKEN' }, say('l02.bulb_blue.take')],
+                },
+                { hotspot: 'snowdrift', when: 'L02_PUMP_TAKEN', onInspect: [say('l02.snowdrift.inspect')] },
+                {
+                    hotspot: 'snowdrift',
+                    onInspect: [say('l02.snowdrift.inspect')],
+                    onUse: [{ giveItem: 'ITEM_PUMP' }, { setFlag: 'L02_PUMP_TAKEN' }, say('l02.pump.take')],
+                },
+                inspect('radio'),
+                {
+                    hotspot: 'shed_door',
+                    when: 'L02_SHED_OPEN',
+                    onInspect: [say('l02.shed.open')],
+                    onUse: [{ goto: { level: 'L02', screen: 'shed' } }],
+                },
+                {
+                    hotspot: 'shed_door',
+                    onInspect: [say('l02.shed.locked')],
+                    onItem: {
+                        ITEM_SHED_KEY: [
+                            { removeItem: 'ITEM_SHED_KEY' }, { sfx: 'sfx_door_creak' }, { setFlag: 'L02_SHED_OPEN' }, say('l02.shed.open'),
+                        ],
+                    },
+                },
+                exit('exit_left', 'entrance'),
+            ],
+        },
+        // 4. The shed: P-02 «Генератор» and the fuel barrel.
+        shed: {
+            map: 'assets/maps/L02_shed.json',
+            hotspots: [
+                {
+                    hotspot: 'generator',
+                    onInspect: [say('l02.generator.inspect')],
+                    onUse: [{
+                        openPuzzle: 'P-02',
+                        onSolved: [
+                            { setFlag: 'L02_GENERATOR_ON' }, { dialog: 'l02_generator_on' },
+                            { setFlag: 'L02_FAIR_ALIVE' }, { checkpoint: true },
+                        ],
+                    }],
+                },
+                {
+                    hotspot: 'barrel',
+                    when: 'L02_FUELED',
+                    onInspect: [say('l02.barrel.inspect')],
+                    onItem: { ITEM_PUMP: [say('l02.barrel.full')] },
+                },
+                {
+                    hotspot: 'barrel',
+                    when: 'L02_PUMP_FILLED',
+                    onInspect: [say('l02.barrel.inspect')],
+                    onItem: { ITEM_PUMP: [say('l02.barrel.fill')] },
+                },
+                {
+                    hotspot: 'barrel',
+                    onInspect: [say('l02.barrel.inspect')],
+                    onItem: { ITEM_PUMP: [{ sfx: 'sfx_glaze_flow' }, { setFlag: 'L02_PUMP_FILLED' }, say('l02.barrel.fill')] },
+                },
+                exit('exit_shed', 'square'),
+            ],
+        },
+        // 5. Inside the tent: the cat, Nika, the unfinished teleporter.
+        tent: {
+            map: 'assets/maps/L02_tent.json',
+            onEnter: [{
+                ifFlag: 'L02_CAT_SCENE_DONE',
+                then: [],
+                else: [
+                    { dialog: 'l02_cat_a' }, { anim: 'cat_jump' }, { dialog: 'l02_cat_b' },
+                    { setFlag: 'L02_CAT_SCENE_DONE' }, { say: 'spitz', key: 'l02.cat.scene.hint' }, { checkpoint: true },
+                ],
+            }],
+            hotspots: [
+                {
+                    hotspot: 'nika',
+                    when: 'L02_FINISHED',
+                    onInspect: [say('l02.nika.thawed.inspect')],
+                    onUse: [{ say: 'nika', key: 'l02.nika.after' }],
+                },
+                {
+                    hotspot: 'nika',
+                    when: 'L02_FAIR_ALIVE',
+                    onInspect: [say('l02.nika.thawed.inspect')],
+                    onUse: [
+                        { dialog: 'l02_nika' }, { giveItem: 'ITEM_COCOA' }, { setFlag: 'L02_FINISHED' },
+                        { ifFlag: 'L02_GALLERY_WON', then: [], else: [{ say: 'nika', key: 'l02.nika.stroll' }] },
+                        { checkpoint: true },
+                    ],
+                },
+                inspect('nika'),
+                {
+                    hotspot: 'teleporter',
+                    when: 'L02_FINISHED',
+                    onInspect: [say('l02.teleporter.inspect')],
+                    onUse: [say('l02.teleporter.go'), { goto: { level: 'L03' } }],
+                },
+                inspect('teleporter'),
+                exit('exit_tent', 'square'),
             ],
         },
     },
