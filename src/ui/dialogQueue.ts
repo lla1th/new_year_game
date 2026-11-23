@@ -1,7 +1,7 @@
-import type { SpeakerId } from '../game/data/types';
+import type { MoodId, SpeakerId } from '../game/data/types';
 import type { DialogChoice } from '../game/data/schemas';
 
-export interface DialogQueueLine { speaker: SpeakerId; key: string; choices?: DialogChoice[]; retry?: boolean }
+export interface DialogQueueLine { speaker: SpeakerId; key: string; mood?: MoodId; choices?: DialogChoice[]; retry?: boolean }
 export interface DialogJob { lines: DialogQueueLine[]; onDone: () => void }
 
 /** Queue of lines/dialogs shown one after another by DialogBox (pure logic, no Vue). */
@@ -41,8 +41,8 @@ export class DialogQueue {
     choose(c: DialogChoice): void {
         const j = this.job;
         if (!j) return;
-        const extra: DialogQueueLine[] = [{ speaker: 'ksyusha', key: c.key }];
-        if (c.reply) extra.push({ speaker: c.reply.speaker, key: c.reply.key });
+        const extra: DialogQueueLine[] = [{ speaker: 'ksyusha', key: c.key, mood: c.mood }];
+        if (c.reply) extra.push({ speaker: c.reply.speaker, key: c.reply.key, mood: c.reply.mood });
         const question = j.lines[this.index];
         if (question.retry === true && c.correct === false) extra.push({ ...question });
         j.lines.splice(this.index + 1, 0, ...extra);

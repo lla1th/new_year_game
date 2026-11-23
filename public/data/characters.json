@@ -63,5 +63,17 @@
     "ginger": {
       "w2": "img/portraits/ginger_w2.png"
     }
+  },
+  "moods": {
+    "spitz": {
+      "happy": {
+        "w1": "img/portraits/spitz_happy_w1.png"
+      }
+    },
+    "ksyusha": {
+      "surprised": {
+        "w1": "img/portraits/ksyusha_surprised_w1.png"
+      }
+    }
   }
 }

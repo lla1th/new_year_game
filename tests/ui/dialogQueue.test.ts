@@ -76,3 +76,15 @@ describe('DialogQueue', () => {
     q.advance(); expect(q.line?.key).toBe('next');
   });
 });
+
+describe('DialogQueue moods', () => {
+  test('mood of a choice and of its reply reach the queued lines', () => {
+    const q = new DialogQueue();
+    q.enqueue({ lines: [{ speaker: 'spitz', key: 'q', mood: 'sad', choices: [{ key: 'c', mood: 'surprised', reply: { speaker: 'spitz', key: 'r', mood: 'happy' } }] }], onDone: () => {} });
+    expect(q.line?.mood).toBe('sad');
+    q.choose(q.line!.choices![0]);
+    expect(q.line).toMatchObject({ speaker: 'ksyusha', key: 'c', mood: 'surprised' });
+    q.advance();
+    expect(q.line).toMatchObject({ speaker: 'spitz', key: 'r', mood: 'happy' });
+  });
+});

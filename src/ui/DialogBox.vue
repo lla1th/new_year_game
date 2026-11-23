@@ -10,6 +10,7 @@ import { getAudio } from '../game/audio/AudioManager';
 import { isHihik } from '../game/scenes/LevelScene';
 import { charsVisible } from './typewriter';
 import { uiState } from './uiState';
+import { resolvePortrait } from '../game/data/portraits';
 import Placeholder from './Placeholder.vue';
 
 const data = getGameData()!;
@@ -31,7 +32,7 @@ const choices = computed(() => (done.value && line.value?.choices?.length ? line
 const name = computed(() => (line.value ? data.characters.names[line.value.speaker] : ''));
 const portrait = computed(() => {
     if (!line.value) return undefined;
-    const p = data.characters.portraits[line.value.speaker]?.[LEVEL_STYLE[gameState.levelId]];
+    const p = resolvePortrait(data.characters, line.value.speaker, LEVEL_STYLE[gameState.levelId], line.value.mood);
     return p ? `${import.meta.env.BASE_URL}assets/${p}` : undefined;
 });
 
@@ -75,7 +76,7 @@ function onKey (e: KeyboardEvent) {
 const offs: (() => void)[] = [];
 onMounted(() => {
     offs.push(
-        bus.on('say', ({ speaker, textKey }) => q.enqueue({ lines: [{ speaker, key: textKey }], onDone: () => bus.emit('say:done') })),
+        bus.on('say', ({ speaker, textKey, mood }) => q.enqueue({ lines: [{ speaker, key: textKey, mood }], onDone: () => bus.emit('say:done') })),
         bus.on('dialog:start', ({ dialogId }) => {
             const lines = (data.dialogs[dialogId] ?? []).map(l => ({ ...l, choices: l.choices ? [...l.choices] : undefined }));
             if (lines.length === 0) console.warn(`[DialogBox] unknown or empty dialog "${dialogId}"`);
@@ -101,7 +102,7 @@ defineExpose({ sayLocal });
 <template>
     <div v-if="line" class="catcher" data-test="dialog" @click="onClick" @contextmenu.prevent>
         <div class="box">
-            <div class="portrait"><Placeholder :src="portrait" :color-key="`portrait_${line.speaker}`" :label="name" /></div>
+            <div class="portrait"><Placeholder :src="portrait" :color-key="`portrait_${line.speaker}_${line.mood ?? ''}`" :label="name" /></div>
             <div class="body">
                 <div class="name">{{ name }}</div>
                 <div class="text" data-test="dialog-text">{{ shown }}</div>

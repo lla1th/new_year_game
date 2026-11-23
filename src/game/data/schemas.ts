@@ -1,10 +1,16 @@
-import type { FlagId, ItemId, LevelId, SpeakerId, WorldStyle } from './types';
+import type { FlagId, ItemId, LevelId, MoodId, SpeakerId, WorldStyle } from './types';
 
-export interface CharactersFile { names: Record<SpeakerId, string>; portraits: Partial<Record<SpeakerId, Partial<Record<WorldStyle, string>>>> }
+export type PortraitSet = Partial<Record<WorldStyle, string>>;
+export interface CharactersFile {
+    names: Record<SpeakerId, string>;
+    portraits: Partial<Record<SpeakerId, PortraitSet>>;                    // обычный портрет
+    moods?: Partial<Record<SpeakerId, Partial<Record<MoodId, PortraitSet>>>>;   // портреты реакций; нет файла → обычный портрет
+}
 export interface ItemDef { icon: string; nameKey: string; inspectKey: string; style: WorldStyle }
 export type ItemsFile = Record<ItemId, ItemDef>;
-export interface DialogChoice { key: string; reply?: { speaker: SpeakerId; key: string }; correct?: boolean }
-export interface DialogLine { speaker: SpeakerId; key: string; choices?: DialogChoice[]; retry?: boolean }
+/** `mood` у выбора — реакция Ксюши, когда она произносит этот вариант; `reply.mood` — реакция отвечающего. */
+export interface DialogChoice { key: string; mood?: MoodId; reply?: { speaker: SpeakerId; key: string; mood?: MoodId }; correct?: boolean }
+export interface DialogLine { speaker: SpeakerId; key: string; mood?: MoodId; choices?: DialogChoice[]; retry?: boolean }
 export type DialogsFile = Record<string, DialogLine[]>;
 
 /** Тема меню разговоров (SCRIPT §12а). */
