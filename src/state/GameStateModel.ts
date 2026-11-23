@@ -1,9 +1,10 @@
 import { INVENTORY_SIZE, type FlagId, type ItemId, type LevelId, type PartId } from '../game/data/types';
 
 export interface SaveData {
-    version: 1; levelId: LevelId; screenId: string | null;
+    version: 2; levelId: LevelId; screenId: string | null;
     flags: Partial<Record<FlagId, boolean>>; inventory: ItemId[]; parts: PartId[];
     completed: boolean; savedAt: string;
+    spitzName: 1 | 2 | null; talksSeen: string[];
 }
 
 /**
@@ -17,6 +18,10 @@ export class GameStateModel {
     inventory: ItemId[] = [];
     parts: PartId[] = [];
     completed = false;
+    /** Выбранное имя шпица (вариант 1 или 2); null — ещё не выбрано. */
+    spitzName: 1 | 2 | null = null;
+    /** Ключи просмотренных разговоров. */
+    talksSeen: string[] = [];
 
     hasFlag(f: FlagId): boolean { return this.flags[f] === true; }
     setFlag(f: FlagId): void {
@@ -38,6 +43,9 @@ export class GameStateModel {
         if (idx >= 0) this.inventory.splice(idx, 1);
     }
 
+    markTalkSeen(id: string): void { if (!this.talksSeen.includes(id)) this.talksSeen.push(id); }
+    hasSeenTalk(id: string): boolean { return this.talksSeen.includes(id); }
+
     addPart(p: PartId): void { if (!this.parts.includes(p)) this.parts.push(p); }
 
     removePart(p: PartId): void {
@@ -47,7 +55,7 @@ export class GameStateModel {
 
     toSaveData(now: Date = new Date()): SaveData {
         return {
-            version: 1,
+            version: 2,
             levelId: this.levelId,
             screenId: this.screenId,
             flags: { ...this.flags },
@@ -55,6 +63,8 @@ export class GameStateModel {
             parts: [...this.parts],
             completed: this.completed,
             savedAt: now.toISOString(),
+            spitzName: this.spitzName,
+            talksSeen: [...this.talksSeen],
         };
     }
 
@@ -65,6 +75,8 @@ export class GameStateModel {
         this.inventory = [...d.inventory];
         this.parts = [...d.parts];
         this.completed = d.completed;
+        this.spitzName = d.spitzName;
+        this.talksSeen = [...d.talksSeen];
     }
 
     /** Back to the very beginning: L01, nothing collected. */
@@ -75,5 +87,7 @@ export class GameStateModel {
         this.inventory = [];
         this.parts = [];
         this.completed = false;
+        this.spitzName = null;
+        this.talksSeen = [];
     }
 }

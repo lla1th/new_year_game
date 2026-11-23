@@ -14,7 +14,7 @@ describe('GameStateModel', () => {
     s.setFlag('L01_SPITZ_FREED');
     expect(s.hasFlag('L01_SPITZ_FREED')).toBe(true);
     const d = s.toSaveData(new Date('2026-12-31T20:00:00Z'));
-    expect(d).toMatchObject({ version: 1, levelId: 'L01', savedAt: '2026-12-31T20:00:00.000Z' });
+    expect(d).toMatchObject({ version: 2, levelId: 'L01', savedAt: '2026-12-31T20:00:00.000Z' });
     const t = new GameStateModel();
     t.loadFrom(d);
     expect(t.inventory).toEqual(s.inventory);
@@ -55,4 +55,14 @@ test('GAME_COMPLETED marks the game as completed (level select); reset keeps not
   s.setFlag('GAME_COMPLETED');
   expect(s.completed).toBe(true);
   expect(s.toSaveData().completed).toBe(true);
+});
+
+test('spitz name and seen talks survive a save round trip', () => {
+  const s = new GameStateModel();
+  s.spitzName = 2; s.markTalkSeen('spitz.clock'); s.markTalkSeen('spitz.clock');
+  const d = s.toSaveData();
+  expect(d.version).toBe(2); expect(d.talksSeen).toEqual(['spitz.clock']);
+  const t = new GameStateModel(); t.loadFrom(d);
+  expect(t.spitzName).toBe(2); expect(t.hasSeenTalk('spitz.clock')).toBe(true);
+  t.reset(); expect(t.spitzName).toBeNull(); expect(t.talksSeen).toEqual([]);
 });

@@ -29,7 +29,21 @@ describe('SaveService', () => {
     expect(loadGame(fake)).toEqual(d);
     fake.setItem(SAVE_KEY, '{oops');
     expect(loadGame(fake)).toBeNull();
-    fake.setItem(SAVE_KEY, JSON.stringify({ ...d, version: 2 }));
+    fake.setItem(SAVE_KEY, JSON.stringify({ ...d, version: 3 }));
+    expect(loadGame(fake)).toBeNull();
+  });
+
+  test('a version 1 save is ignored', () => {
+    const fake = fakeStorage();
+    fake.setItem(SAVE_KEY, JSON.stringify({ version: 1, levelId: 'L03', screenId: null, flags: {}, inventory: [], parts: [], completed: false, savedAt: '' }));
+    expect(loadGame(fake)).toBeNull();
+  });
+
+  test('invalid spitzName / talksSeen → null', () => {
+    const fake = fakeStorage();
+    fake.setItem(SAVE_KEY, JSON.stringify({ ...d, spitzName: 3 }));
+    expect(loadGame(fake)).toBeNull();
+    fake.setItem(SAVE_KEY, JSON.stringify({ ...d, talksSeen: 'x' }));
     expect(loadGame(fake)).toBeNull();
   });
 

@@ -42,12 +42,14 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 }
 
 function isSaveData(v: unknown): v is SaveData {
-    if (!isRecord(v) || v.version !== 1) return false;
+    if (!isRecord(v) || v.version !== 2) return false;
     if (typeof v.levelId !== 'string' || !(LEVEL_IDS as readonly string[]).includes(v.levelId)) return false;
     if (v.screenId !== null && typeof v.screenId !== 'string') return false;
     if (!isRecord(v.flags) || !Object.entries(v.flags).every(([k, b]) => (FLAG_IDS as readonly string[]).includes(k) && typeof b === 'boolean')) return false;
     if (!Array.isArray(v.inventory) || !v.inventory.every(i => (ALL_ITEM_IDS as readonly unknown[]).includes(i))) return false;
     if (!Array.isArray(v.parts) || !v.parts.every(p => PART_IDS.includes(p as string))) return false;
+    if (v.spitzName !== null && v.spitzName !== 1 && v.spitzName !== 2) return false;
+    if (!Array.isArray(v.talksSeen) || !v.talksSeen.every(k => typeof k === 'string')) return false;
     return typeof v.completed === 'boolean' && typeof v.savedAt === 'string';
 }
 
@@ -55,7 +57,7 @@ export function saveGame(d: SaveData, storage: Storage | undefined = defaultStor
     write(storage, SAVE_KEY, d);
 }
 
-/** null: no save, corrupted, or version !== 1. */
+/** null: no save, corrupted, or version !== 2 (v1 отбрасывается: уровни переделаны). */
 export function loadGame(storage: Storage | undefined = defaultStorage()): SaveData | null {
     const v = read(storage, SAVE_KEY);
     return isSaveData(v) ? v : null;
