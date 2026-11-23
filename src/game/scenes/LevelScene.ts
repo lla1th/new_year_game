@@ -3,6 +3,7 @@ import { bus } from '../../events';
 import { GAME_HEIGHT, GAME_WIDTH, LEVEL_STYLE, type CursorKind, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
 import { colorFromKey, ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { loadLevelAssets } from '../assets/loadLevelAssets';
+import { animOwner, firstAnimated, showVisual } from '../assets/anims';
 import { getGameData } from '../data/gameData';
 import { isDebug } from '../debug';
 import { parseTiledMap, type HotspotDef, type LevelMap } from '../map/parseTiledMap';
@@ -76,7 +77,7 @@ export class LevelScene extends Scene
     private screen: ScreenScript | null = null;
     map: LevelMap;
     nav: NavGrid;
-    private sprites = new Map<string, GameObjects.Image>();
+    private sprites = new Map<string, GameObjects.Sprite>();
     private runner: ScriptRunner;
     hints: HintSystem | null = null;
     private loading = false;
@@ -85,14 +86,15 @@ export class LevelScene extends Scene
     private levelGeneration = 0;
 
     // characters
-    ksyusha: GameObjects.Image;
-    spitz: GameObjects.Image | null = null;
+    ksyusha: GameObjects.Sprite;
+    spitz: GameObjects.Sprite | null = null;
     private nameCancel: (() => void) | null = null;
     private talkCancel: (() => void) | null = null;
     private pos: Vec2 = { x: 0, y: 0 };
     private facing: Facing = 'dr';
     private pose: Pose = 'idle';
     private trail: Vec2[] = [];
+    private spitzMoving: boolean | null = null;   // which spitz visual is shown (null = none yet)
 
     // walking
     private path: Vec2[] = [];
@@ -146,7 +148,7 @@ export class LevelScene extends Scene
     registryState (): typeof gameState { return gameState; }
 
     /** A sprite placed through the Tiled `sprites` layer, by its name. */
-    getSprite (name: string): GameObjects.Image | undefined { return this.sprites.get(name); }
+    getSprite (name: string): GameObjects.Sprite | undefined { return this.sprites.get(name); }
 
     /** Teleports Ksyusha (cutscenes / animations). */
     placeKsyusha (p: Vec2): void
@@ -164,12 +166,14 @@ export class LevelScene extends Scene
     }
 
     /** Shows (or creates) the spitz at `p` and makes him follow Ksyusha. */
-    showSpitz (p: Vec2): GameObjects.Image
+    showSpitz (p: Vec2): GameObjects.Sprite
     {
         if (!this.spitz) {
             const key = `spitz_${this.charStyle()}_idle`;
             ensureTexture(this, key, SPITZ_W, SPITZ_H, characterName('spitz'));
-            this.spitz = this.add.image(p.x, p.y, key).setOrigin(0.5, 1).setScale(this.spriteScale(key));
+            this.spitz = this.add.sprite(p.x, p.y, key).setOrigin(0.5, 1);
+            this.spitzMoving = null;
+            this.applySpitzVisual(false);
         }
         this.spitz.setVisible(true).setPosition(p.x, p.y).setDepth(p.y);
         this.trail = [{ x: p.x, y: p.y }, { ...this.pos }];
@@ -192,8 +196,8 @@ export class LevelScene extends Scene
         }
         return new Promise<void>((resolve, reject) => {
             this.walk = { resolve, reject };
-            this.startBob();
-            this.faceTowards(path[0]);
+            this.faceTowards(path[0]);   // also switches to the walk animation, if there is one
+            if (!this.walkAnimKey()) this.startBob();   // no walk frames: the old «puppet» sway
         });
     }
 
@@ -259,8 +263,8 @@ export class LevelScene extends Scene
         const gen = this.levelGeneration;   // the load below bumps it by one; anything else = the scene was stopped
         try {
             const image = await new Promise<HTMLImageElement>(resolve => this.game.renderer.snapshot(img => resolve(img as HTMLImageElement)));
-            const actors = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Image => !!a && a.visible)
-                .map(a => ({ texture: a.texture.key, flipX: a.flipX, scale: a.scaleX, pos: { x: a.x, y: a.y } }));
+            const actors = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Sprite => !!a && a.visible)
+                .map(a => ({ texture: a.texture.key, frame: a.frame.name, flipX: a.flipX, scale: a.scaleX, pos: { x: a.x, y: a.y } }));
             const data: TransitionData = { image, actors };
             this.scene.launch('TransitionScene', data);
             this.scene.bringToTop('TransitionScene');
@@ -269,7 +273,7 @@ export class LevelScene extends Scene
             this.playSfx('sfx_transition');
             await load();
             if (this.levelGeneration !== gen + 1) return;   // the scene was stopped / restarted during the load
-            const hidden = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Image => !!a && a.visible);
+            const hidden = [this.ksyusha, this.spitz].filter((a): a is GameObjects.Sprite => !!a && a.visible);
             hidden.forEach(a => a.setAlpha(0));
             await ts.reveal();
             await ts.finish(hidden.map(a => ({ x: a.x, y: a.y })));
@@ -429,7 +433,10 @@ export class LevelScene extends Scene
         if (bgMissing) this.drawPlaceholderObjects();
         for (const s of this.map.sprites) {
             const key = ensureTexture(this, s.texture, SPRITE_PLACEHOLDER_W, SPRITE_PLACEHOLDER_H, s.name);
-            this.sprites.set(s.name, this.add.image(s.pos.x, s.pos.y, key).setOrigin(0.5, 1).setDepth(s.depthY).setScale(this.spriteScale(key)));
+            // an animation with the same key as the sprite's texture (e.g. `l01b_tik`) plays in a loop: the world lives
+            const spr = this.add.sprite(s.pos.x, s.pos.y, key).setOrigin(0.5, 1).setDepth(s.depthY);
+            showVisual(spr, s.texture);
+            this.sprites.set(s.name, spr.setScale(this.spriteScale(s.texture)));
         }
         for (const up of [false, true]) {
             for (const pose of POSES) ensureTexture(this, this.ksyushaKey(up, pose), KSYUSHA_W, KSYUSHA_H, characterName('ksyusha'));
@@ -438,7 +445,7 @@ export class LevelScene extends Scene
         this.pos = { x: spawn.x, y: spawn.y };
         this.trail = [{ ...this.pos }];
         this.pose = 'idle';
-        this.ksyusha = this.add.image(this.pos.x, this.pos.y, this.ksyushaKey(false, 'idle')).setOrigin(0.5, 1);
+        this.ksyusha = this.add.sprite(this.pos.x, this.pos.y, this.ksyushaKey(false, 'idle')).setOrigin(0.5, 1);
         this.setFacing('dr');
         this.outlineGfx = this.add.graphics().setDepth(OUTLINE_DEPTH);
         this.debugGfx = isDebug() ? this.add.graphics().setDepth(DEBUG_DEPTH) : null;
@@ -940,6 +947,7 @@ export class LevelScene extends Scene
         this.stopBob();
         const w = this.walk;
         this.walk = null;
+        this.applyTexture();   // walk animation → idle
         w?.resolve();
     }
 
@@ -982,9 +990,35 @@ export class LevelScene extends Scene
     {
         if (!this.ksyusha) return;
         const up = this.facing === 'ur' || this.facing === 'ul';
-        const key = this.ksyushaKey(up, this.pose);
-        this.ksyusha.setTexture(key).setScale(this.spriteScale(key));
+        const key = this.walkAnimKey() ?? this.ksyushaKey(up, this.pose);
+        showVisual(this.ksyusha, key);
+        this.ksyusha.setScale(this.spriteScale(key));
         this.ksyusha.setFlipX(this.facing === 'dl' || this.facing === 'ul');   // left poses mirror the right ones
+    }
+
+    /**
+     * Animation of Ksyusha's walk for the current direction, if the author made one:
+     * `ksyusha_<style>_ur_walk` when walking up (falls back to `dr_walk`), `ksyusha_<style>_dr_walk` otherwise.
+     * Undefined when she is not walking, is in another pose or there are no walk frames.
+     */
+    private walkAnimKey (): string | undefined
+    {
+        if (!this.walk || this.pose !== 'idle') return undefined;
+        const st = this.charStyle();
+        const up = this.facing === 'ur' || this.facing === 'ul';
+        return firstAnimated(this, up ? [`ksyusha_${st}_ur_walk`, `ksyusha_${st}_dr_walk`] : [`ksyusha_${st}_dr_walk`]);
+    }
+
+    /** Spitz: `spitz_<style>_walk` while he follows (if there is such an animation), else `spitz_<style>_idle`. */
+    private applySpitzVisual (moving: boolean)
+    {
+        const sp = this.spitz;
+        if (!sp || this.spitzMoving === moving) return;
+        this.spitzMoving = moving;
+        const st = this.charStyle();
+        const key = (moving ? firstAnimated(this, [`spitz_${st}_walk`]) : undefined) ?? `spitz_${st}_idle`;
+        showVisual(sp, key);
+        sp.setScale(this.spriteScale(key));
     }
 
     /** Art style of the characters on this screen: w1/w2/w3; the finale uses world 3, the post-credits scene world 1. */
@@ -1002,9 +1036,11 @@ export class LevelScene extends Scene
         return `ksyusha_${this.charStyle()}_${dir}_${pose}`;
     }
 
-    /** Real world-1 pixel sprites are scaled ×4; placeholders and other worlds stay 1:1. */
+    /** Real world-1 pixel sprites (and their animations) are scaled ×4; placeholders and other worlds stay 1:1. */
     private spriteScale (key: string): number
     {
+        const owner = this.anims.exists(key) ? animOwner(key) : undefined;
+        if (owner) return owner.pixelArt ? PIXEL_SCALE : 1;
         if (isPlaceholder(key)) return 1;
         const e = getGameData()?.manifest.entries.find(x => x.key === key);
         return e?.pixelArt ? PIXEL_SCALE : 1;
@@ -1051,8 +1087,9 @@ export class LevelScene extends Scene
         }
         if (remaining > 0) {
             // trail shorter than the follow distance: do not move closer than it
-            if (distance({ x: sp.x, y: sp.y }, this.pos) <= SPITZ_FOLLOW_DIST) return;
+            if (distance({ x: sp.x, y: sp.y }, this.pos) <= SPITZ_FOLLOW_DIST) { this.applySpitzVisual(false); return; }
         }
+        this.applySpitzVisual(target.x !== sp.x || target.y !== sp.y);
         if (target.x !== sp.x) sp.setFlipX(target.x < sp.x);
         sp.setPosition(target.x, target.y).setDepth(target.y);
     }

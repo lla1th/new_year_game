@@ -12,7 +12,7 @@ export interface TransitionData {
     /** The old frame (renderer snapshot). */
     image: HTMLImageElement;
     /** Ksyusha / spitz stay where they were on screen during the transition. */
-    actors: { texture: string; flipX: boolean; scale: number; pos: Vec2 }[];
+    actors: { texture: string; frame?: string | number; flipX: boolean; scale: number; pos: Vec2 }[];
 }
 
 /**
@@ -37,7 +37,7 @@ export class TransitionScene extends Scene {
         this.rt.draw(old);
         this.rt.render();
         old.destroy();
-        this.actors = data.actors.map(a => this.add.image(a.pos.x, a.pos.y, a.texture).setOrigin(0.5, 1).setFlipX(a.flipX).setScale(a.scale));
+        this.actors = data.actors.map(a => this.add.image(a.pos.x, a.pos.y, a.texture, a.frame).setOrigin(0.5, 1).setFlipX(a.flipX).setScale(a.scale));
         this.ensureBrush();
     }
 

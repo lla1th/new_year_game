@@ -63,7 +63,7 @@ registerAnim('spitz_out', scene => new Promise<void>(resolve => {
 /** Ksyusha and the spitz are sucked into the terrarium (0.8 s) with a flash. */
 registerAnim('portal', scene => new Promise<void>(resolve => {
     const p = point(scene, 'portal', scene.position);
-    const targets = [scene.ksyusha, scene.spitz].filter((o): o is GameObjects.Image => !!o);
+    const targets = [scene.ksyusha, scene.spitz].filter((o): o is GameObjects.Sprite => !!o);
     scene.playSfx('sfx_portal');
     scene.tweens.add({ targets, x: p.x, y: p.y, scale: 0, angle: 360, duration: 800, ease: 'Cubic.easeIn' });
     scene.time.delayedCall(800, () => { scene.cameras.main.flash(250, 255, 255, 255); resolve(); });
