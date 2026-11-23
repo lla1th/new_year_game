@@ -40,6 +40,7 @@ beforeEach(() => {
     wait: async () => {},
     checkpoint: () => { log.push('checkpoint'); },
     progress: () => {},
+    chooseName: async () => { log.push('chooseName'); },
   };
   runner = new ScriptRunner(ctx);
 });

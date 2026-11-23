@@ -12,6 +12,7 @@ export const uiState = reactive({
     cursor: 'default' as string,
     checkpointVisible: false,
     puzzleOpen: false,
+    nameOpen: false,          // экран выбора имени шпица
     puzzleTakesItems: false,
     ending: null as null | 'card' | 'credits',
 });

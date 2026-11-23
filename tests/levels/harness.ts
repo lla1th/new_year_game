@@ -36,6 +36,7 @@ export function harness(level: LevelScript, opts: { puzzles?: Partial<Record<Puz
     wait: async () => {},
     checkpoint: () => { log.push('checkpoint'); },
     progress: () => {},
+    chooseName: async () => { log.push('chooseName'); },
   };
   const runner = new ScriptRunner(ctx);
   const scr = () => level.screens[screen];

@@ -20,6 +20,7 @@ import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registr
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 import { openShortcut } from './overlayClose';
 import { TransitionScene, type TransitionData } from './TransitionScene';
+import { applyNameChoice, applySpitzName } from '../data/names';
 import { getAudio } from '../audio/AudioManager';
 import { ambientForLevel, musicForLevel } from '../audio/volume';
 import { combineItems } from '../../puzzles/logic/combine';
@@ -86,6 +87,7 @@ export class LevelScene extends Scene
     // characters
     ksyusha: GameObjects.Image;
     spitz: GameObjects.Image | null = null;
+    private nameCancel: (() => void) | null = null;
     private pos: Vec2 = { x: 0, y: 0 };
     private facing: Facing = 'dr';
     private pose: Pose = 'idle';
@@ -365,6 +367,7 @@ export class LevelScene extends Scene
             for (const release of [...this.pendingTalk]) release();
             this.pendingTalk.clear();
             this.talking = 0;
+            this.nameCancel?.();   // a stopped scene must not leave the name screen open
             this.skipCutscene = null;
             this.actionHotspot = null;
             this.busy = false;
@@ -700,12 +703,40 @@ export class LevelScene extends Scene
             cutscene: name => this.playCutscene(name),
             wait: ms => new Promise(resolve => this.time.delayedCall(ms, resolve)),
             checkpoint: () => this.checkpoint(),
+            chooseName: () => this.chooseName(),
             progress: () => {
                 this.hints?.notifyProgress();
                 this.refreshVisuals();
                 this.updateMusic();
             },
         };
+    }
+
+    /**
+     * Экран выбора имени шпица. Если имя уже выбрано (загрузка сохранения), экран не открывается,
+     * имя только восстанавливается в текстах. «Марат» не выбирается: шпиц говорит реплику, экран остаётся.
+     */
+    async chooseName (): Promise<void>
+    {
+        const texts = getGameData()?.texts;
+        if (gameState.spitzName === null) {
+            await new Promise<void>(resolve => {
+                const finish = () => { this.nameCancel = null; off(); resolve(); };
+                const off = bus.on('name:pick', ({ option }) => {
+                    if (option === 3 || applyNameChoice(gameState, option) === 'locked') {
+                        void this.say('spitz', 'l01.name.marat.locked');
+                        return;
+                    }
+                    if (texts) applySpitzName(gameState, texts);
+                    this.hints?.notifyProgress();
+                    finish();
+                    bus.emit('name:done', { option });
+                });
+                this.nameCancel = () => { finish(); bus.emit('name:done', { option: 1 }); };
+                bus.emit('name:open');
+            });
+        }
+        if (texts) applySpitzName(gameState, texts);
     }
 
     say (speaker: SpeakerId, key: string): Promise<void>

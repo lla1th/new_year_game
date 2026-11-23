@@ -10,6 +10,7 @@ import { isDebug } from './game/debug';
 import { gameState } from './state/gameState';
 import { loadGame } from './state/SaveService';
 import { startScreen } from './game/levels';
+import { applySpitzName } from './game/data/names';
 import { startStateFor } from './game/levels/startState';
 import { PUZZLES_WITH_ITEMS } from './puzzles/itemPuzzles';
 import PhaserGame from './PhaserGame.vue';
@@ -20,6 +21,7 @@ import DialogBox from './ui/DialogBox.vue';
 import Hud from './ui/Hud.vue';
 import Inventory from './ui/Inventory.vue';
 import MainMenu from './ui/MainMenu.vue';
+import NameChoice from './ui/NameChoice.vue';
 import PauseMenu from './ui/PauseMenu.vue';
 import LoadingOverlay from './ui/LoadingOverlay.vue';
 import RotateOverlay from './ui/RotateOverlay.vue';
@@ -53,7 +55,10 @@ function play (level: LevelId, screen?: string | null) {
     uiState.paused = false;
     uiState.dialogActive = false;
     uiState.puzzleOpen = false;
+    uiState.nameOpen = false;
     uiState.screen = 'game';
+    const texts = getGameData()?.texts;
+    if (texts) applySpitzName(gameState, texts);   // the chosen name (or «Шпиц») in every line from the first one
     startLevel(level, screen);
 }
 
@@ -140,6 +145,7 @@ function toMenu () {
     uiState.paused = false;
     uiState.dialogActive = false;
     uiState.puzzleOpen = false;
+    uiState.nameOpen = false;
     uiState.screen = 'menu';
     menuKey.value++;   // re-read the save for "Continue"
 }
@@ -161,6 +167,8 @@ onMounted(async () => {
             uiState.cursor = 'default';
         }),
         bus.on('puzzle:close', () => { uiState.puzzleOpen = false; uiState.puzzleTakesItems = false; }),
+        bus.on('name:open', () => { uiState.nameOpen = true; }),
+        bus.on('name:done', () => { uiState.nameOpen = false; }),
         bus.on('ending:card', () => { uiState.ending = 'card'; }),
         bus.on('ending:done', () => toMenu()),
         bus.on('checkpoint', () => {
@@ -208,6 +216,7 @@ onUnmounted(() => {
                 <Hud v-show="!uiState.ending" @pause="pause(true)" />
                 <!-- Hidden on overlay screens that take no items. -->
                 <div v-show="!uiState.ending && (!uiState.puzzleOpen || uiState.puzzleTakesItems)" class="layer"><Inventory @inspect="inspectItem" /></div>
+                <NameChoice v-if="uiState.nameOpen" />
                 <DialogBox ref="dialogBox" />
                 <DebugPanel v-if="debug" />
                 <EndingCard v-if="uiState.ending === 'card'" @next="endingNext" />

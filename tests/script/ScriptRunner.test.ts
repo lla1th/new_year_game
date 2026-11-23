@@ -20,6 +20,7 @@ function fakeCtx() {
     wait: async ms => { log.push(`wait:${ms}`); },
     checkpoint: () => { log.push('checkpoint'); },
     progress: () => { log.push('progress'); },
+    chooseName: async () => { log.push('chooseName'); },
   };
   return { ctx, log, releaseAnim: () => release?.() };
 }
@@ -43,6 +44,12 @@ describe('ScriptRunner', () => {
     ]);
     expect(log).toEqual(['dialog:d', 'progress', 'sfx:s', 'walkTo:spawn', 'puzzle:fridge', 'goto:L02:', 'goto:L03:top', 'cutscene:c', 'wait:5', 'checkpoint']);
     expect(ctx.state.parts).toEqual(['PART_GEAR']);
+  });
+
+  test('chooseName step calls the context once and runs before the next step', async () => {
+    const { ctx, log } = fakeCtx();
+    await new ScriptRunner(ctx).run([{ chooseName: true }, { say: 'spitz', key: 'after' }]);
+    expect(log).toEqual(['chooseName', 'say:spitz:after']);
   });
 
   test('a step does not start before the previous one has finished', async () => {

@@ -19,6 +19,9 @@ export type GameEvents = {
     'ending:post': void;           // credits finished → post-credits scene (Vue → Phaser)
     'ending:done': void;           // post-credits scene finished → main menu (Phaser → Vue)
     'loading': { progress: number | null };   // level loading 0..1; null = done (loading screen)
+    'name:open': void;                        // показать выбор имени шпица (Phaser → Vue)
+    'name:pick': { option: 1 | 2 | 3 };       // игрок нажал кнопку имени (Vue → Phaser)
+    'name:done': { option: 1 | 2 };           // имя выбрано, экран закрыть
     'part:drop': { partId: PartId; x: number; y: number };   // a Clock part dropped from the indicator (game coordinates)
 };
 

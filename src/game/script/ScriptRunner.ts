@@ -15,6 +15,7 @@ export interface ScriptContext {
     wait(ms: number): Promise<void>;
     checkpoint(): void;
     progress(): void;                                // tell HintSystem about progress
+    chooseName(): Promise<void>;                     // экран выбора имени шпица; резолвится после выбора
 }
 
 export class ScriptRunner {
@@ -63,6 +64,7 @@ export class ScriptRunner {
         if ('cutscene' in step) return c.cutscene(step.cutscene);
         if ('wait' in step) return c.wait(step.wait);
         if ('checkpoint' in step) { c.checkpoint(); return; }
+        if ('chooseName' in step) return c.chooseName();
         const never: never = step;
         throw new Error(`unknown script step ${JSON.stringify(never)}`);
     }
