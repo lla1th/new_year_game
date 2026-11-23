@@ -17,33 +17,47 @@ export type ItemId =
   | 'ITEM_BULB_GREEN' | 'ITEM_BULB_GOLD' | 'ITEM_BULB_BLUE'
   | 'ITEM_GATE_KEY' | 'ITEM_COCOA'
   | 'ITEM_CANDY_CANE' | 'ITEM_VALVE' | 'ITEM_MITTENS'
-  | 'ITEM_RIBBON' | 'ITEM_GINGER_MEDAL' | 'ITEM_KEEPER_MEDAL';
+  | 'ITEM_RIBBON' | 'ITEM_GINGER_MEDAL' | 'ITEM_KEEPER_MEDAL'
+  // переработка 23.11 (R0):
+  | 'ITEM_BULB_RED' | 'ITEM_BULB_YELLOW' | 'ITEM_FOIL' | 'ITEM_SHED_KEY' | 'ITEM_PUMP' | 'ITEM_PARCEL' | 'ITEM_OILCAN'
+  | 'ITEM_DUSTER' | 'ITEM_FEATHER' | 'ITEM_POWDER' | 'ITEM_SNOW' | 'ITEM_PEN' | 'ITEM_LETTER_M' | 'ITEM_PENCIL'
+  | 'ITEM_TINSEL_BALL' | 'ITEM_WIND_KEY';
 
 export const ALL_ITEM_IDS: readonly ItemId[] = [
   'ITEM_MANDARIN', 'ITEM_SAUSAGE', 'ITEM_BULB_GREEN', 'ITEM_BULB_GOLD', 'ITEM_BULB_BLUE',
   'ITEM_GATE_KEY', 'ITEM_COCOA', 'ITEM_CANDY_CANE', 'ITEM_VALVE', 'ITEM_MITTENS',
   'ITEM_RIBBON', 'ITEM_GINGER_MEDAL', 'ITEM_KEEPER_MEDAL',
+  'ITEM_BULB_RED', 'ITEM_BULB_YELLOW', 'ITEM_FOIL', 'ITEM_SHED_KEY', 'ITEM_PUMP', 'ITEM_PARCEL', 'ITEM_OILCAN',
+  'ITEM_DUSTER', 'ITEM_FEATHER', 'ITEM_POWDER', 'ITEM_SNOW', 'ITEM_PEN', 'ITEM_LETTER_M', 'ITEM_PENCIL',
+  'ITEM_TINSEL_BALL', 'ITEM_WIND_KEY',
 ];
 
 export type PartId = 'PART_SPRING' | 'PART_GEAR' | 'PART_HANDS';
 
 export const FLAG_IDS = [
-  'L01_SPITZ_FREED', 'L01_PORTAL_OPEN', 'L01_PORTAL_ENTERED',
+  'L01_SPITZ_FREED', 'L01_PORTAL_OPEN', 'L01_PORTAL_ENTERED', 'L01_NAME_CHOSEN', 'L01_BRIEFING_DONE',
   'L02_SNOWMAN_SAD', 'L02_SNOWMAN_HAPPY', 'L02_CAROUSEL_SPUN', 'L02_BULB_GREEN_TAKEN', 'L02_BULB_BLUE_TAKEN', 'L02_GARLAND_DONE', 'L02_GATE_OPEN',
+  'L02_FOIL_TAKEN', 'L02_BULB_RED_TAKEN', 'L02_CAT_SCENE_DONE', 'L02_SHED_KEY_TAKEN', 'L02_SHED_OPEN', 'L02_PUMP_TAKEN',
+  'L02_BULBS_PLACED', 'L02_FUELED', 'L02_GENERATOR_ON', 'L02_FAIR_ALIVE', 'L02_GALLERY_WON', 'L02_FINISHED',
   'L03_DOOR_OPEN', 'L03_OWL_AWAKE', 'L03_FRESCO_SEEN', 'L03_BELLS_DONE',
+  'L03_PARCEL_TAKEN', 'L03_BELLS_OILED',
   'L04_VALVE_TAKEN', 'L04_VALVE_INSTALLED', 'L04_PIPES_DONE',
+  'L04_MARMELADYCH_AWAY', 'L04_TANK_FILLED',
   'L05_ENTERED', 'L05_CRATES_DONE',
-  'L06_BRIDGE_DONE',
-  'L07_DRAWING_FOUND', 'L07_RIBBON_GIVEN', 'L07_MEDAL_GIVEN', 'L07_CAT_RECONCILED',
-  'L08_PARTS_INSERTED', 'L08_GIFT_OPENED',
+  'L05_SEMYON_AGREED', 'L05_SEMYON_PASSED', 'L05_STRANGER_SEEN', 'L05_PEN_HINT',
+  'L06_BRIDGE_DONE', 'L06_PENCIL_TAKEN', 'L06_LADDER_DRAWN',
+  'L07_DRAWING_FOUND', 'L07_RIBBON_GIVEN', 'L07_MEDAL_GIVEN', 'L07_CAT_RECONCILED', 'L07_GATE_OPEN',
+  'L08_PARTS_INSERTED', 'L08_GIFT_OPENED', 'L08_OUTFIT_DONE', 'L08_KEY_TAKEN',
   'GAME_COMPLETED',
 ] as const;
 export type FlagId = typeof FLAG_IDS[number];
 
-export type PuzzleId = 'P-02' | 'P-03' | 'P-04' | 'P-05' | 'P-06' | 'P-08'
+export type PuzzleId = 'P-02' | 'P-03' | 'P-04' | 'P-05' | 'P-06' | 'P-08' | 'P-09' | 'S-02b'
   | 'fridge' | 'fresco' | 'drawing' | 'clock';   // приближённые экраны без логики головоломки тоже открываются как «puzzle»
 
-export type SpeakerId = 'ksyusha' | 'spitz' | 'cat' | 'snail' | 'nika' | 'lekha' | 'owl' | 'snowman' | 'ginger';
+export type SpeakerId = 'ksyusha' | 'spitz' | 'cat' | 'snail' | 'nika' | 'lekha' | 'owl' | 'snowman' | 'ginger'
+  | 'sveta' | 'vendor' | 'monkey' | 'timofey' | 'grisha' | 'marmeladych' | 'klava' | 'semyon'
+  | 'cactus' | 'crow' | 'bambah' | 'tik' | 'tak' | 'pendulum' | 'mask' | 'stranger';
 export type Facing = 'dr' | 'dl' | 'ur' | 'ul';
 export type CursorKind = 'default' | 'hand' | 'eye' | 'gear' | 'talk' | 'exit';
 
@@ -100,17 +114,20 @@ export function parseTiledMap(json: unknown): LevelMap;   // бросает Erro
 `src/state/GameStateModel.ts`
 ```ts
 export interface SaveData {
-  version: 1; levelId: LevelId; screenId: string | null;
+  version: 2; levelId: LevelId; screenId: string | null;
   flags: Partial<Record<FlagId, boolean>>; inventory: ItemId[]; parts: PartId[];
   completed: boolean; savedAt: string;
+  spitzName: 1 | 2 | null; talksSeen: string[];   // R0: имя шпица (вариант) и просмотренные разговоры
 }
 export class GameStateModel {
   levelId: LevelId; screenId: string | null;
   flags: Partial<Record<FlagId, boolean>>; inventory: ItemId[]; parts: PartId[]; completed: boolean;
+  spitzName: 1 | 2 | null; talksSeen: string[];
+  markTalkSeen(id: string): void;  hasSeenTalk(id: string): boolean;   // без дублей
   hasFlag(f: FlagId): boolean;  setFlag(f: FlagId): void;
   hasItem(i: ItemId): boolean;  addItem(i: ItemId): boolean;  removeItem(i: ItemId): void;  // addItem: false если полон или уже есть
   addPart(p: PartId): void;     removePart(p: PartId): void;
-  toSaveData(now?: Date): SaveData;  loadFrom(d: SaveData): void;  reset(): void;   // reset → L01, всё пусто
+  toSaveData(now?: Date): SaveData;  loadFrom(d: SaveData): void;  reset(): void;   // reset → L01, всё пусто (и spitzName, talksSeen)
 }
 ```
 `src/state/gameState.ts` — `export const gameState = reactive(new GameStateModel())` (Vue `reactive`).
@@ -122,7 +139,7 @@ export const SETTINGS_KEY = 'onye-settings-v1';
 export interface Settings { musicVolume: number; sfxVolume: number; textSpeed: 'slow' | 'normal' | 'fast'; fullscreen: boolean }
 export const DEFAULT_SETTINGS: Settings = { musicVolume: 70, sfxVolume: 80, textSpeed: 'normal', fullscreen: false };
 export function saveGame(d: SaveData, storage?: Storage): void;
-export function loadGame(storage?: Storage): SaveData | null;     // null: нет, повреждено, version !== 1
+export function loadGame(storage?: Storage): SaveData | null;     // null: нет, повреждено, version !== 2 (сохранения v1 отбрасываются: уровни переделаны)
 export function clearSave(storage?: Storage): void;
 export function loadSettings(storage?: Storage): Settings;        // недостающие поля — из DEFAULT_SETTINGS
 export function saveSettings(s: Settings, storage?: Storage): void;
@@ -169,7 +186,8 @@ export const bus: TypedEmitter<GameEvents>;
 // src/game/data/TextBank.ts
 export class TextBank {
   constructor(dict: Record<string, string>, names: Record<string, string>);
-  t(key: string): string;            // подставляет {name.spitz} и т.п.; нет ключа → `⟨key⟩` + console.warn
+  t(key: string): string;            // подставляет {name.spitz} и т.п. (алиас {spitz}); нет ключа → `⟨key⟩` + console.warn
+  setName(id: string, value: string): void;   // R0: сменить имя (шпиц после выбора); до выбора — «Шпиц»
   randomVariant(prefix: string, rng?: () => number, avoid?: string): { key: string; text: string };
   // ключи prefix.1 … prefix.N; не возвращает avoid, если N > 1
 }
