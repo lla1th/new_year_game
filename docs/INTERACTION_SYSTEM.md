@@ -98,7 +98,8 @@
 | `L07_DRAWING_FOUND` | Рисунок найден |
 | `L07_RIBBON_GIVEN` / `L07_MEDAL_GIVEN` | Подруги отдали предметы |
 | `L07_CAT_RECONCILED` | P-07 решена |
-| `L08_PARTS_INSERTED` | Все 3 детали вставлены |
+| `L08_OUTFIT_DONE` | P-09 решена (Ксюша и шпиц нарядились) — **[НОВОЕ]** |
+| `L08_PARTS_INSERTED` | Все 3 детали вставлены (доступно только после `L08_OUTFIT_DONE`) |
 | `L08_GIFT_OPENED` | P-08 решена |
 | `GAME_COMPLETED` | Досмотрена сцена после титров (или P-08 решена — **[PROPOSED]**: ставится при решении P-08, чтобы выбор уровней открылся даже без досмотра титров) |
 
@@ -115,6 +116,6 @@
 | L05 | `L05_CRATES_DONE` | `hint.P-05.*` |
 | L06 | `L06_BRIDGE_DONE` | `hint.P-06.*` |
 | L07 | `L07_DRAWING_FOUND` → `L07_CAT_RECONCILED` | `hint.P-07.*` |
-| L08 | `L08_PARTS_INSERTED` → `L08_GIFT_OPENED` | «Вставь детали в Часы» → `hint.P-08.*` |
+| L08 | `L08_OUTFIT_DONE` → `L08_PARTS_INSERTED` → `L08_GIFT_OPENED` | `hint.P-09.*` → «Вставь детали в Часы» → `hint.P-08.*` |
 
 \* Цель «войти в портал» завершается переходом на следующий уровень.
