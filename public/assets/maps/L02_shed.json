@@ -1,0 +1,358 @@
+{
+  "compressionlevel": -1,
+  "height": 135,
+  "width": 240,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.11.2",
+  "tilesets": [],
+  "properties": [
+    {
+      "name": "background",
+      "value": "w1_shed_bg",
+      "type": "string"
+    },
+    {
+      "name": "footsteps",
+      "value": "snow",
+      "type": "string"
+    },
+    {
+      "name": "levelId",
+      "value": "L02",
+      "type": "string"
+    },
+    {
+      "name": "music",
+      "value": "mus_world1",
+      "type": "string"
+    },
+    {
+      "name": "pixelArt",
+      "value": true,
+      "type": "bool"
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "walkable",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 4,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 460
+            },
+            {
+              "x": 0,
+              "y": 460
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "blockers",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": []
+    },
+    {
+      "id": 3,
+      "name": "hotspots",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "generator",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 780,
+          "y": 220,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 380,
+              "y": 0
+            },
+            {
+              "x": 380,
+              "y": 380
+            },
+            {
+              "x": 0,
+              "y": 380
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 960,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "gear",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "barrel",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1300,
+          "y": 380,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 240
+            },
+            {
+              "x": 0,
+              "y": 240
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1400,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "exit_shed",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 300
+            },
+            {
+              "x": 0,
+              "y": 300
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 190,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "points",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 5,
+          "name": "spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 300,
+          "y": 850,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 6,
+          "name": "spitz_spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 220,
+          "y": 900,
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "sprites",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 7,
+          "name": "generator",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 960,
+          "y": 600,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 601,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_generator",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "barrel",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1400,
+          "y": 620,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 621,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_barrel",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nextlayerid": 6,
+  "nextobjectid": 9
+}

@@ -1,0 +1,382 @@
+{
+  "compressionlevel": -1,
+  "height": 135,
+  "width": 240,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.11.2",
+  "tilesets": [],
+  "properties": [
+    {
+      "name": "background",
+      "value": "w1_tent_bg",
+      "type": "string"
+    },
+    {
+      "name": "footsteps",
+      "value": "snow",
+      "type": "string"
+    },
+    {
+      "name": "levelId",
+      "value": "L02",
+      "type": "string"
+    },
+    {
+      "name": "music",
+      "value": "mus_world1",
+      "type": "string"
+    },
+    {
+      "name": "pixelArt",
+      "value": true,
+      "type": "bool"
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "walkable",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 4,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 460
+            },
+            {
+              "x": 0,
+              "y": 460
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "blockers",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": []
+    },
+    {
+      "id": 3,
+      "name": "hotspots",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "nika",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1000,
+          "y": 280,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 330
+            },
+            {
+              "x": 0,
+              "y": 330
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1100,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "talk",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "teleporter",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1360,
+          "y": 220,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 320,
+              "y": 0
+            },
+            {
+              "x": 320,
+              "y": 400
+            },
+            {
+              "x": 0,
+              "y": 400
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1500,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "gear",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "exit_tent",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 300
+            },
+            {
+              "x": 0,
+              "y": 300
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 190,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "points",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 5,
+          "name": "spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 300,
+          "y": 850,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 6,
+          "name": "spitz_spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 220,
+          "y": 900,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 7,
+          "name": "cat_start",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 900,
+          "y": 740,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 8,
+          "name": "cat_hole",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1420,
+          "y": 520,
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "sprites",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 9,
+          "name": "nika_ice",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1100,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 641,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_nika_ice",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "name": "cat",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 900,
+          "y": 740,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 741,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_cat",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nextlayerid": 6,
+  "nextobjectid": 11
+}

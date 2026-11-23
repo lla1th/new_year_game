@@ -1,0 +1,511 @@
+{
+  "compressionlevel": -1,
+  "height": 135,
+  "width": 240,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.11.2",
+  "tilesets": [],
+  "properties": [
+    {
+      "name": "background",
+      "value": "w1_gate_bg",
+      "type": "string"
+    },
+    {
+      "name": "footsteps",
+      "value": "snow",
+      "type": "string"
+    },
+    {
+      "name": "levelId",
+      "value": "L02",
+      "type": "string"
+    },
+    {
+      "name": "music",
+      "value": "mus_world1",
+      "type": "string"
+    },
+    {
+      "name": "pixelArt",
+      "value": true,
+      "type": "bool"
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "walkable",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 7,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 460
+            },
+            {
+              "x": 0,
+              "y": 460
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "blockers",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": []
+    },
+    {
+      "id": 3,
+      "name": "hotspots",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "gate",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1520,
+          "y": 200,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 280,
+              "y": 0
+            },
+            {
+              "x": 280,
+              "y": 200
+            },
+            {
+              "x": 0,
+              "y": 200
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1560,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 720,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "chain",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1520,
+          "y": 400,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 280,
+              "y": 0
+            },
+            {
+              "x": 280,
+              "y": 220
+            },
+            {
+              "x": 0,
+              "y": 220
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1560,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 740,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "pole",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 700,
+          "y": 160,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 460
+            },
+            {
+              "x": 0,
+              "y": 460
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 720,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "crate",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 940,
+          "y": 500,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 140
+            },
+            {
+              "x": 0,
+              "y": 140
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1040,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 740,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "urn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 300,
+          "y": 460,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 140,
+              "y": 0
+            },
+            {
+              "x": 140,
+              "y": 180
+            },
+            {
+              "x": 0,
+              "y": 180
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 380,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 740,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "poster",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 480,
+          "y": 200,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 200
+            },
+            {
+              "x": 0,
+              "y": 200
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 560,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 720,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "eye",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "points",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 8,
+          "name": "spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 300,
+          "y": 850,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 9,
+          "name": "spitz_spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 220,
+          "y": 900,
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "sprites",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 10,
+          "name": "gate_bars",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1660,
+          "y": 620,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 621,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_gate_bars",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "monkey",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 780,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 541,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_monkey",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nextlayerid": 6,
+  "nextobjectid": 12
+}

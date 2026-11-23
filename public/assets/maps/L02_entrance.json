@@ -1,0 +1,644 @@
+{
+  "compressionlevel": -1,
+  "height": 135,
+  "width": 240,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.11.2",
+  "tilesets": [],
+  "properties": [
+    {
+      "name": "background",
+      "value": "w1_entrance_bg",
+      "type": "string"
+    },
+    {
+      "name": "footsteps",
+      "value": "snow",
+      "type": "string"
+    },
+    {
+      "name": "levelId",
+      "value": "L02",
+      "type": "string"
+    },
+    {
+      "name": "music",
+      "value": "mus_world1",
+      "type": "string"
+    },
+    {
+      "name": "pixelArt",
+      "value": true,
+      "type": "bool"
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "walkable",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 8,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 460
+            },
+            {
+              "x": 0,
+              "y": 460
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "blockers",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": []
+    },
+    {
+      "id": 3,
+      "name": "hotspots",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "vendor",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 600,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 340
+            },
+            {
+              "x": 0,
+              "y": 340
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 700,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "talk",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "lantern",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 820,
+          "y": 380,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 120
+            },
+            {
+              "x": 0,
+              "y": 120
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 880,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "booth",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1100,
+          "y": 260,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 320,
+              "y": 0
+            },
+            {
+              "x": 320,
+              "y": 380
+            },
+            {
+              "x": 0,
+              "y": 380
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1260,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "frozen_walkers",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 200,
+          "y": 360,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 260
+            },
+            {
+              "x": 0,
+              "y": 260
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 300,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "eye",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            },
+            {
+              "name": "hiddenIf",
+              "value": "L02_FAIR_ALIVE",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "walkers",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 200,
+          "y": 360,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 260
+            },
+            {
+              "x": 0,
+              "y": 260
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 300,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "eye",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            },
+            {
+              "name": "enabledIf",
+              "value": "L02_FAIR_ALIVE",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "exit_gate",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 300
+            },
+            {
+              "x": 0,
+              "y": 300
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 180,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "exit_right",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1740,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 300
+            },
+            {
+              "x": 0,
+              "y": 300
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1700,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "points",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 9,
+          "name": "spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 300,
+          "y": 850,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 10,
+          "name": "spitz_spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 220,
+          "y": 900,
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "sprites",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 11,
+          "name": "vendor_ice",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 700,
+          "y": 700,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 701,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_vendor_ice",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "name": "lantern_bulb",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 880,
+          "y": 500,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 501,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_lantern_bulb",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "name": "booth_key",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1260,
+          "y": 520,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 521,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_booth_key",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "name": "frozen_walkers",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 300,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 641,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_frozen_walkers",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "name": "walkers",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 300,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 641,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_walkers",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nextlayerid": 6,
+  "nextobjectid": 16
+}

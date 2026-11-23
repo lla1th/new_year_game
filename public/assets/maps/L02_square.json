@@ -1,0 +1,695 @@
+{
+  "compressionlevel": -1,
+  "height": 135,
+  "width": 240,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.11.2",
+  "tilesets": [],
+  "properties": [
+    {
+      "name": "background",
+      "value": "w1_square_fair_bg",
+      "type": "string"
+    },
+    {
+      "name": "footsteps",
+      "value": "snow",
+      "type": "string"
+    },
+    {
+      "name": "levelId",
+      "value": "L02",
+      "type": "string"
+    },
+    {
+      "name": "music",
+      "value": "mus_world1",
+      "type": "string"
+    },
+    {
+      "name": "pixelArt",
+      "value": true,
+      "type": "bool"
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "walkable",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 9,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 460
+            },
+            {
+              "x": 0,
+              "y": 460
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "blockers",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": []
+    },
+    {
+      "id": 3,
+      "name": "hotspots",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "tent",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 700,
+          "y": 160,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 420,
+              "y": 0
+            },
+            {
+              "x": 420,
+              "y": 440
+            },
+            {
+              "x": 0,
+              "y": 440
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 900,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "snowman",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 300,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 320
+            },
+            {
+              "x": 0,
+              "y": 320
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 380,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "carousel",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1240,
+          "y": 320,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 300,
+              "y": 0
+            },
+            {
+              "x": 300,
+              "y": 300
+            },
+            {
+              "x": 0,
+              "y": 300
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1380,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "bulb_blue",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1380,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 60,
+              "y": 0
+            },
+            {
+              "x": 60,
+              "y": 60
+            },
+            {
+              "x": 0,
+              "y": 60
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1380,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 820,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            },
+            {
+              "name": "enabledIf",
+              "value": "L02_CAROUSEL_SPUN",
+              "type": "string"
+            },
+            {
+              "name": "hiddenIf",
+              "value": "L02_BULB_BLUE_TAKEN",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "snowdrift",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1560,
+          "y": 520,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 0
+            },
+            {
+              "x": 200,
+              "y": 180
+            },
+            {
+              "x": 0,
+              "y": 180
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1620,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 800,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "hand",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "radio",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 520,
+          "y": 520,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 100
+            },
+            {
+              "x": 0,
+              "y": 100
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 560,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "eye",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "shed_door",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1700,
+          "y": 220,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 140,
+              "y": 0
+            },
+            {
+              "x": 140,
+              "y": 280
+            },
+            {
+              "x": 0,
+              "y": 280
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1700,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 740,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "exit_left",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 300
+            },
+            {
+              "x": 0,
+              "y": 300
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 180,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 780,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "points",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 10,
+          "name": "spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 300,
+          "y": 850,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 11,
+          "name": "spitz_spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 220,
+          "y": 900,
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "sprites",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 12,
+          "name": "tent_ice",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 910,
+          "y": 600,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 601,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_tent_ice",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "name": "snowman_nose",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 380,
+          "y": 400,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 401,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_snowman_nose",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "name": "snowman_mandarin",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 380,
+          "y": 400,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 402,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_snowman_mandarin",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "name": "bulb_blue",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1380,
+          "y": 700,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 701,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_bulb_blue",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "pump_hose",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1660,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 641,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_pump_hose",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nextlayerid": 6,
+  "nextobjectid": 17
+}
