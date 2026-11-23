@@ -61,6 +61,7 @@ export class ScriptRunner {
         }
         if ('ifFlag' in step) return this.run(c.state.hasFlag(step.ifFlag) ? step.then : step.else ?? [], alive);
         if ('ifItem' in step) return this.run(c.state.hasItem(step.ifItem) ? step.then : step.else ?? [], alive);
+        if ('ifSpitzName' in step) return this.run(c.state.spitzName === step.ifSpitzName ? step.then : step.else ?? [], alive);
         if ('goto' in step) return c.goto(step.goto.level, step.goto.screen);
         if ('cutscene' in step) return c.cutscene(step.cutscene);
         if ('wait' in step) return c.wait(step.wait);

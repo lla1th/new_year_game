@@ -11,7 +11,8 @@ export type Step =
     | { openTalk: string }                   // меню разговоров, id из talks.json
     | { chooseName: true }                   // экран выбора имени шпица (L01)
     | { ifFlag: FlagId; then: Step[]; else?: Step[] }
-    | { ifItem: ItemId; then: Step[]; else?: Step[] };
+    | { ifItem: ItemId; then: Step[]; else?: Step[] }
+    | { ifSpitzName: 1 | 2; then: Step[]; else?: Step[] };   // по выбранному имени шпица
 
 export interface HotspotScript {
     hotspot: string;

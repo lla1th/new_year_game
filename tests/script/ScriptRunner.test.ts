@@ -71,6 +71,18 @@ describe('ScriptRunner', () => {
     expect(log).toEqual(['openTalk:spitz']);
   });
 
+  test('ifSpitzName branches on the chosen name', async () => {
+    const run = async (name: 1 | 2 | null) => {
+      const { ctx, log } = fakeCtx();
+      ctx.state.spitzName = name;
+      await new ScriptRunner(ctx).run([{ ifSpitzName: 2, then: [{ say: 'spitz', key: 'a' }], else: [{ say: 'spitz', key: 'b' }] }]);
+      return log;
+    };
+    expect(await run(2)).toEqual(['say:spitz:a']);
+    expect(await run(1)).toEqual(['say:spitz:b']);
+    expect(await run(null)).toEqual(['say:spitz:b']);
+  });
+
   test('a step does not start before the previous one has finished', async () => {
     const { ctx, log, releaseAnim } = fakeCtx();
     const runner = new ScriptRunner(ctx);
