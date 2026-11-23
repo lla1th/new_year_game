@@ -10,7 +10,8 @@
     "test": "vitest run",
     "e2e": "playwright test --trace off",
     "texts:build": "node --experimental-strip-types tools/build-texts.ts",
-    "texts:check": "node --experimental-strip-types tools/build-texts.ts --check"
+    "texts:check": "node --experimental-strip-types tools/build-texts.ts --check",
+    "maps:build": "node --experimental-strip-types tools/build-maps.ts"
   },
   "dependencies": {
     "phaser": "^4.2.1",
