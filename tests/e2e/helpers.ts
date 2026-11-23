@@ -47,11 +47,26 @@ export async function openGame(p: Page, query = '?debug=1'): Promise<Game> {
         return { busy: s.isBusy, walking: s.isWalking, level: s.currentLevel?.levelId ?? null, screen: s.currentScreenId, flags: Object.keys(st.flags), parts: [...st.parts] };
     });
     const overlayActive = () => p.evaluate(() => !!(window as unknown as { __levelScene?: { scene: { isActive(k: string): boolean } } }).__levelScene?.scene.isActive('OverlayScene'));
+    let maratTried = false;
     /** Clicks through every line that appears until the scene is idle (or an overlay screen is open). */
     const settle = async (max = 120_000): Promise<'idle' | 'overlay'> => {
         const t0 = Date.now();
         let quiet = 0;
         while (Date.now() - t0 < max) {
+            // The name screen of L01: «Марат» is locked (the screen stays), then the first name is chosen.
+            const nameScreen = p.locator('[data-test=name-choice]');
+            if (!(await p.locator('[data-test=dialog]').count()) && await nameScreen.count()) {
+                quiet = 0;
+                if (!maratTried) {
+                    maratTried = true;
+                    await p.locator('[data-test=name-3]').click({ force: true });
+                    await p.waitForTimeout(300);
+                    continue;
+                }
+                await p.locator('[data-test=name-1]').click({ force: true });
+                await p.waitForTimeout(300);
+                continue;
+            }
             const d = p.locator('[data-test=dialog]');
             if (await d.count()) {
                 quiet = 0;

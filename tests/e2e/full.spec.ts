@@ -22,6 +22,10 @@ test('full playthrough L01 → post-credits → main menu with the level select'
     await act(async () => drag(await slot('ITEM_MANDARIN'), 690, 620));
     await act(async () => drag(await slot('ITEM_SAUSAGE'), 690, 620));
     await act(() => click(1080, 360));
+    // ---- L01, the snail's workshop: the briefing, then the door
+    await waitLevel('L01', 'workshop');
+    await act(() => click(1100, 700));
+    await act(() => click(1800, 450));
     await waitLevel('L02');
     // ---- L02
     for (const [x, y] of [[230, 430], [1380, 490], [1680, 410], [1605, 675]]) await act(() => click(x, y));
