@@ -1,1 +1,175 @@
-{}
+{
+  "spitz": {
+    "speaker": "spitz",
+    "topics": [
+      {
+        "id": "clock",
+        "menuKey": "talk.spitz.clock.menu",
+        "dialog": "talk_spitz_clock"
+      },
+      {
+        "id": "cat",
+        "menuKey": "talk.spitz.cat.menu",
+        "dialog": "talk_spitz_cat",
+        "fromLevel": "L02"
+      },
+      {
+        "id": "sausage",
+        "menuKey": "talk.spitz.sausage.menu",
+        "dialog": "talk_spitz_sausage"
+      },
+      {
+        "id": "next",
+        "menuKey": "talk.spitz.next.menu",
+        "hint": true
+      },
+      {
+        "id": "worlds",
+        "menuKey": "talk.spitz.worlds.menu",
+        "dialog": "talk_spitz_worlds",
+        "fromLevel": "L04"
+      },
+      {
+        "id": "snail",
+        "menuKey": "talk.spitz.snail.menu",
+        "dialog": "talk_spitz_snail"
+      },
+      {
+        "id": "friends",
+        "menuKey": "talk.spitz.friends.menu",
+        "dialog": "talk_spitz_friends",
+        "fromLevel": "L02"
+      },
+      {
+        "id": "sveta",
+        "menuKey": "talk.spitz.sveta.menu",
+        "dialog": "talk_spitz_sveta",
+        "fromLevel": "L08",
+        "toLevel": "L08"
+      },
+      {
+        "id": "hat",
+        "menuKey": "talk.spitz.hat.menu",
+        "dialog": "talk_spitz_hat",
+        "once": true,
+        "when": "L07_DRAWING_FOUND",
+        "fromLevel": "L07",
+        "toLevel": "L07"
+      }
+    ]
+  },
+  "nika": {
+    "speaker": "nika",
+    "topics": [
+      {
+        "id": "fair",
+        "menuKey": "talk.nika.fair.menu",
+        "dialog": "talk_nika_fair",
+        "when": "L02_FAIR_ALIVE",
+        "fromLevel": "L02",
+        "toLevel": "L02"
+      },
+      {
+        "id": "cocoa",
+        "menuKey": "talk.nika.cocoa.menu",
+        "dialog": "talk_nika_cocoa",
+        "fromLevel": "L02",
+        "toLevel": "L02"
+      },
+      {
+        "id": "cat",
+        "menuKey": "talk.nika.cat.menu",
+        "dialog": "talk_nika_cat",
+        "fromLevel": "L06",
+        "toLevel": "L07"
+      },
+      {
+        "id": "sveta",
+        "menuKey": "talk.nika.sveta.menu",
+        "dialog": "talk_nika_sveta",
+        "fromLevel": "L06",
+        "toLevel": "L07"
+      }
+    ]
+  },
+  "lekha": {
+    "speaker": "lekha",
+    "topics": [
+      {
+        "id": "order",
+        "menuKey": "talk.lekha.order.menu",
+        "dialog": "talk_lekha_order",
+        "fromLevel": "L04",
+        "toLevel": "L04"
+      },
+      {
+        "id": "flour",
+        "menuKey": "talk.lekha.flour.menu",
+        "dialog": "talk_lekha_flour",
+        "fromLevel": "L04",
+        "toLevel": "L04"
+      },
+      {
+        "id": "cat",
+        "menuKey": "talk.lekha.cat.menu",
+        "dialog": "talk_lekha_cat",
+        "fromLevel": "L06",
+        "toLevel": "L07"
+      },
+      {
+        "id": "mask",
+        "menuKey": "talk.lekha.mask.menu",
+        "dialog": "talk_lekha_mask",
+        "fromLevel": "L06",
+        "toLevel": "L07"
+      },
+      {
+        "id": "sveta",
+        "menuKey": "talk.lekha.sveta.menu",
+        "dialog": "talk_lekha_sveta",
+        "fromLevel": "L06",
+        "toLevel": "L07"
+      }
+    ]
+  },
+  "sveta": {
+    "speaker": "sveta",
+    "topics": [
+      {
+        "id": "decor",
+        "menuKey": "talk.sveta.decor.menu",
+        "dialog": "talk_sveta_decor",
+        "unless": "L08_OUTFIT_DONE",
+        "fromLevel": "L08",
+        "toLevel": "L08"
+      },
+      {
+        "id": "time",
+        "menuKey": "talk.sveta.time.menu",
+        "dialog": "talk_sveta_time",
+        "fromLevel": "L08",
+        "toLevel": "L08"
+      },
+      {
+        "id": "friends",
+        "menuKey": "talk.sveta.friends.menu",
+        "dialog": "talk_sveta_friends",
+        "fromLevel": "L08",
+        "toLevel": "L08"
+      }
+    ]
+  },
+  "cat": {
+    "speaker": "cat",
+    "topics": [
+      {
+        "id": "clock",
+        "menuKey": "talk.cat.clock.menu",
+        "dialog": "talk_cat_clock",
+        "when": "L07_CAT_RECONCILED",
+        "fromLevel": "L07",
+        "toLevel": "L07"
+      }
+    ]
+  }
+}

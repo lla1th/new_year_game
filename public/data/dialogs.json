@@ -88,5 +88,179 @@
       "speaker": "snail",
       "key": "l08.dlg.snail.1"
     }
+  ],
+  "talk_spitz_clock": [
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.clock.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.clock.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.clock.3"
+    },
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.clock.4"
+    }
+  ],
+  "talk_spitz_cat": [
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.cat.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.cat.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.cat.3"
+    }
+  ],
+  "talk_spitz_sausage": [
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.sausage.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.sausage.2"
+    },
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.sausage.3"
+    }
+  ],
+  "talk_spitz_worlds": [
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.worlds.1"
+    }
+  ],
+  "talk_spitz_snail": [
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.snail.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.snail.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.snail.3"
+    }
+  ],
+  "talk_spitz_friends": [
+    {
+      "speaker": "ksyusha",
+      "key": "talk.spitz.friends.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.friends.2"
+    }
+  ],
+  "talk_spitz_sveta": [
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.sveta.1"
+    }
+  ],
+  "talk_spitz_hat": [
+    {
+      "speaker": "spitz",
+      "key": "talk.spitz.hat.1"
+    }
+  ],
+  "talk_nika_fair": [
+    {
+      "speaker": "nika",
+      "key": "talk.nika.fair.1"
+    }
+  ],
+  "talk_nika_cocoa": [
+    {
+      "speaker": "nika",
+      "key": "talk.nika.cocoa.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "talk.nika.cocoa.2"
+    },
+    {
+      "speaker": "nika",
+      "key": "talk.nika.cocoa.3"
+    }
+  ],
+  "talk_nika_cat": [
+    {
+      "speaker": "nika",
+      "key": "talk.nika.cat.1"
+    }
+  ],
+  "talk_nika_sveta": [
+    {
+      "speaker": "nika",
+      "key": "talk.nika.sveta.1"
+    }
+  ],
+  "talk_lekha_order": [
+    {
+      "speaker": "lekha",
+      "key": "talk.lekha.order.1"
+    }
+  ],
+  "talk_lekha_flour": [
+    {
+      "speaker": "lekha",
+      "key": "talk.lekha.flour.1"
+    }
+  ],
+  "talk_lekha_cat": [
+    {
+      "speaker": "lekha",
+      "key": "talk.lekha.cat.1"
+    }
+  ],
+  "talk_lekha_mask": [
+    {
+      "speaker": "lekha",
+      "key": "talk.lekha.mask.1"
+    }
+  ],
+  "talk_lekha_sveta": [
+    {
+      "speaker": "lekha",
+      "key": "talk.lekha.sveta.1"
+    }
+  ],
+  "talk_sveta_decor": [
+    {
+      "speaker": "sveta",
+      "key": "talk.sveta.decor.1"
+    }
+  ],
+  "talk_sveta_time": [
+    {
+      "speaker": "sveta",
+      "key": "talk.sveta.time.1"
+    }
+  ],
+  "talk_sveta_friends": [
+    {
+      "speaker": "sveta",
+      "key": "talk.sveta.friends.1"
+    }
+  ],
+  "talk_cat_clock": [
+    {
+      "speaker": "cat",
+      "key": "talk.cat.clock.1"
+    }
   ]
 }
