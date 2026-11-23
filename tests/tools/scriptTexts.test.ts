@@ -26,3 +26,9 @@ test('two speakers in one cell are skipped, not merged', () => {
   expect(r.skipped).toEqual(['l02.mix']);
   expect(r.texts['l02.mix']).toBeUndefined();
 });
+
+test('an author mark with quotes inside stays a blank, not a text', () => {
+  const r = parseScriptTables('| `l01.name.marat.locked` | Шпиц | **[ЗАПОЛНИТЬ автору — реплика про «Марат»]** |');
+  expect(r.blanks).toEqual(['l01.name.marat.locked']);
+  expect(r.texts['l01.name.marat.locked']).toBe('⟨заполнить: l01.name.marat.locked⟩');
+});

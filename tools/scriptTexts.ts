@@ -22,7 +22,8 @@ export function parseScriptTables(markdown: string): ParsedTexts {
     const key = m[1];
     const rest = cells.slice(1);
 
-    const cell = rest.find(c => c.includes('«'));
+    // Пометка автора важнее кавычек внутри неё: «[ЗАПОЛНИТЬ … про «Марат»]» — это поле автора, а не текст.
+    const cell = rest.find(c => c.includes('«') && !c.includes('ЗАПОЛНИТЬ'));
     if (cell !== undefined) {
       const speakers = new Set([...cell.matchAll(SPEAKER_RE)].map(s => s[1].trim()));
       const first = cell.indexOf('«');
