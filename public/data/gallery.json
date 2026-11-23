@@ -1,0 +1,15 @@
+{
+  "_comment": "ПОЛЯ АВТОРА (SCRIPT §5.5): параметры тира и таблица рекордов. Пока там черновик; null — не заполнено (игра показывает «—» и берёт fallbackTop).",
+  "rules": {
+    "shots": 20,
+    "points": { "red": 1, "gold": 3, "black": -2 },
+    "fallbackTop": 20
+  },
+  "board": [
+    { "name": "Шпиц-хранитель", "points": null },
+    { "name": null, "points": null },
+    { "name": null, "points": null },
+    { "name": null, "points": null },
+    { "name": null, "points": null }
+  ]
+}
