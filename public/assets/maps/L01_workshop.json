@@ -1,0 +1,761 @@
+{
+  "compressionlevel": -1,
+  "height": 135,
+  "width": 240,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.11.2",
+  "tilesets": [],
+  "properties": [
+    {
+      "name": "background",
+      "value": "w1_workshop_bg",
+      "type": "string"
+    },
+    {
+      "name": "footsteps",
+      "value": "floor",
+      "type": "string"
+    },
+    {
+      "name": "levelId",
+      "value": "L01",
+      "type": "string"
+    },
+    {
+      "name": "music",
+      "value": "mus_l01",
+      "type": "string"
+    },
+    {
+      "name": "pixelArt",
+      "value": true,
+      "type": "bool"
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "walkable",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 9,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 80,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 0
+            },
+            {
+              "x": 1760,
+              "y": 460
+            },
+            {
+              "x": 0,
+              "y": 460
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "blockers",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 10,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 240,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 360,
+              "y": 0
+            },
+            {
+              "x": 360,
+              "y": 90
+            },
+            {
+              "x": 0,
+              "y": 90
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 960,
+          "y": 600,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 400,
+              "y": 0
+            },
+            {
+              "x": 400,
+              "y": 110
+            },
+            {
+              "x": 0,
+              "y": 110
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "name": "",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1480,
+          "y": 540,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 260,
+              "y": 0
+            },
+            {
+              "x": 260,
+              "y": 90
+            },
+            {
+              "x": 0,
+              "y": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "hotspots",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "board",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 240,
+          "y": 180,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 360,
+              "y": 0
+            },
+            {
+              "x": 360,
+              "y": 360
+            },
+            {
+              "x": 0,
+              "y": 360
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 420,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 700,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "eye",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "bench",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 960,
+          "y": 420,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 400,
+              "y": 0
+            },
+            {
+              "x": 400,
+              "y": 280
+            },
+            {
+              "x": 0,
+              "y": 280
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1160,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 800,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "eye",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "clock",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1480,
+          "y": 180,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 260,
+              "y": 0
+            },
+            {
+              "x": 260,
+              "y": 360
+            },
+            {
+              "x": 0,
+              "y": 360
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1610,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 700,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "eye",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "door",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1740,
+          "y": 300,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 300
+            },
+            {
+              "x": 0,
+              "y": 300
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1700,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 760,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "exit",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "snail",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1020,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 0
+            },
+            {
+              "x": 160,
+              "y": 120
+            },
+            {
+              "x": 0,
+              "y": 120
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1100,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 840,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "talk",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "tik",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1220,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 120
+            },
+            {
+              "x": 0,
+              "y": 120
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1280,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 840,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "talk",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "tak",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 1380,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 0
+            },
+            {
+              "x": 120,
+              "y": 120
+            },
+            {
+              "x": 0,
+              "y": 120
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 1440,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 840,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "talk",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "pendulum",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "x": 760,
+          "y": 580,
+          "width": 0,
+          "height": 0,
+          "polygon": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 140,
+              "y": 0
+            },
+            {
+              "x": 140,
+              "y": 200
+            },
+            {
+              "x": 0,
+              "y": 200
+            }
+          ],
+          "properties": [
+            {
+              "name": "approachX",
+              "value": 830,
+              "type": "int"
+            },
+            {
+              "name": "approachY",
+              "value": 840,
+              "type": "int"
+            },
+            {
+              "name": "cursor",
+              "value": "talk",
+              "type": "string"
+            },
+            {
+              "name": "facing",
+              "value": "ur",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "points",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 13,
+          "name": "spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 600,
+          "y": 800,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 14,
+          "name": "spitz_spawn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 520,
+          "y": 850,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 15,
+          "name": "portal",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 600,
+          "y": 780,
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "sprites",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 16,
+          "name": "snail",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1100,
+          "y": 740,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 741,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_snail",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 17,
+          "name": "tik",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1280,
+          "y": 740,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 741,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_tik",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "name": "tak",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1440,
+          "y": 740,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 741,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_tak",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 19,
+          "name": "pendulum",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 830,
+          "y": 760,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 761,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_pendulum",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nextlayerid": 6,
+  "nextobjectid": 20
+}
