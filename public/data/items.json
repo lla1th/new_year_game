@@ -11,18 +11,6 @@
     "inspectKey": "item.ITEM_SAUSAGE.inspect",
     "style": "w1"
   },
-  "ITEM_BULB_GREEN": {
-    "icon": "img/items/ITEM_BULB_GREEN.png",
-    "nameKey": "item.ITEM_BULB_GREEN.name",
-    "inspectKey": "item.ITEM_BULB_GREEN.inspect",
-    "style": "w1"
-  },
-  "ITEM_BULB_GOLD": {
-    "icon": "img/items/ITEM_BULB_GOLD.png",
-    "nameKey": "item.ITEM_BULB_GOLD.name",
-    "inspectKey": "item.ITEM_BULB_GOLD.inspect",
-    "style": "w1"
-  },
   "ITEM_BULB_BLUE": {
     "icon": "img/items/ITEM_BULB_BLUE.png",
     "nameKey": "item.ITEM_BULB_BLUE.name",

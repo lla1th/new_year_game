@@ -6,7 +6,7 @@ describe('GameStateModel', () => {
   test('inventory, flags, save round-trip, reset', () => {
     const s = new GameStateModel();
     expect(s.levelId).toBe('L01');
-    for (const id of ['ITEM_MANDARIN', 'ITEM_SAUSAGE', 'ITEM_BULB_GREEN', 'ITEM_BULB_GOLD', 'ITEM_BULB_BLUE', 'ITEM_COCOA'] as ItemId[]) expect(s.addItem(id)).toBe(true);
+    for (const id of ['ITEM_MANDARIN', 'ITEM_SAUSAGE', 'ITEM_BULB_RED', 'ITEM_BULB_YELLOW', 'ITEM_BULB_BLUE', 'ITEM_COCOA'] as ItemId[]) expect(s.addItem(id)).toBe(true);
     expect(s.addItem('ITEM_VALVE')).toBe(false);     // 7th does not fit
     expect(s.addItem('ITEM_MANDARIN')).toBe(false);  // duplicate
     s.removeItem('ITEM_SAUSAGE');
