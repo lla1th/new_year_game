@@ -247,6 +247,36 @@
    "pixelArt": true
   },
   {
+   "key": "ksyusha_w1",
+   "path": "img/characters/ksyusha_w1.png",
+   "kind": "spritesheet",
+   "frameWidth": 80,
+   "frameHeight": 80,
+   "levels": [
+    "L01",
+    "L02",
+    "L03",
+    "L08"
+   ],
+   "pixelArt": true,
+   "anims": {
+    "dr_walk": {
+     "frames": {
+      "start": 0,
+      "end": 7
+     },
+     "frameRate": 10
+    },
+    "ur_walk": {
+     "frames": {
+      "start": 8,
+      "end": 15
+     },
+     "frameRate": 10
+    }
+   }
+  },
+  {
    "key": "spitz_w1_idle",
    "path": "img/characters/spitz_w1_idle.png",
    "kind": "image",
