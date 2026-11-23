@@ -13,4 +13,8 @@ test('start state for the level select', () => {
   for (const l of ['L02', 'L03', 'L04', 'L05', 'L06', 'L07', 'L08'] as LevelId[]) expect(startStateFor(l).flags.L01_SPITZ_FREED, l).toBe(true);
   const a = startStateFor('L05'); a.inventory.push('ITEM_COCOA');
   expect(startStateFor('L05').inventory).toEqual(['ITEM_MITTENS']);   // a fresh copy every time
+  expect(startStateFor('L07').inventory).toEqual(['ITEM_PENCIL']);
+  expect(startStateFor('L02').flags).toMatchObject({ L01_BRIEFING_DONE: true, L01_NAME_CHOSEN: true });
+  expect(startStateFor('L02').flags.L02_FINISHED).toBeUndefined();
+  for (const l of ['L03', 'L04', 'L05', 'L06', 'L07', 'L08'] as LevelId[]) expect(startStateFor(l).flags.L02_FINISHED, l).toBe(true);
 });
