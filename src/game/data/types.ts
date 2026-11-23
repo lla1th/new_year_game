@@ -1,4 +1,5 @@
 export type LevelId = 'L01' | 'L02' | 'L03' | 'L04' | 'L05' | 'L06' | 'L07' | 'L08';
+export const LEVEL_ORDER: readonly LevelId[] = ['L01', 'L02', 'L03', 'L04', 'L05', 'L06', 'L07', 'L08'];
 export type WorldStyle = 'w1' | 'w2' | 'w3' | 'fin';
 export const LEVEL_STYLE: Record<LevelId, WorldStyle> =
   { L01: 'w1', L02: 'w1', L03: 'w1', L04: 'w2', L05: 'w2', L06: 'w3', L07: 'w3', L08: 'fin' };
