@@ -1,15 +1,24 @@
 /** All player-visible strings come from here (public/data/texts/ru.json). */
 export class TextBank {
-    constructor(private readonly dict: Record<string, string>, private readonly names: Record<string, string>) {}
+    private readonly names: Record<string, string>;
 
-    /** Substitutes {name.spitz} etc.; a missing key shows `⟨key⟩` and warns in the console. */
+    constructor(private readonly dict: Record<string, string>, names: Record<string, string>) {
+        this.names = { ...names };
+    }
+
+    /** Меняет имя персонажа (например, шпица после выбора); t() сразу подставляет новое. */
+    setName(id: string, value: string): void {
+        this.names[id] = value;
+    }
+
+    /** Substitutes {name.spitz} etc. ({spitz} — алиас {name.spitz}); a missing key shows `⟨key⟩` and warns in the console. */
     t(key: string): string {
         const raw = this.dict[key];
         if (raw === undefined) {
             console.warn(`[TextBank] missing text key "${key}"`);
             return `⟨${key}⟩`;
         }
-        return raw.replace(/\{name\.(\w+)\}/g, (m, id: string) => this.names[id] ?? m);
+        return raw.replace(/\{spitz\}/g, '{name.spitz}').replace(/\{name\.(\w+)\}/g, (m, id: string) => this.names[id] ?? m);
     }
 
     has(key: string): boolean {

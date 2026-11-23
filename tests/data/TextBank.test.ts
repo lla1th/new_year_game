@@ -17,6 +17,12 @@ describe('TextBank', () => {
     const t2 = new TextBank({ b: '{name.cat} и {name.zzz}' }, { cat: 'Кошечка' });
     expect(t2.t('b')).toBe('Кошечка и {name.zzz}');
   });
+  test('setName substitutes the chosen name, {spitz} is an alias', () => {
+    const b = new TextBank({ a: '{name.spitz} и {spitz}' }, { spitz: 'Шпиц' });
+    expect(b.t('a')).toBe('Шпиц и Шпиц');
+    b.setName('spitz', 'Бублик');
+    expect(b.t('a')).toBe('Бублик и Бублик');
+  });
   test('randomVariant', () => {
     expect(tb.randomVariant('w', () => 0).key).toBe('w.1');
     expect(tb.randomVariant('w', () => 0, 'w.1').key).toBe('w.2');
