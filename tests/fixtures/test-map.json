@@ -1,0 +1,79 @@
+{
+  "compressionlevel": -1,
+  "height": 135,
+  "width": 240,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.11.2",
+  "nextlayerid": 6,
+  "nextobjectid": 6,
+  "tilesets": [],
+  "properties": [
+    { "name": "background", "type": "string", "value": "img/test_bg.png" },
+    { "name": "footsteps", "type": "string", "value": "floor" },
+    { "name": "levelId", "type": "string", "value": "TEST" },
+    { "name": "music", "type": "string", "value": "mus_menu" },
+    { "name": "pixelArt", "type": "bool", "value": false }
+  ],
+  "layers": [
+    {
+      "id": 1, "name": "walkable", "type": "objectgroup", "draworder": "topdown",
+      "opacity": 1, "visible": true, "x": 0, "y": 0,
+      "objects": [
+        {
+          "id": 1, "name": "", "type": "", "rotation": 0, "visible": true,
+          "x": 100, "y": 500, "width": 0, "height": 0,
+          "polygon": [ { "x": 0, "y": 0 }, { "x": 1700, "y": 0 }, { "x": 1700, "y": 500 }, { "x": 0, "y": 500 } ]
+        }
+      ]
+    },
+    {
+      "id": 2, "name": "blockers", "type": "objectgroup", "draworder": "topdown",
+      "opacity": 1, "visible": true, "x": 0, "y": 0,
+      "objects": [
+        { "id": 2, "name": "", "type": "", "rotation": 0, "visible": true, "x": 800, "y": 600, "width": 200, "height": 200 }
+      ]
+    },
+    {
+      "id": 3, "name": "hotspots", "type": "objectgroup", "draworder": "topdown",
+      "opacity": 1, "visible": true, "x": 0, "y": 0,
+      "objects": [
+        {
+          "id": 3, "name": "sofa", "type": "", "rotation": 0, "visible": true,
+          "x": 760, "y": 560, "width": 280, "height": 120,
+          "properties": [
+            { "name": "approachX", "type": "int", "value": 700 },
+            { "name": "approachY", "type": "int", "value": 700 },
+            { "name": "cursor", "type": "string", "value": "hand" },
+            { "name": "facing", "type": "string", "value": "dr" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4, "name": "points", "type": "objectgroup", "draworder": "topdown",
+      "opacity": 1, "visible": true, "x": 0, "y": 0,
+      "objects": [
+        { "id": 4, "name": "spawn", "type": "", "rotation": 0, "visible": true, "point": true, "x": 300, "y": 800, "width": 0, "height": 0 }
+      ]
+    },
+    {
+      "id": 5, "name": "sprites", "type": "objectgroup", "draworder": "topdown",
+      "opacity": 1, "visible": true, "x": 0, "y": 0,
+      "objects": [
+        {
+          "id": 5, "name": "lamp", "type": "", "rotation": 0, "visible": true, "point": true, "x": 1200, "y": 640, "width": 0, "height": 0,
+          "properties": [
+            { "name": "depthY", "type": "int", "value": 650 },
+            { "name": "texture", "type": "string", "value": "lamp" }
+          ]
+        }
+      ]
+    }
+  ]
+}

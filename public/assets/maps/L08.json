@@ -1,0 +1,345 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 6,
+ "nextobjectid": 12,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "fin_square_bg"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "snow"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "L08"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_finale"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": false
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 100,
+     "y": 620,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 380
+      },
+      {
+       "x": 0,
+       "y": 380
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "blockers",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "clock_base",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 820,
+     "y": 620,
+     "width": 280,
+     "height": 40
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 3,
+     "name": "clock",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 780,
+     "y": 80,
+     "width": 360,
+     "height": 540,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 960
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 720
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "snail",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1300,
+     "y": 560,
+     "width": 120,
+     "height": 80,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 1260
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 720
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "talk"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "gift_box",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 560,
+     "y": 700,
+     "width": 140,
+     "height": 120,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 520
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 860
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "dr"
+      },
+      {
+       "name": "enabledIf",
+       "type": "string",
+       "value": "L08_PARTS_INSERTED"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 6,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 400,
+     "y": 880,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 7,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 320,
+     "y": 900,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 8,
+     "name": "cat_spot",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1500,
+     "y": 820,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 9,
+     "name": "sky",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 960,
+     "y": 200,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "sprites",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 10,
+     "name": "gift",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 630,
+     "y": 820,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 821
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "l08_gift"
+      }
+     ]
+    },
+    {
+     "id": 11,
+     "name": "snail",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1360,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 641
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "l08_snail"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

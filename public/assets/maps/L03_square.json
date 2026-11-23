@@ -1,0 +1,203 @@
+{
+ "compressionlevel": -1,
+ "height": 135,
+ "width": 240,
+ "tilewidth": 8,
+ "tileheight": 8,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "type": "map",
+ "version": "1.10",
+ "tiledversion": "1.11.2",
+ "nextlayerid": 5,
+ "nextobjectid": 6,
+ "tilesets": [],
+ "properties": [
+  {
+   "name": "background",
+   "type": "string",
+   "value": "w1_square_bg"
+  },
+  {
+   "name": "footsteps",
+   "type": "string",
+   "value": "snow"
+  },
+  {
+   "name": "levelId",
+   "type": "string",
+   "value": "L03"
+  },
+  {
+   "name": "music",
+   "type": "string",
+   "value": "mus_world1"
+  },
+  {
+   "name": "pixelArt",
+   "type": "bool",
+   "value": true
+  }
+ ],
+ "layers": [
+  {
+   "id": 1,
+   "name": "walkable",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 1,
+     "name": "floor",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 100,
+     "y": 600,
+     "width": 0,
+     "height": 0,
+     "polygon": [
+      {
+       "x": 0,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 0
+      },
+      {
+       "x": 1720,
+       "y": 400
+      },
+      {
+       "x": 0,
+       "y": 400
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "hotspots",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 2,
+     "name": "tower_door",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 860,
+     "y": 260,
+     "width": 200,
+     "height": 340,
+     "properties": [
+      {
+       "name": "approachX",
+       "type": "int",
+       "value": 960
+      },
+      {
+       "name": "approachY",
+       "type": "int",
+       "value": 670
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "value": "hand"
+      },
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "ur"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "points",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 3,
+     "name": "spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 420,
+     "y": 880,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 4,
+     "name": "spitz_spawn",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 340,
+     "y": 900,
+     "width": 0,
+     "height": 0,
+     "point": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "sprites",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0,
+   "objects": [
+    {
+     "id": 5,
+     "name": "door_closed",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 960,
+     "y": 600,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 601
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "l03_door_closed"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

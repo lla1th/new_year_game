@@ -1,0 +1,92 @@
+{
+  "l01_intro": [
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.2"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.3"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.intro.4"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.5"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.6"
+    }
+  ],
+  "l02_nika": [
+    {
+      "speaker": "nika",
+      "key": "l02.dlg.nika.1"
+    },
+    {
+      "speaker": "nika",
+      "key": "l02.dlg.nika.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.dlg.nika.3"
+    }
+  ],
+  "l04_lekha_intro": [
+    {
+      "speaker": "lekha",
+      "key": "l04.dlg.lekha.1"
+    },
+    {
+      "speaker": "lekha",
+      "key": "l04.dlg.lekha.2"
+    }
+  ],
+  "l04_lekha_done": [
+    {
+      "speaker": "lekha",
+      "key": "l04.dlg.lekha.3"
+    }
+  ],
+  "l06_friends": [
+    {
+      "speaker": "lekha",
+      "key": "l06.dlg.friends.1"
+    },
+    {
+      "speaker": "nika",
+      "key": "l06.dlg.friends.2"
+    }
+  ],
+  "l07_reconcile": [
+    {
+      "speaker": "cat",
+      "key": "l07.dlg.cat.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l07.dlg.ksy.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l07.dlg.spitz.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l07.dlg.ksy.2"
+    }
+  ],
+  "l08_snail": [
+    {
+      "speaker": "snail",
+      "key": "l08.dlg.snail.1"
+    }
+  ]
+}

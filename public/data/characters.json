@@ -1,0 +1,51 @@
+{
+  "names": {
+    "ksyusha": "Ксюша",
+    "spitz": "Шпиц",
+    "cat": "Кошечка",
+    "snail": "Улитка",
+    "nika": "Ника",
+    "lekha": "Леха",
+    "owl": "Сова",
+    "snowman": "Снеговик",
+    "ginger": "Пряничный человечек"
+  },
+  "portraits": {
+    "ksyusha": {
+      "w1": "img/portraits/ksyusha_w1.png",
+      "w2": "img/portraits/ksyusha_w2.png",
+      "w3": "img/portraits/ksyusha_w3.png",
+      "fin": "img/portraits/ksyusha_fin.png"
+    },
+    "spitz": {
+      "w1": "img/portraits/spitz_w1.png",
+      "w2": "img/portraits/spitz_w2.png",
+      "w3": "img/portraits/spitz_w3.png",
+      "fin": "img/portraits/spitz_fin.png"
+    },
+    "cat": {
+      "w3": "img/portraits/cat_w3.png",
+      "fin": "img/portraits/cat_fin.png"
+    },
+    "snail": {
+      "fin": "img/portraits/snail_fin.png"
+    },
+    "nika": {
+      "w1": "img/portraits/nika_w1.png",
+      "w3": "img/portraits/nika_w3.png"
+    },
+    "lekha": {
+      "w2": "img/portraits/lekha_w2.png",
+      "w3": "img/portraits/lekha_w3.png"
+    },
+    "owl": {
+      "w1": "img/portraits/owl_w1.png"
+    },
+    "snowman": {
+      "w1": "img/portraits/snowman_w1.png"
+    },
+    "ginger": {
+      "w2": "img/portraits/ginger_w2.png"
+    }
+  }
+}
