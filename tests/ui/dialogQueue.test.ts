@@ -33,4 +33,46 @@ describe('DialogQueue', () => {
     q.advance(); expect(q.line?.key).toBe('r1');
     q.advance(); expect(q.line?.key).toBe('next');
   });
+
+  test('a wrong choice on a retry line shows the same question again', () => {
+    const q = new DialogQueue(); let done = 0;
+    const line = { speaker: 'semyon' as const, key: 'q1', retry: true, choices: [
+      { key: 'wrong', correct: false, reply: { speaker: 'semyon' as const, key: 'r' } },
+      { key: 'right', correct: true },
+    ] };
+    q.enqueue({ lines: [line, { speaker: 'semyon', key: 'end' }], onDone: () => { done++; } });
+    q.choose(line.choices[0]);                       // Ксюша: wrong
+    q.advance(); q.advance();                        // → ответ Семёна → вопрос снова
+    expect(q.line?.key).toBe('q1');
+    expect(q.line?.choices?.length).toBe(2);
+    q.choose(line.choices[1]); q.advance();          // верный → следующая строка
+    expect(q.line?.key).toBe('end');
+    q.advance(); expect(done).toBe(1);
+  });
+
+  test('a series of wrong answers then a right one ends the dialog exactly once', () => {
+    const q = new DialogQueue(); let done = 0;
+    const line = { speaker: 'semyon' as const, key: 'q1', retry: true, choices: [
+      { key: 'wrong', correct: false, reply: { speaker: 'semyon' as const, key: 'r' } },
+      { key: 'right', correct: true },
+    ] };
+    q.enqueue({ lines: [line], onDone: () => { done++; } });
+    for (let i = 0; i < 5; i++) {
+      q.choose(q.line!.choices![0]); q.advance(); q.advance();
+      expect(q.line?.key).toBe('q1');
+      expect(q.line?.choices).toHaveLength(2);
+    }
+    q.choose(q.line!.choices![1]);
+    expect(q.line?.key).toBe('right');
+    q.advance();
+    expect(done).toBe(1); expect(q.active).toBe(false);
+  });
+
+  test('choices without retry keep the old behaviour (a wrong-flagged choice does not repeat)', () => {
+    const q = new DialogQueue();
+    q.enqueue({ lines: [{ speaker: 'spitz', key: 'q', choices: [{ key: 'c1', correct: false }] }, { speaker: 'spitz', key: 'next' }], onDone: () => {} });
+    q.choose(q.line!.choices![0]);
+    expect(q.line?.key).toBe('c1');
+    q.advance(); expect(q.line?.key).toBe('next');
+  });
 });

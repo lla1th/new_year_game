@@ -1,7 +1,7 @@
 import type { SpeakerId } from '../game/data/types';
 import type { DialogChoice } from '../game/data/schemas';
 
-export interface DialogQueueLine { speaker: SpeakerId; key: string; choices?: DialogChoice[] }
+export interface DialogQueueLine { speaker: SpeakerId; key: string; choices?: DialogChoice[]; retry?: boolean }
 export interface DialogJob { lines: DialogQueueLine[]; onDone: () => void }
 
 /** Queue of lines/dialogs shown one after another by DialogBox (pure logic, no Vue). */
@@ -34,14 +34,19 @@ export class DialogQueue {
         j.onDone();
     }
 
-    /** Ksyusha says the chosen line, then the optional reply, then the dialog continues as usual. */
+    /**
+     * Ksyusha says the chosen line, then the optional reply, then the dialog continues as usual.
+     * On a `retry` line a wrong choice (`correct === false`) repeats the same question afterwards (dialog-puzzle round).
+     */
     choose(c: DialogChoice): void {
         const j = this.job;
         if (!j) return;
         const extra: DialogQueueLine[] = [{ speaker: 'ksyusha', key: c.key }];
         if (c.reply) extra.push({ speaker: c.reply.speaker, key: c.reply.key });
+        const question = j.lines[this.index];
+        if (question.retry === true && c.correct === false) extra.push({ ...question });
         j.lines.splice(this.index + 1, 0, ...extra);
-        j.lines[this.index] = { ...j.lines[this.index], choices: undefined };
+        j.lines[this.index] = { ...question, choices: undefined };
         this.advance();
     }
 
