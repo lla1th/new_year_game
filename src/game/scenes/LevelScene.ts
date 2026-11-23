@@ -88,6 +88,7 @@ export class LevelScene extends Scene
     ksyusha: GameObjects.Image;
     spitz: GameObjects.Image | null = null;
     private nameCancel: (() => void) | null = null;
+    private talkCancel: (() => void) | null = null;
     private pos: Vec2 = { x: 0, y: 0 };
     private facing: Facing = 'dr';
     private pose: Pose = 'idle';
@@ -368,6 +369,7 @@ export class LevelScene extends Scene
             this.pendingTalk.clear();
             this.talking = 0;
             this.nameCancel?.();   // a stopped scene must not leave the name screen open
+            this.talkCancel?.();
             this.skipCutscene = null;
             this.actionHotspot = null;
             this.busy = false;
@@ -561,6 +563,10 @@ export class LevelScene extends Scene
             void this.interact(h, { kind: 'use' });
             return;
         }
+        if (!this.busy && this.spitzAt(pt)) {
+            void this.runScript([{ openTalk: 'spitz' }]);
+            return;
+        }
         // Floor: walk there (interrupts walking to a hotspot).
         this.walkTo(pt).catch(ignoreInterrupt);
     }
@@ -704,6 +710,7 @@ export class LevelScene extends Scene
             wait: ms => new Promise(resolve => this.time.delayedCall(ms, resolve)),
             checkpoint: () => this.checkpoint(),
             chooseName: () => this.chooseName(),
+            openTalk: id => this.openTalk(id),
             progress: () => {
                 this.hints?.notifyProgress();
                 this.refreshVisuals();
@@ -716,6 +723,24 @@ export class LevelScene extends Scene
      * Экран выбора имени шпица. Если имя уже выбрано (загрузка сохранения), экран не открывается,
      * имя только восстанавливается в текстах. «Марат» не выбирается: шпиц говорит реплику, экран остаётся.
      */
+    /** Меню разговоров: ждёт, пока игрок нажмёт «Ладно, пока». Сцена остановилась — меню закрывается само. */
+    openTalk (talkId: string): Promise<void>
+    {
+        return new Promise(resolve => {
+            const finish = () => { this.talkCancel = null; off(); resolve(); };
+            const off = bus.on('talk:close', finish);
+            this.talkCancel = () => { finish(); bus.emit('talk:close'); };
+            bus.emit('talk:open', { talkId });
+        });
+    }
+
+    /** Клик по шпице-напарнику открывает меню разговоров. */
+    private spitzAt (pt: Vec2): boolean
+    {
+        const sp = this.spitz;
+        return !!sp && sp.visible && gameState.hasFlag('L01_SPITZ_FREED') && !!getGameData()?.talks.spitz && sp.getBounds().contains(pt.x, pt.y);
+    }
+
     async chooseName (): Promise<void>
     {
         const texts = getGameData()?.texts;

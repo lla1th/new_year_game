@@ -15,6 +15,7 @@ export interface ScriptContext {
     wait(ms: number): Promise<void>;
     checkpoint(): void;
     progress(): void;                                // tell HintSystem about progress
+    openTalk(talkId: string): Promise<void>;         // меню разговоров; резолвится при закрытии меню
     chooseName(): Promise<void>;                     // экран выбора имени шпица; резолвится после выбора
 }
 
@@ -65,6 +66,7 @@ export class ScriptRunner {
         if ('wait' in step) return c.wait(step.wait);
         if ('checkpoint' in step) { c.checkpoint(); return; }
         if ('chooseName' in step) return c.chooseName();
+        if ('openTalk' in step) return c.openTalk(step.openTalk);
         const never: never = step;
         throw new Error(`unknown script step ${JSON.stringify(never)}`);
     }

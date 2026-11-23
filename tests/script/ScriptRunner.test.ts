@@ -21,6 +21,7 @@ function fakeCtx() {
     checkpoint: () => { log.push('checkpoint'); },
     progress: () => { log.push('progress'); },
     chooseName: async () => { log.push('chooseName'); },
+    openTalk: async id => { log.push(`openTalk:${id}`); },
   };
   return { ctx, log, releaseAnim: () => release?.() };
 }
@@ -50,6 +51,24 @@ describe('ScriptRunner', () => {
     const { ctx, log } = fakeCtx();
     await new ScriptRunner(ctx).run([{ chooseName: true }, { say: 'spitz', key: 'after' }]);
     expect(log).toEqual(['chooseName', 'say:spitz:after']);
+  });
+
+  test('openTalk step waits for the menu to close before the next step', async () => {
+    const { ctx, log } = fakeCtx();
+    let close: () => void = () => {};
+    ctx.openTalk = id => new Promise<void>(res => { log.push(`openTalk:${id}:open`); close = () => { log.push(`openTalk:${id}:close`); res(); }; });
+    const done = new ScriptRunner(ctx).run([{ openTalk: 'nika' }, { say: 'nika', key: 'after' }]);
+    await Promise.resolve(); await Promise.resolve();
+    expect(log).toEqual(['openTalk:nika:open']);
+    close();
+    await done;
+    expect(log).toEqual(['openTalk:nika:open', 'openTalk:nika:close', 'say:nika:after']);
+  });
+
+  test('openTalk step calls the context once', async () => {
+    const { ctx, log } = fakeCtx();
+    await new ScriptRunner(ctx).run([{ openTalk: 'spitz' }]);
+    expect(log).toEqual(['openTalk:spitz']);
   });
 
   test('a step does not start before the previous one has finished', async () => {

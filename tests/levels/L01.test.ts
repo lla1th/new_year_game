@@ -41,6 +41,7 @@ beforeEach(() => {
     checkpoint: () => { log.push('checkpoint'); },
     progress: () => {},
     chooseName: async () => { log.push('chooseName'); },
+    openTalk: async id => { log.push(`openTalk:${id}`); },
   };
   runner = new ScriptRunner(ctx);
 });

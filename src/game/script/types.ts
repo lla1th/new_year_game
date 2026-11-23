@@ -8,6 +8,7 @@ export type Step =
     | { openPuzzle: PuzzleId; onSolved?: Step[] }   // onSolved runs only if the screen was solved
     | { goto: { level: LevelId; screen?: string } }
     | { cutscene: string } | { wait: number } | { checkpoint: true }
+    | { openTalk: string }                   // меню разговоров, id из talks.json
     | { chooseName: true }                   // экран выбора имени шпица (L01)
     | { ifFlag: FlagId; then: Step[]; else?: Step[] }
     | { ifItem: ItemId; then: Step[]; else?: Step[] };

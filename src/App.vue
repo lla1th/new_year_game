@@ -22,6 +22,7 @@ import Hud from './ui/Hud.vue';
 import Inventory from './ui/Inventory.vue';
 import MainMenu from './ui/MainMenu.vue';
 import NameChoice from './ui/NameChoice.vue';
+import TalkMenu from './ui/TalkMenu.vue';
 import PauseMenu from './ui/PauseMenu.vue';
 import LoadingOverlay from './ui/LoadingOverlay.vue';
 import RotateOverlay from './ui/RotateOverlay.vue';
@@ -56,6 +57,7 @@ function play (level: LevelId, screen?: string | null) {
     uiState.dialogActive = false;
     uiState.puzzleOpen = false;
     uiState.nameOpen = false;
+    uiState.talkId = null;
     uiState.screen = 'game';
     const texts = getGameData()?.texts;
     if (texts) applySpitzName(gameState, texts);   // the chosen name (or «Шпиц») in every line from the first one
@@ -146,6 +148,7 @@ function toMenu () {
     uiState.dialogActive = false;
     uiState.puzzleOpen = false;
     uiState.nameOpen = false;
+    uiState.talkId = null;
     uiState.screen = 'menu';
     menuKey.value++;   // re-read the save for "Continue"
 }
@@ -169,6 +172,8 @@ onMounted(async () => {
         bus.on('puzzle:close', () => { uiState.puzzleOpen = false; uiState.puzzleTakesItems = false; }),
         bus.on('name:open', () => { uiState.nameOpen = true; }),
         bus.on('name:done', () => { uiState.nameOpen = false; }),
+        bus.on('talk:open', ({ talkId }) => { uiState.talkId = talkId; }),
+        bus.on('talk:close', () => { uiState.talkId = null; }),
         bus.on('ending:card', () => { uiState.ending = 'card'; }),
         bus.on('ending:done', () => toMenu()),
         bus.on('checkpoint', () => {
@@ -217,6 +222,7 @@ onUnmounted(() => {
                 <!-- Hidden on overlay screens that take no items. -->
                 <div v-show="!uiState.ending && (!uiState.puzzleOpen || uiState.puzzleTakesItems)" class="layer"><Inventory @inspect="inspectItem" /></div>
                 <NameChoice v-if="uiState.nameOpen" />
+                <TalkMenu v-if="uiState.talkId" :key="uiState.talkId" :talk-id="uiState.talkId" />
                 <DialogBox ref="dialogBox" />
                 <DebugPanel v-if="debug" />
                 <EndingCard v-if="uiState.ending === 'card'" @next="endingNext" />
