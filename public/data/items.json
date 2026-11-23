@@ -76,5 +76,101 @@
     "nameKey": "item.ITEM_KEEPER_MEDAL.name",
     "inspectKey": "item.ITEM_KEEPER_MEDAL.inspect",
     "style": "w3"
+  },
+  "ITEM_BULB_RED": {
+    "icon": "img/items/ITEM_BULB_RED.png",
+    "nameKey": "item.ITEM_BULB_RED.name",
+    "inspectKey": "item.ITEM_BULB_RED.inspect",
+    "style": "w1"
+  },
+  "ITEM_BULB_YELLOW": {
+    "icon": "img/items/ITEM_BULB_YELLOW.png",
+    "nameKey": "item.ITEM_BULB_YELLOW.name",
+    "inspectKey": "item.ITEM_BULB_YELLOW.inspect",
+    "style": "w1"
+  },
+  "ITEM_FOIL": {
+    "icon": "img/items/ITEM_FOIL.png",
+    "nameKey": "item.ITEM_FOIL.name",
+    "inspectKey": "item.ITEM_FOIL.inspect",
+    "style": "w1"
+  },
+  "ITEM_SHED_KEY": {
+    "icon": "img/items/ITEM_SHED_KEY.png",
+    "nameKey": "item.ITEM_SHED_KEY.name",
+    "inspectKey": "item.ITEM_SHED_KEY.inspect",
+    "style": "w1"
+  },
+  "ITEM_PUMP": {
+    "icon": "img/items/ITEM_PUMP.png",
+    "nameKey": "item.ITEM_PUMP.name",
+    "inspectKey": "item.ITEM_PUMP.inspect",
+    "style": "w1"
+  },
+  "ITEM_PARCEL": {
+    "icon": "img/items/ITEM_PARCEL.png",
+    "nameKey": "item.ITEM_PARCEL.name",
+    "inspectKey": "item.ITEM_PARCEL.inspect",
+    "style": "w1"
+  },
+  "ITEM_OILCAN": {
+    "icon": "img/items/ITEM_OILCAN.png",
+    "nameKey": "item.ITEM_OILCAN.name",
+    "inspectKey": "item.ITEM_OILCAN.inspect",
+    "style": "w1"
+  },
+  "ITEM_DUSTER": {
+    "icon": "img/items/ITEM_DUSTER.png",
+    "nameKey": "item.ITEM_DUSTER.name",
+    "inspectKey": "item.ITEM_DUSTER.inspect",
+    "style": "w1"
+  },
+  "ITEM_FEATHER": {
+    "icon": "img/items/ITEM_FEATHER.png",
+    "nameKey": "item.ITEM_FEATHER.name",
+    "inspectKey": "item.ITEM_FEATHER.inspect",
+    "style": "w2"
+  },
+  "ITEM_POWDER": {
+    "icon": "img/items/ITEM_POWDER.png",
+    "nameKey": "item.ITEM_POWDER.name",
+    "inspectKey": "item.ITEM_POWDER.inspect",
+    "style": "w2"
+  },
+  "ITEM_SNOW": {
+    "icon": "img/items/ITEM_SNOW.png",
+    "nameKey": "item.ITEM_SNOW.name",
+    "inspectKey": "item.ITEM_SNOW.inspect",
+    "style": "w2"
+  },
+  "ITEM_PEN": {
+    "icon": "img/items/ITEM_PEN.png",
+    "nameKey": "item.ITEM_PEN.name",
+    "inspectKey": "item.ITEM_PEN.inspect",
+    "style": "w2"
+  },
+  "ITEM_LETTER_M": {
+    "icon": "img/items/ITEM_LETTER_M.png",
+    "nameKey": "item.ITEM_LETTER_M.name",
+    "inspectKey": "item.ITEM_LETTER_M.inspect",
+    "style": "w3"
+  },
+  "ITEM_PENCIL": {
+    "icon": "img/items/ITEM_PENCIL.png",
+    "nameKey": "item.ITEM_PENCIL.name",
+    "inspectKey": "item.ITEM_PENCIL.inspect",
+    "style": "w3"
+  },
+  "ITEM_TINSEL_BALL": {
+    "icon": "img/items/ITEM_TINSEL_BALL.png",
+    "nameKey": "item.ITEM_TINSEL_BALL.name",
+    "inspectKey": "item.ITEM_TINSEL_BALL.inspect",
+    "style": "fin"
+  },
+  "ITEM_WIND_KEY": {
+    "icon": "img/items/ITEM_WIND_KEY.png",
+    "nameKey": "item.ITEM_WIND_KEY.name",
+    "inspectKey": "item.ITEM_WIND_KEY.inspect",
+    "style": "fin"
   }
 }

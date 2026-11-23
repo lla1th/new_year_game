@@ -1572,3 +1572,44 @@ L05 переработан в формате L02–L04 (3 экрана, диал
 ---
 
 **Что это даёт по головоломкам:** L02 — 3 (S-02a «Ключ у обезьянки», P-02 «Генератор», S-02b «Тир», необязательная), L03 — P-03 + S-03a/b/c, L04 — P-04 + S-04a/b, L05 — P-05 + S-05a «Согласование», S-05b «Ручка».
+
+---
+
+## 16. Предметы [НОВОЕ, переработка 23.11]
+
+Названия и тексты осмотра новых предметов (имя и осмотр заключены в «», чтобы их читал конвейер текстов).
+
+| Ключ | Текст | Стиль |
+|---|---|---|
+| `item.ITEM_BULB_RED.name` | «Красная лампочка» | w1 |
+| `item.ITEM_BULB_RED.inspect` | «Красная. Светится даже сама по себе.» | w1 |
+| `item.ITEM_BULB_YELLOW.name` | «Жёлтая лампочка» | w1 |
+| `item.ITEM_BULB_YELLOW.inspect` | «Золотистая. Нос снеговика был стильным.» | w1 |
+| `item.ITEM_FOIL.name` | «Фольга» | w1 |
+| `item.ITEM_FOIL.inspect` | «Блестит. Обезьянка будет в восторге.» | w1 |
+| `item.ITEM_SHED_KEY.name` | «Ключ от склада» | w1 |
+| `item.ITEM_SHED_KEY.inspect` | «Тяжёлый, с биркой „Склад“.» | w1 |
+| `item.ITEM_PUMP.name` | «Топливный насос» | w1 |
+| `item.ITEM_PUMP.inspect` | «Ручной насос со шлангом. Перекачивает всё, что течёт.» | w1 |
+| `item.ITEM_PARCEL.name` | «Посылка» | w1 |
+| `item.ITEM_PARCEL.inspect` | «„Т. Мышь“. Три года в дороге.» | w1 |
+| `item.ITEM_OILCAN.name` | «Масленка» | w1 |
+| `item.ITEM_OILCAN.inspect` | «Смазывает всё, что скрипит. Кроме характера.» | w1 |
+| `item.ITEM_DUSTER.name` | «Метёлка» | w1 |
+| `item.ITEM_DUSTER.inspect` | «Пыль боится её больше, чем меня.» | w1 |
+| `item.ITEM_FEATHER.name` | «Перо» | w2 |
+| `item.ITEM_FEATHER.inspect` | «Пёрышко Клавы. Щекочет одним видом.» | w2 |
+| `item.ITEM_POWDER.name` | «Сахарная пудра» | w2 |
+| `item.ITEM_POWDER.inspect` | «Белая, сладкая и летает по воздуху.» | w2 |
+| `item.ITEM_SNOW.name` | «Снег» | w2 |
+| `item.ITEM_SNOW.inspect` | «Холодная вода. Просто в твёрдом виде.» | w2 |
+| `item.ITEM_PEN.name` | «Ручка» | w2 |
+| `item.ITEM_PEN.inspect` | «Ручка, которую искал весь офис.» | w2 |
+| `item.ITEM_LETTER_M.name` | «Буква «М»» | w3 |
+| `item.ITEM_LETTER_M.inspect` | «Огромная. Кому-то очень нужна.» | w3 |
+| `item.ITEM_PENCIL.name` | «Карандаш» | w3 |
+| `item.ITEM_PENCIL.inspect` | «Рисует то, что обещает.» | w3 |
+| `item.ITEM_TINSEL_BALL.name` | «Клубок мишуры» | fin |
+| `item.ITEM_TINSEL_BALL.inspect` | «Блестящий. Кошки не устоят.» | fin |
+| `item.ITEM_WIND_KEY.name` | «Заводной ключ» | fin |
+| `item.ITEM_WIND_KEY.inspect` | «Ключ от Часов. Маленький, но важный.» | fin |

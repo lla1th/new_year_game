@@ -10,7 +10,7 @@ const dialogs = read<DialogsFile>('dialogs.json');
 const characters = read<CharactersFile>('characters.json');
 
 describe('data files', () => {
-  test('all 13 items are described', () => {
+  test('all items are described', () => {
     expect(Object.keys(items).sort()).toEqual([...ALL_ITEM_IDS].sort());
   });
   test('every dialog line and choice has a text', () => {
@@ -39,6 +39,10 @@ describe('data files', () => {
     for (const id of ['ksyusha', 'spitz', 'cat', 'snail', 'nika', 'lekha', 'owl', 'snowman', 'ginger']) {
       expect(characters.names[id as keyof CharactersFile['names']], id).toBeTruthy();
     }
+  });
+  test('every speaker has a name', () => {
+    for (const id of ['sveta', 'vendor', 'monkey', 'timofey', 'grisha', 'marmeladych', 'klava', 'semyon', 'cactus', 'crow', 'bambah', 'tik', 'tak', 'pendulum', 'mask', 'stranger'])
+      expect(characters.names[id as keyof typeof characters.names], id).toBeDefined();
   });
   test('texts contain no {name.x} placeholders for unknown characters', () => {
     for (const [k, v] of Object.entries(ru)) {
