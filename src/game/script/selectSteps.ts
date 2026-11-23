@@ -28,5 +28,6 @@ export function itemSteps(s: HotspotScript | undefined, itemId: ItemId, pickWron
 export function leadsAway(steps: Step[]): boolean {
     return steps.some(st => 'goto' in st
         || ('ifFlag' in st && (leadsAway(st.then) || leadsAway(st.else ?? [])))
-        || ('ifItem' in st && (leadsAway(st.then) || leadsAway(st.else ?? []))));
+        || ('ifItem' in st && (leadsAway(st.then) || leadsAway(st.else ?? [])))
+        || ('ifSpitzName' in st && (leadsAway(st.then) || leadsAway(st.else ?? []))));
 }

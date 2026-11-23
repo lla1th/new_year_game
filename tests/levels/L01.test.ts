@@ -6,6 +6,7 @@ import { ScriptRunner, type ScriptContext } from '../../src/game/script/ScriptRu
 import { inspectSteps, itemSteps, useSteps } from '../../src/game/script/selectSteps';
 import type { Step } from '../../src/game/script/types';
 import { GameStateModel } from '../../src/state/GameStateModel';
+import { allSteps } from './harness';
 import { parseTiledMap } from '../../src/game/map/parseTiledMap';
 import { NavGrid } from '../../src/game/nav/NavGrid';
 import type { ItemId } from '../../src/game/data/types';
@@ -68,10 +69,14 @@ describe('L01 / P-01 scenarios', () => {
     expect(state.hasFlag('L01_SPITZ_FREED')).toBe(true);
     expect(state.hasFlag('L01_PORTAL_OPEN')).toBe(true);
     expect(state.hasItem('ITEM_SAUSAGE')).toBe(false);
-    expect(log).toContain('dialog:l01_intro');
-    expect(log.indexOf('anim:spitz_out')).toBeLessThan(log.indexOf('dialog:l01_intro'));
+    // the name is chosen in the middle of the introduction: dialog A → name screen → dialog B
+    const at = (s: string) => log.indexOf(s);
+    expect(at('anim:spitz_out')).toBeLessThan(at('dialog:l01_intro_a'));
+    expect(at('dialog:l01_intro_a')).toBeLessThan(at('chooseName'));
+    expect(at('chooseName')).toBeLessThan(at('dialog:l01_intro_b'));
+    expect(log).not.toContain('dialog:l01_intro');
     // P-01 is a puzzle: a checkpoint after it (ACCEPTANCE_CRITERIA: autosave after every puzzle)
-    expect(log.lastIndexOf('checkpoint')).toBeGreaterThan(log.indexOf('dialog:l01_intro'));
+    expect(log.lastIndexOf('checkpoint')).toBeGreaterThan(at('dialog:l01_intro_b'));
   });
 
   test('3. mandarin, then sausage: success', async () => {
@@ -108,15 +113,28 @@ describe('L01 / P-01 scenarios', () => {
     expect(state.hasItem('ITEM_SAUSAGE')).toBe(false);
   });
 
-  test('terrarium before / after the portal', async () => {
+  test('terrarium before the portal: the second click hints that it ticks', async () => {
     await click('terrarium');
     expect(log).toEqual(['say:ksyusha:l01.terrarium.inspect']);
-    expect(log.some(l => l.startsWith('goto'))).toBe(false);
-    state.setFlag('L01_PORTAL_OPEN');
     log.length = 0;
     await click('terrarium');
-    expect(log).toEqual(['anim:portal', 'goto:L02:']);
+    expect(log).toEqual(['say:ksyusha:l01.terrarium.tick']);
+    expect(log.some(l => l.startsWith('goto'))).toBe(false);
+  });
+
+  test('terrarium after the dialog: the portal leads to the workshop, not to L02', async () => {
+    state.setFlag('L01_PORTAL_OPEN');
+    await click('terrarium');
+    expect(log).toEqual(['anim:portal', 'goto:L01:workshop']);
     expect(state.hasFlag('L01_PORTAL_ENTERED')).toBe(true);
+  });
+
+  test('tree: the second click hints at Sveta', async () => {
+    await inspect('tree');
+    expect(log).toEqual(['say:ksyusha:l01.tree.inspect']);
+    log.length = 0;
+    await inspect('tree');
+    expect(log).toEqual(['say:ksyusha:l01.tree.garland']);
   });
 
   test('after freeing, the sofa only has its new inspect text', async () => {
@@ -147,6 +165,10 @@ test('portal hint is the current goal after the dialog, until the portal is ente
   expect(h.nextHint()).toBe('hint.l01.portal');
   await click('terrarium');
   h.notifyProgress();
+  // the portal leads to the workshop: the next goal is «talk to the snail»
+  expect(h.nextHint()).toBe('hint.l01b.1');
+  state.setFlag('L01_BRIEFING_DONE');
+  h.notifyProgress();
   expect(h.currentGoal()).toBeNull();
 });
 
@@ -172,6 +194,7 @@ describe('L01 data consistency', () => {
       steps.push(...(h.onUse ?? []), ...(h.onInspect ?? []), ...Object.values(h.onItem ?? {}).flat());
     }
     for (const g of L01.goals) steps.push(...g.hintKeys.map(key => ({ say: 'spitz' as const, key })));
+    steps.push(...allSteps(L01));
     for (const st of steps) {
       if ('say' in st) expect(ru[st.key], st.key).toBeDefined();
       if ('dialog' in st) expect(dialogs[st.dialog], st.dialog).toBeDefined();

@@ -67,7 +67,7 @@ export function allSteps(level: LevelScript): Step[] {
     for (const st of steps) {
       out.push(st);
       if ('onSolved' in st && st.onSolved) walk(st.onSolved);
-      if ('ifFlag' in st || 'ifItem' in st) { walk(st.then); walk(st.else ?? []); }
+      if ('ifFlag' in st || 'ifItem' in st || 'ifSpitzName' in st) { walk(st.then); walk(st.else ?? []); }
     }
   };
   for (const sc of Object.values(level.screens)) {
