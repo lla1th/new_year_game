@@ -47,6 +47,15 @@ describe('data files', () => {
       expect(characters.names[id as keyof CharactersFile['names']], id).toBeTruthy();
     }
   });
+  test('L02 dialogs: arrival, cat scene, generator, vendor and Nika', () => {
+    expect(dialogs.l02_arrive.map(l => l.speaker)).toEqual(['spitz', 'ksyusha']);
+    expect(dialogs.l02_cat_a).toHaveLength(3);
+    expect(dialogs.l02_cat_b).toHaveLength(3);
+    expect(dialogs.l02_generator_on).toHaveLength(3);
+    expect(dialogs.l02_vendor).toHaveLength(3);
+    expect(dialogs.l02_nika).toHaveLength(7);
+    expect(dialogs.l02_vendor[0].speaker).toBe('vendor');
+  });
   test('every speaker has a name', () => {
     for (const id of ['sveta', 'vendor', 'monkey', 'timofey', 'grisha', 'marmeladych', 'klava', 'semyon', 'cactus', 'crow', 'bambah', 'tik', 'tak', 'pendulum', 'mask', 'stranger'])
       expect(characters.names[id as keyof typeof characters.names], id).toBeDefined();

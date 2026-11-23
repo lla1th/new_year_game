@@ -2,15 +2,31 @@
   "l02_nika": [
     {
       "speaker": "nika",
-      "key": "l02.dlg.nika.1"
-    },
-    {
-      "speaker": "nika",
-      "key": "l02.dlg.nika.2"
+      "key": "l02.nika.thaw.1"
     },
     {
       "speaker": "ksyusha",
-      "key": "l02.dlg.nika.3"
+      "key": "l02.nika.thaw.2"
+    },
+    {
+      "speaker": "nika",
+      "key": "l02.nika.thaw.3"
+    },
+    {
+      "speaker": "nika",
+      "key": "l02.nika.cocoa.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.nika.cocoa.2"
+    },
+    {
+      "speaker": "nika",
+      "key": "l02.nika.cocoa.3"
+    },
+    {
+      "speaker": "nika",
+      "key": "l02.nika.go.1"
     }
   ],
   "l04_lekha_intro": [
@@ -397,6 +413,72 @@
     {
       "speaker": "snail",
       "key": "l01b.dlg.16"
+    }
+  ],
+  "l02_arrive": [
+    {
+      "speaker": "spitz",
+      "key": "l02.spitz.arrive.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.ksy.arrive.1"
+    }
+  ],
+  "l02_cat_a": [
+    {
+      "speaker": "cat",
+      "key": "l02.dlg.cat.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.dlg.cat.2"
+    },
+    {
+      "speaker": "cat",
+      "key": "l02.dlg.cat.3"
+    }
+  ],
+  "l02_cat_b": [
+    {
+      "speaker": "spitz",
+      "key": "l02.dlg.spitz.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.dlg.ksy.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l02.dlg.spitz.2"
+    }
+  ],
+  "l02_generator_on": [
+    {
+      "speaker": "ksyusha",
+      "key": "l02.generator.on.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l02.generator.on.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.generator.on.3"
+    }
+  ],
+  "l02_vendor": [
+    {
+      "speaker": "vendor",
+      "key": "l02.vendor.alive.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l02.vendor.alive.2"
+    },
+    {
+      "speaker": "vendor",
+      "key": "l02.vendor.board"
     }
   ]
 }
