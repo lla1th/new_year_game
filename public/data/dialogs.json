@@ -1,30 +1,4 @@
 {
-  "l01_intro": [
-    {
-      "speaker": "spitz",
-      "key": "l01.dlg.intro.1"
-    },
-    {
-      "speaker": "spitz",
-      "key": "l01.dlg.intro.2"
-    },
-    {
-      "speaker": "spitz",
-      "key": "l01.dlg.intro.3"
-    },
-    {
-      "speaker": "ksyusha",
-      "key": "l01.dlg.intro.4"
-    },
-    {
-      "speaker": "spitz",
-      "key": "l01.dlg.intro.5"
-    },
-    {
-      "speaker": "spitz",
-      "key": "l01.dlg.intro.6"
-    }
-  ],
   "l02_nika": [
     {
       "speaker": "nika",
@@ -261,6 +235,168 @@
     {
       "speaker": "cat",
       "key": "talk.cat.clock.1"
+    }
+  ],
+  "l01_intro_a": [
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.2"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.3"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.intro.4"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.5"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.name.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.name.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.name.3"
+    }
+  ],
+  "l01_intro_b": [
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.name.4"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.name.5"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.why.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.why.2"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.why.3"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.snail.1"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.snail.2"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.snail.3"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.snail.4"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.help.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.help.2"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.help.3"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01.dlg.help.4"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.help.5"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01.dlg.intro.6"
+    }
+  ],
+  "l01b_brief": [
+    {
+      "speaker": "snail",
+      "key": "l01b.dlg.1"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01b.dlg.2"
+    },
+    {
+      "speaker": "snail",
+      "key": "l01b.dlg.3"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01b.dlg.4"
+    },
+    {
+      "speaker": "snail",
+      "key": "l01b.dlg.5"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01b.dlg.6"
+    },
+    {
+      "speaker": "tik",
+      "key": "l01b.dlg.7"
+    },
+    {
+      "speaker": "tak",
+      "key": "l01b.dlg.8"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01b.dlg.9"
+    },
+    {
+      "speaker": "pendulum",
+      "key": "l01b.dlg.10"
+    },
+    {
+      "speaker": "spitz",
+      "key": "l01b.dlg.11"
+    },
+    {
+      "speaker": "snail",
+      "key": "l01b.dlg.12"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01b.dlg.13"
+    },
+    {
+      "speaker": "snail",
+      "key": "l01b.dlg.14"
+    },
+    {
+      "speaker": "ksyusha",
+      "key": "l01b.dlg.15"
+    },
+    {
+      "speaker": "snail",
+      "key": "l01b.dlg.16"
     }
   ]
 }

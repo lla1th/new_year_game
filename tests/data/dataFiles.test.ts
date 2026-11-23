@@ -31,8 +31,15 @@ describe('data files', () => {
   test('at least 5 wrong-item phrases', () => {
     expect(Object.keys(ru).filter(k => k.startsWith('common.wrongItem.')).length).toBeGreaterThanOrEqual(5);
   });
-  test('l01_intro dialog has 6 lines; line 4 is the exact catchphrase', () => {
-    expect(dialogs.l01_intro).toHaveLength(6);
+  test('the L01 intro is split around the name choice; line 4 is the exact catchphrase', () => {
+    expect(dialogs.l01_intro).toBeUndefined();
+    expect(dialogs.l01_intro_a).toHaveLength(8);
+    expect(dialogs.l01_intro_a[3].key).toBe('l01.dlg.intro.4');
+    expect(dialogs.l01_intro_a.at(-1)?.key).toBe('l01.dlg.name.3');       // then the name screen
+    expect(dialogs.l01_intro_b).toHaveLength(15);
+    expect(dialogs.l01_intro_b[0].key).toBe('l01.dlg.name.4');
+    expect(dialogs.l01_intro_b.at(-1)?.key).toBe('l01.dlg.intro.6');
+    expect(dialogs.l01b_brief).toHaveLength(16);
     expect(ru['l01.dlg.intro.4']).toBe('Вот такая ху*ня, собачка.');
   });
   test('names for every speaker', () => {
