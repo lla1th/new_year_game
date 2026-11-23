@@ -1,7 +1,7 @@
-import type { FlagId, ItemId, LevelId, PartId, PuzzleId, SpeakerId } from '../data/types';
+import type { FlagId, ItemId, LevelId, MoodId, PartId, PuzzleId, SpeakerId } from '../data/types';
 
 export type Step =
-    | { say: SpeakerId; key: string } | { dialog: string }
+    | { say: SpeakerId; key: string; mood?: MoodId } | { dialog: string }
     | { giveItem: ItemId } | { removeItem: ItemId } | { givePart: PartId } | { removePart: PartId }
     | { setFlag: FlagId } | { anim: string } | { sfx: string }
     | { walkTo: string }                     // point name from the `points` layer

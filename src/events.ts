@@ -1,7 +1,7 @@
-import type { CursorKind, ItemId, LevelId, PartId, PuzzleId, SpeakerId } from './game/data/types';
+import type { CursorKind, ItemId, LevelId, MoodId, PartId, PuzzleId, SpeakerId } from './game/data/types';
 
 export type GameEvents = {
-    'say': { speaker: SpeakerId; textKey: string };
+    'say': { speaker: SpeakerId; textKey: string; mood?: MoodId };
     'say:done': void;
     'dialog:start': { dialogId: string };
     'dialog:end': { dialogId: string };

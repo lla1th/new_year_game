@@ -1,10 +1,10 @@
-import type { LevelId, PuzzleId, SpeakerId } from '../data/types';
+import type { LevelId, MoodId, PuzzleId, SpeakerId } from '../data/types';
 import type { GameStateModel } from '../../state/GameStateModel';
 import type { HotspotScript, Step } from './types';
 
 export interface ScriptContext {
     state: GameStateModel;
-    say(speaker: SpeakerId, key: string): Promise<void>;
+    say(speaker: SpeakerId, key: string, mood?: MoodId): Promise<void>;
     dialog(id: string): Promise<void>;
     anim(name: string): Promise<void>;
     sfx(name: string): void;
@@ -44,7 +44,7 @@ export class ScriptRunner {
 
     private async runStep(step: Step, alive: () => boolean): Promise<void> {
         const c = this.ctx;
-        if ('say' in step) return c.say(step.say, step.key);
+        if ('say' in step) return c.say(step.say, step.key, step.mood);
         if ('dialog' in step) return c.dialog(step.dialog);
         if ('giveItem' in step) { c.state.addItem(step.giveItem); c.progress(); return; }
         if ('removeItem' in step) { c.state.removeItem(step.removeItem); c.progress(); return; }

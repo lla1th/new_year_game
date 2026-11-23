@@ -49,6 +49,9 @@ export type PuzzleId = 'P-02' | 'P-03' | 'P-04' | 'P-05' | 'P-06' | 'P-08' | 'P-
 export type SpeakerId = 'ksyusha' | 'spitz' | 'cat' | 'snail' | 'nika' | 'lekha' | 'owl' | 'snowman' | 'ginger'
   | 'sveta' | 'vendor' | 'monkey' | 'timofey' | 'grisha' | 'marmeladych' | 'klava' | 'semyon'
   | 'cactus' | 'crow' | 'bambah' | 'tik' | 'tak' | 'pendulum' | 'mask' | 'stranger';
+/** Реакция говорящего: определяет, какой портрет показать (characters.json → moods). Нет реакции = обычный портрет. */
+export const MOOD_IDS = ['happy', 'sad', 'angry', 'surprised', 'scared', 'thinking', 'smug', 'embarrassed'] as const;
+export type MoodId = typeof MOOD_IDS[number];
 export type Facing = 'dr' | 'dl' | 'ur' | 'ul';
 export type CursorKind = 'default' | 'hand' | 'eye' | 'gear' | 'talk' | 'exit';
 

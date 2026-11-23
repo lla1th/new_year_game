@@ -1,6 +1,6 @@
 import { Scene, type GameObjects, type Input, type Tweens } from 'phaser';
 import { bus } from '../../events';
-import { GAME_HEIGHT, GAME_WIDTH, LEVEL_STYLE, type CursorKind, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
+import { GAME_HEIGHT, GAME_WIDTH, LEVEL_STYLE, type CursorKind, type Facing, type ItemId, type LevelId, type MoodId, type PuzzleId, type SpeakerId } from '../data/types';
 import { colorFromKey, ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { loadLevelAssets } from '../assets/loadLevelAssets';
 import { getGameData } from '../data/gameData';
@@ -679,7 +679,7 @@ export class LevelScene extends Scene
     {
         return {
             state: gameState,
-            say: (speaker, key) => this.say(speaker, key),
+            say: (speaker, key, mood) => this.say(speaker, key, mood),
             dialog: id => this.dialog(id),
             anim: async name => {
                 const fn = getAnim(name);
@@ -764,7 +764,7 @@ export class LevelScene extends Scene
         if (texts) applySpitzName(gameState, texts);
     }
 
-    say (speaker: SpeakerId, key: string): Promise<void>
+    say (speaker: SpeakerId, key: string, mood?: MoodId): Promise<void>
     {
         // Ksyusha speaks in the talk pose; a «Хихик» line uses the hihik pose.
         const own = speaker === 'ksyusha' && !!this.ksyusha && this.pose === 'idle';
@@ -772,7 +772,7 @@ export class LevelScene extends Scene
             this.pose = isHihik(getGameData()?.texts.t(key) ?? '') ? 'hihik' : 'talk';
             this.applyTexture();
         }
-        return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key }))
+        return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key, mood }))
             .then(() => { if (own && this.pose !== 'idle') { this.pose = 'idle'; this.applyTexture(); } });
     }
 
