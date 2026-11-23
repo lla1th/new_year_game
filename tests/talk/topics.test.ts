@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { availableTopics, talkKey } from '../../src/game/talk/topics';
+import { availableTopics, talkKey, topicMarksSeen } from '../../src/game/talk/topics';
 import { GameStateModel } from '../../src/state/GameStateModel';
 import type { TalkDef } from '../../src/game/data/schemas';
 
@@ -28,4 +28,10 @@ test('no topics → empty list (menu shows only «Ладно, пока»)', () =
   const only: TalkDef = { speaker: 'nika', topics: [def.topics[0]] };
   expect(availableTopics(only, 'nika', s)).toEqual([]);
   expect(availableTopics({ speaker: 'nika', topics: [] }, 'nika', s)).toEqual([]);
+});
+
+test('hint and plain topics are never marked as seen', () => {
+  expect(topicMarksSeen({ id: 'next', menuKey: 'k', hint: true })).toBe(false);
+  expect(topicMarksSeen({ id: 'clock', menuKey: 'k', dialog: 'd' })).toBe(false);
+  expect(topicMarksSeen({ id: 'hat', menuKey: 'k', dialog: 'd', once: true })).toBe(true);
 });

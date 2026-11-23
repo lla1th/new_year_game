@@ -16,3 +16,8 @@ export function availableTopics(def: TalkDef, talkId: string, state: GameStateMo
         return true;
     });
 }
+
+/** Просмотренной отмечается только тема `once`; подсказка и обычные повторяемые темы — никогда. */
+export function topicMarksSeen(t: TalkTopic): boolean {
+    return t.once === true;
+}

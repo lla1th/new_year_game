@@ -3,7 +3,7 @@ import { computed, onUnmounted, ref } from 'vue';
 import { bus } from '../events';
 import { getGameData } from '../game/data/gameData';
 import type { TalkTopic } from '../game/data/schemas';
-import { availableTopics, talkKey } from '../game/talk/topics';
+import { availableTopics, talkKey, topicMarksSeen } from '../game/talk/topics';
 import { gameState } from '../state/gameState';
 
 const props = defineProps<{ talkId: string }>();
@@ -14,18 +14,25 @@ const def = computed(() => data.talks[props.talkId]);
 // While a topic's dialog is on screen the menu is hidden and returns afterwards.
 const playing = ref(false);
 const topics = computed(() => (def.value ? availableTopics(def.value, props.talkId, gameState) : []));
-const seen = (topic: TalkTopic) => topic.once === true && gameState.hasSeenTalk(talkKey(props.talkId, topic.id));
+const seen = (topic: TalkTopic) => topicMarksSeen(topic) && gameState.hasSeenTalk(talkKey(props.talkId, topic.id));
 
 let offDialog: (() => void) | null = null;
 function pick (topic: TalkTopic) {
-    if (!topic.dialog || playing.value) return;
+    if (playing.value) return;
+    if (topic.hint) {
+        // Same as the spitz button: close the menu first (the scene is busy while it is open), then ask for the hint.
+        bus.emit('talk:close');
+        setTimeout(() => bus.emit('hint:request'), 0);
+        return;
+    }
+    if (!topic.dialog) return;
     const dialogId = topic.dialog;
     playing.value = true;
     offDialog = bus.on('dialog:end', e => {
         if (e.dialogId !== dialogId) return;
         offDialog?.();
         offDialog = null;
-        if (topic.once) gameState.markTalkSeen(talkKey(props.talkId, topic.id));
+        if (topicMarksSeen(topic)) gameState.markTalkSeen(talkKey(props.talkId, topic.id));
         playing.value = false;
     });
     bus.emit('dialog:start', { dialogId });
