@@ -1,3 +1,4 @@
+import { playL02 } from './l02flow';
 import { test, expect } from '@playwright/test';
 import { solveBoard } from '../../src/puzzles/logic/fifteen';
 import { expectNoErrors, openGame, startNewGame } from './helpers';
@@ -26,16 +27,8 @@ test('full playthrough L01 → post-credits → main menu with the level select'
     await waitLevel('L01', 'workshop');
     await act(() => click(1100, 700));
     await act(() => click(1800, 450));
-    await waitLevel('L02');
-    // ---- L02
-    for (const [x, y] of [[230, 430], [1380, 490], [1680, 410], [1605, 675]]) await act(() => click(x, y));
-    await act(async () => drag(await slot('ITEM_MANDARIN'), 1380, 490));
-    await act(() => click(960, 250)); await overlay();
-    for (const [it, x] of [['ITEM_BULB_GREEN', 760], ['ITEM_BULB_GOLD', 960], ['ITEM_BULB_BLUE', 1360]] as const) { await drag(await slot(it), x, 520); await p.waitForTimeout(400); }
-    await overlayClosed();
-    await act(async () => drag(await slot('ITEM_GATE_KEY'), 530, 360));
-    await act(() => click(530, 360));
-    await waitLevel('L03', 'square');
+    // ---- L02 (see l02flow.ts)
+    await playL02(game);
     // ---- L03
     await act(() => click(960, 430)); await act(() => click(960, 430));
     await waitLevel('L03', 'floor1');

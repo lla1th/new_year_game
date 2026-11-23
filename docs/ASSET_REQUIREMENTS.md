@@ -49,7 +49,7 @@
 | Уровень | Фоны | Отдельные спрайты (состояния) |
 |---|---|---|
 | L01 | `w1_flat_bg`; экран холодильника `w1_fridge_close` | колбаса (в холодильнике), мандарин (на столе), террариум `idle` / `glow`, снег в окне (статичный) |
-| L02 | `w1_fair_bg`; экран гирлянды `w1_garland_close` | гирлянда `off` / `on`; лампочки 4 цвета (`in_socket`, `lit`) ; ворота `closed` / `open`; лампочка на прилавке; синяя лампочка на снегу; карусель (для твина поворота) |
+| L02 (5 экранов, R3) | `w1_gate_bg`, `w1_entrance_bg`, `w1_square_fair_bg`, `w1_shed_bg`, `w1_tent_bg`; экран генератора `w1_generator_close` | заглушки по ключам `l02_<имя>`: `gate_bars`, `monkey`, `vendor_ice`, `lantern_bulb`, `booth_key`, `frozen_walkers`, `walkers`, `tent_ice`, `snowman_nose`, `snowman_mandarin`, `bulb_blue`, `pump_hose`, `generator`, `barrel`, `nika_ice`, `cat`; иконки предметов фольга, лампочки (красная/жёлтая/синяя), насос, ключ склада; шарики тира (красный/золотой/чёрный); портреты обезьянки, продавца, Ники |
 | L03 | `w1_square_bg`, `w1_floor1_bg`, `w1_top_bg`; экран фрески `w1_fresco_close`; экран колоколов `w1_bells_close` | дверь `closed` / `open`; 4 колокола (`idle`, `lit`); Пружина |
 | L04 | `w2_factory_bg`; экран труб `w2_pipes_close` | плитки труб `I`, `L` (`empty`, `filled`) ; банка с тростями; вентиль на баке; пряники на конвейере (для твина движения) |
 | L05 | `w2_freezer_bg`; экран льда `w2_ice_close` | ящик; препятствия (сугроб, бочка); метка; стрелки; Шестерёнка |

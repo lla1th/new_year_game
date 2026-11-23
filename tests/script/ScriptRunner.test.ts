@@ -127,11 +127,11 @@ describe('ScriptRunner M2 steps', () => {
     const runner = new ScriptRunner(ctx);
     let solved = false;
     ctx.openPuzzle = async id => { log.push(`puzzle:${id}`); return solved; };
-    await runner.run([{ openPuzzle: 'P-02', onSolved: [{ setFlag: 'L02_GARLAND_DONE' }] }]);
-    expect(ctx.state.hasFlag('L02_GARLAND_DONE')).toBe(false);
+    await runner.run([{ openPuzzle: 'P-02', onSolved: [{ setFlag: 'L02_GENERATOR_ON' }] }]);
+    expect(ctx.state.hasFlag('L02_GENERATOR_ON')).toBe(false);
     solved = true;
-    await runner.run([{ openPuzzle: 'P-02', onSolved: [{ setFlag: 'L02_GARLAND_DONE' }] }]);
-    expect(ctx.state.hasFlag('L02_GARLAND_DONE')).toBe(true);
+    await runner.run([{ openPuzzle: 'P-02', onSolved: [{ setFlag: 'L02_GENERATOR_ON' }] }]);
+    expect(ctx.state.hasFlag('L02_GENERATOR_ON')).toBe(true);
   });
 
   test('ifFlag / ifItem choose then or else', async () => {

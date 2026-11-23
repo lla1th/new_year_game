@@ -1,6 +1,6 @@
 import { Scene, type GameObjects, type Input, type Tweens } from 'phaser';
 import { bus } from '../../events';
-import { GAME_HEIGHT, GAME_WIDTH, LEVEL_STYLE, type CursorKind, type Facing, type ItemId, type LevelId, type PuzzleId, type SpeakerId } from '../data/types';
+import { GAME_HEIGHT, GAME_WIDTH, LEVEL_STYLE, type CursorKind, type Facing, type ItemId, type LevelId, type MoodId, type PuzzleId, type SpeakerId } from '../data/types';
 import { colorFromKey, ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { loadLevelAssets } from '../assets/loadLevelAssets';
 import { animOwner, firstAnimated, showVisual } from '../assets/anims';
@@ -686,7 +686,7 @@ export class LevelScene extends Scene
     {
         return {
             state: gameState,
-            say: (speaker, key) => this.say(speaker, key),
+            say: (speaker, key, mood) => this.say(speaker, key, mood),
             dialog: id => this.dialog(id),
             anim: async name => {
                 const fn = getAnim(name);
@@ -771,7 +771,7 @@ export class LevelScene extends Scene
         if (texts) applySpitzName(gameState, texts);
     }
 
-    say (speaker: SpeakerId, key: string): Promise<void>
+    say (speaker: SpeakerId, key: string, mood?: MoodId): Promise<void>
     {
         // Ksyusha speaks in the talk pose; a «Хихик» line uses the hihik pose.
         const own = speaker === 'ksyusha' && !!this.ksyusha && this.pose === 'idle';
@@ -779,7 +779,7 @@ export class LevelScene extends Scene
             this.pose = isHihik(getGameData()?.texts.t(key) ?? '') ? 'hihik' : 'talk';
             this.applyTexture();
         }
-        return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key }))
+        return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key, mood }))
             .then(() => { if (own && this.pose !== 'idle') { this.pose = 'idle'; this.applyTexture(); } });
     }
 
@@ -1154,7 +1154,7 @@ export function isHihik (text: string): boolean
 
 /** Background picture of each close-up screen (ASSET_REQUIREMENTS §2), drawn under the screen when it exists. */
 const CLOSEUP_BG: Partial<Record<PuzzleId, string>> = {
-    fridge: 'w1_fridge_close', 'P-02': 'w1_garland_close', fresco: 'w1_fresco_close', 'P-03': 'w1_bells_close',
+    fridge: 'w1_fridge_close', 'P-02': 'w1_generator_close', fresco: 'w1_fresco_close', 'P-03': 'w1_bells_close',
     'P-04': 'w2_pipes_close', 'P-05': 'w2_ice_close', 'P-06': 'w3_page_close', drawing: 'w3_drawing_close',
     clock: 'fin_clock_close', 'P-08': 'fin_box_close',
 };
