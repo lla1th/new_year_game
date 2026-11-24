@@ -158,3 +158,27 @@ export function showVisual(sprite: VisualLike, key: string): boolean {
 export function firstAnimated(scene: { anims: { exists(key: string): boolean } }, keys: string[]): string | undefined {
     return keys.find(k => scene.anims.exists(k));
 }
+
+/** A walk animation to play and whether to mirror it. */
+export interface WalkChoice { key: string; flipX: boolean }
+
+/**
+ * Candidate walk animations of Ksyusha, best first (the first existing one is played):
+ * 1. 4 screen directions `<prefix>_d_walk` / `u_walk` / `l_walk` / `r_walk` (left ↔ right mirrored if one is missing);
+ * 2. diagonals `<prefix>_ur_walk` (walking up) and `<prefix>_dr_walk` — left mirrors right;
+ * 3. for up/down without own frames — the side view.
+ */
+export function walkAnimChoices(prefix: string, facing: 'dr' | 'dl' | 'ur' | 'ul', dir: 'd' | 'u' | 'l' | 'r'): WalkChoice[] {
+    const left = facing === 'dl' || facing === 'ul';
+    const up = facing === 'ur' || facing === 'ul';
+    const k = (n: string) => `${prefix}_${n}_walk`;
+    const out: WalkChoice[] = [{ key: k(dir), flipX: false }];
+    if (dir === 'l') out.push({ key: k('r'), flipX: true });
+    if (dir === 'r') out.push({ key: k('l'), flipX: true });
+    if (up) out.push({ key: k('ur'), flipX: left });
+    out.push({ key: k('dr'), flipX: left });
+    if (dir === 'd' || dir === 'u') {
+        out.push({ key: k(left ? 'l' : 'r'), flipX: false }, { key: k(left ? 'r' : 'l'), flipX: true });
+    }
+    return out;
+}

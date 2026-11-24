@@ -187,6 +187,50 @@
    ]
   },
   {
+   "key": "ksyusha_w1",
+   "path": "img/characters/ksyusha_w1.png",
+   "kind": "spritesheet",
+   "frameWidth": 64,
+   "frameHeight": 64,
+   "levels": [
+    "L01",
+    "L02",
+    "L03",
+    "L08"
+   ],
+   "pixelArt": true,
+   "anims": {
+    "d_walk": {
+     "frames": {
+      "start": 0,
+      "end": 3
+     },
+     "frameRate": 10
+    },
+    "l_walk": {
+     "frames": {
+      "start": 4,
+      "end": 7
+     },
+     "frameRate": 10
+    },
+    "r_walk": {
+     "frames": {
+      "start": 8,
+      "end": 11
+     },
+     "frameRate": 10
+    },
+    "u_walk": {
+     "frames": {
+      "start": 12,
+      "end": 15
+     },
+     "frameRate": 10
+    }
+   }
+  },
+  {
    "key": "ksyusha_w1_dr_idle",
    "path": "img/characters/ksyusha_w1_dr_idle.png",
    "kind": "image",

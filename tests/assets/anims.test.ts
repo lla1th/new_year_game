@@ -1,5 +1,5 @@
 import { describe, test, expect, vi } from 'vitest';
-import { animConfigs, asepriteAnimConfigs, createAnims, firstAnimated, showVisual, type AnimConfig } from '../../src/game/assets/anims';
+import { animConfigs, asepriteAnimConfigs, createAnims, firstAnimated, showVisual, walkAnimChoices, type AnimConfig } from '../../src/game/assets/anims';
 import { parseManifest, dataPath, type AssetEntry } from '../../src/game/assets/manifest';
 
 const sheet = (anims: AssetEntry['anims']): AssetEntry =>
@@ -102,5 +102,36 @@ describe('runtime', () => {
     const scene = { anims: { exists: (k: string) => k === 'b' } };
     expect(firstAnimated(scene, ['a', 'b'])).toBe('b');
     expect(firstAnimated(scene, ['a'])).toBeUndefined();
+  });
+});
+
+describe('walkAnimChoices', () => {
+  const pick = (have: string[], facing: 'dr' | 'dl' | 'ur' | 'ul', dir: 'd' | 'u' | 'l' | 'r') =>
+    walkAnimChoices('k', facing, dir).find(c => have.includes(c.key));
+
+  test('4 screen directions are used as drawn', () => {
+    const all = ['k_d_walk', 'k_u_walk', 'k_l_walk', 'k_r_walk', 'k_dr_walk'];
+    expect(pick(all, 'dl', 'd')).toEqual({ key: 'k_d_walk', flipX: false });
+    expect(pick(all, 'ul', 'u')).toEqual({ key: 'k_u_walk', flipX: false });
+    expect(pick(all, 'dl', 'l')).toEqual({ key: 'k_l_walk', flipX: false });
+    expect(pick(all, 'ur', 'r')).toEqual({ key: 'k_r_walk', flipX: false });
+  });
+
+  test('missing left mirrors right', () => {
+    expect(pick(['k_r_walk'], 'dl', 'l')).toEqual({ key: 'k_r_walk', flipX: true });
+  });
+
+  test('only diagonal frames: old behaviour', () => {
+    expect(pick(['k_dr_walk', 'k_ur_walk'], 'ul', 'u')).toEqual({ key: 'k_ur_walk', flipX: true });
+    expect(pick(['k_dr_walk'], 'dl', 'l')).toEqual({ key: 'k_dr_walk', flipX: true });
+  });
+
+  test('up/down without own frames: side view', () => {
+    expect(pick(['k_l_walk', 'k_r_walk'], 'dl', 'd')).toEqual({ key: 'k_l_walk', flipX: false });
+    expect(pick(['k_r_walk'], 'ul', 'u')).toEqual({ key: 'k_r_walk', flipX: true });
+  });
+
+  test('nothing drawn: undefined', () => {
+    expect(pick([], 'dr', 'd')).toBeUndefined();
   });
 });

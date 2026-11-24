@@ -3,12 +3,12 @@ import { bus } from '../../events';
 import { GAME_HEIGHT, GAME_WIDTH, LEVEL_STYLE, type CursorKind, type Facing, type ItemId, type LevelId, type MoodId, type PuzzleId, type SpeakerId } from '../data/types';
 import { colorFromKey, ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { loadLevelAssets } from '../assets/loadLevelAssets';
-import { animOwner, firstAnimated, showVisual } from '../assets/anims';
+import { animOwner, firstAnimated, showVisual, walkAnimChoices, type WalkChoice } from '../assets/anims';
 import { getGameData } from '../data/gameData';
 import { isDebug } from '../debug';
 import { parseTiledMap, type HotspotDef, type LevelMap } from '../map/parseTiledMap';
 import { NavGrid } from '../nav/NavGrid';
-import { facingFromVector } from '../nav/facing';
+import { facingFromVector, moveDirFromVector, type MoveDir } from '../nav/facing';
 import { distance, type Vec2 } from '../nav/geometry';
 import { ScriptRunner, type ScriptContext } from '../script/ScriptRunner';
 import type { HotspotScript, LevelScript, ScreenScript, Step } from '../script/types';
@@ -92,6 +92,7 @@ export class LevelScene extends Scene
     private talkCancel: (() => void) | null = null;
     private pos: Vec2 = { x: 0, y: 0 };
     private facing: Facing = 'dr';
+    private moveDir: MoveDir = 'd';     // screen direction of the current walk step (4-direction walk frames)
     private pose: Pose = 'idle';
     private trail: Vec2[] = [];
     private spitzMoving: boolean | null = null;   // which spitz visual is shown (null = none yet)
@@ -197,7 +198,7 @@ export class LevelScene extends Scene
         return new Promise<void>((resolve, reject) => {
             this.walk = { resolve, reject };
             this.faceTowards(path[0]);   // also switches to the walk animation, if there is one
-            if (!this.walkAnimKey()) this.startBob();   // no walk frames: the old «puppet» sway
+            if (!this.walkAnim()) this.startBob();   // no walk frames: the old «puppet» sway
         });
     }
 
@@ -983,6 +984,7 @@ export class LevelScene extends Scene
         const dx = p.x - this.pos.x;
         const dy = p.y - this.pos.y;
         if (dx === 0 && dy === 0) return;
+        this.moveDir = moveDirFromVector(dx, dy);
         this.setFacing(facingFromVector(dx, dy));
     }
 
@@ -990,23 +992,23 @@ export class LevelScene extends Scene
     {
         if (!this.ksyusha) return;
         const up = this.facing === 'ur' || this.facing === 'ul';
-        const key = this.walkAnimKey() ?? this.ksyushaKey(up, this.pose);
+        const walk = this.walkAnim();
+        const key = walk?.key ?? this.ksyushaKey(up, this.pose);
         showVisual(this.ksyusha, key);
         this.ksyusha.setScale(this.spriteScale(key));
-        this.ksyusha.setFlipX(this.facing === 'dl' || this.facing === 'ul');   // left poses mirror the right ones
+        // left poses mirror the right ones; walk animations say themselves
+        this.ksyusha.setFlipX(walk ? walk.flipX : this.facing === 'dl' || this.facing === 'ul');
     }
 
     /**
-     * Animation of Ksyusha's walk for the current direction, if the author made one:
-     * `ksyusha_<style>_ur_walk` when walking up (falls back to `dr_walk`), `ksyusha_<style>_dr_walk` otherwise.
+     * Animation of Ksyusha's walk for the current direction, if the author made one (see walkAnimChoices):
+     * `ksyusha_<style>_<d|u|l|r>_walk` by the screen direction, else `ur_walk` / `dr_walk` (left mirrored).
      * Undefined when she is not walking, is in another pose or there are no walk frames.
      */
-    private walkAnimKey (): string | undefined
+    private walkAnim (): WalkChoice | undefined
     {
         if (!this.walk || this.pose !== 'idle') return undefined;
-        const st = this.charStyle();
-        const up = this.facing === 'ur' || this.facing === 'ul';
-        return firstAnimated(this, up ? [`ksyusha_${st}_ur_walk`, `ksyusha_${st}_dr_walk`] : [`ksyusha_${st}_dr_walk`]);
+        return walkAnimChoices(`ksyusha_${this.charStyle()}`, this.facing, this.moveDir).find(c => this.anims.exists(c.key));
     }
 
     /** Spitz: `spitz_<style>_walk` while he follows (if there is such an animation), else `spitz_<style>_idle`. */
