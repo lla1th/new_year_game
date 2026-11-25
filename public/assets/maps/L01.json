@@ -58,7 +58,7 @@
      "rotation": 0,
      "visible": true,
      "x": 80,
-     "y": 540,
+     "y": 660,
      "width": 0,
      "height": 0,
      "polygon": [
@@ -72,11 +72,11 @@
       },
       {
        "x": 1760,
-       "y": 460
+       "y": 340
       },
       {
        "x": 0,
-       "y": 460
+       "y": 340
       }
      ]
     }
@@ -98,10 +98,10 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 140,
-     "y": 540,
-     "width": 180,
-     "height": 120
+     "x": 96,
+     "y": 660,
+     "width": 272,
+     "height": 84
     },
     {
      "id": 3,
@@ -109,10 +109,10 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 500,
-     "y": 600,
-     "width": 380,
-     "height": 120
+     "x": 432,
+     "y": 660,
+     "width": 496,
+     "height": 87
     },
     {
      "id": 4,
@@ -120,10 +120,10 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 1340,
-     "y": 640,
-     "width": 200,
-     "height": 120
+     "x": 1276,
+     "y": 660,
+     "width": 296,
+     "height": 101
     },
     {
      "id": 5,
@@ -131,10 +131,10 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 1600,
-     "y": 540,
-     "width": 220,
-     "height": 80
+     "x": 1595,
+     "y": 660,
+     "width": 245,
+     "height": 14
     }
    ]
   },
@@ -154,20 +154,20 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 380,
-     "y": 160,
-     "width": 120,
-     "height": 120,
+     "x": 356,
+     "y": 136,
+     "width": 148,
+     "height": 148,
      "properties": [
       {
        "name": "approachX",
        "type": "int",
-       "value": 440
+       "value": 400
       },
       {
        "name": "approachY",
        "type": "int",
-       "value": 600
+       "value": 688
       },
       {
        "name": "cursor",
@@ -187,20 +187,20 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 600,
-     "y": 140,
-     "width": 300,
-     "height": 280,
+     "x": 496,
+     "y": 100,
+     "width": 480,
+     "height": 382,
      "properties": [
       {
        "name": "approachX",
        "type": "int",
-       "value": 750
+       "value": 950
       },
       {
        "name": "approachY",
        "type": "int",
-       "value": 580
+       "value": 688
       },
       {
        "name": "cursor",
@@ -220,20 +220,20 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 140,
-     "y": 240,
-     "width": 180,
-     "height": 420,
+     "x": 80,
+     "y": 180,
+     "width": 296,
+     "height": 564,
      "properties": [
       {
        "name": "approachX",
        "type": "int",
-       "value": 380
+       "value": 392
       },
       {
        "name": "approachY",
        "type": "int",
-       "value": 700
+       "value": 740
       },
       {
        "name": "cursor",
@@ -253,10 +253,10 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 500,
-     "y": 520,
-     "width": 380,
-     "height": 200,
+     "x": 428,
+     "y": 512,
+     "width": 504,
+     "height": 240,
      "properties": [
       {
        "name": "approachX",
@@ -286,10 +286,10 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 1320,
-     "y": 580,
-     "width": 240,
-     "height": 180,
+     "x": 1272,
+     "y": 568,
+     "width": 304,
+     "height": 194,
      "properties": [
       {
        "name": "approachX",
@@ -319,20 +319,20 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 1600,
-     "y": 200,
-     "width": 220,
-     "height": 420,
+     "x": 1592,
+     "y": 208,
+     "width": 264,
+     "height": 468,
      "properties": [
       {
        "name": "approachX",
        "type": "int",
-       "value": 1640
+       "value": 1708
       },
       {
        "name": "approachY",
        "type": "int",
-       "value": 680
+       "value": 700
       },
       {
        "name": "cursor",
@@ -352,10 +352,10 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 1000,
-     "y": 300,
-     "width": 160,
-     "height": 120,
+     "x": 998,
+     "y": 282,
+     "width": 196,
+     "height": 174,
      "properties": [
       {
        "name": "approachX",
@@ -365,7 +365,7 @@
       {
        "name": "approachY",
        "type": "int",
-       "value": 600
+       "value": 688
       },
       {
        "name": "cursor",
@@ -457,8 +457,8 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 1080,
-     "y": 400,
+     "x": 1096,
+     "y": 380,
      "width": 0,
      "height": 0,
      "point": true
@@ -482,7 +482,7 @@
      "rotation": 0,
      "visible": true,
      "x": 1440,
-     "y": 650,
+     "y": 605,
      "width": 0,
      "height": 0,
      "point": true,
@@ -505,8 +505,8 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 1080,
-     "y": 430,
+     "x": 1096,
+     "y": 410,
      "width": 0,
      "height": 0,
      "point": true,

@@ -840,6 +840,7 @@ export class LevelScene extends Scene
         const h = this.actionHotspot;
         if (h) {
             const c = centroid(h.shape);
+            cam.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
             await new Promise<void>(resolve => {
                 cam.pan(c.x, c.y, ZOOM_MS, 'Sine.easeInOut');
                 cam.zoomTo(ZOOM_LEVEL, ZOOM_MS, 'Sine.easeInOut', false, (_c: unknown, progress: number) => { if (progress >= 1) resolve(); });
