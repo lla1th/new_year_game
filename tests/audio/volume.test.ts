@@ -104,6 +104,14 @@ describe('AudioManager', () => {
     expect(f.oneShots).toHaveLength(1);
   });
 
+  test('per-effect gain follows the global sound effects volume', () => {
+    const f = fakeSound(['sfx_clock_tick']);
+    f.am.unlock();
+    f.am.playSfx('sfx_clock_tick', 0.25);
+    f.am.playSfx('sfx_clock_tick', 0);
+    expect(f.oneShots).toEqual([{ key: 'sfx_clock_tick', volume: 0.2 }]);
+  });
+
   test('a missing music file: the old track fades out, nothing new starts', () => {
     const f = fakeSound(['mus_world1']);
     f.am.unlock(); f.am.playMusic('mus_world1'); f.advance(CROSSFADE_MS);

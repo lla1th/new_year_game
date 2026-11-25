@@ -6,6 +6,9 @@ import { type LevelScene, WalkInterruptedError } from '../scenes/LevelScene';
 import { registerCutscene } from '../scenes/registry';
 
 const TITLE_DEPTH = 940_000;
+const CLOCK_DIAL = 'l01_clock_dial';
+const CLOCK_FACE_SIZE = 40;
+const TICK_DELAYS_MS = [680, 720, 780, 860, 960, 1080, 1220, 1400, 1600];
 const WINDOW_PANES = [
     { x: 600, y: 152, width: 116, height: 76 },
     { x: 764, y: 152, width: 116, height: 76 },
@@ -24,33 +27,38 @@ interface ApartmentAtmosphere {
 }
 const atmospheres = new WeakMap<LevelScene, ApartmentAtmosphere>();
 
-function drawClock(g: GameObjects.Graphics, x: number, y: number, radius: number, minutes: number, seconds: number) {
+function createClock(scene: LevelScene, x: number, y: number, scale: number, depth: number) {
+    const inset = CLOCK_FACE_SIZE * scale / 2;
+    const left = x - inset;
+    const top = y - inset;
+    const face = scene.add.image(left, top, CLOCK_DIAL).setOrigin(0).setScale(scale).setDepth(depth);
+    const hands = scene.add.graphics({ x: left, y: top }).setScale(scale).setDepth(depth + 1);
+    return { face, hands };
+}
+
+function drawClock(g: GameObjects.Graphics, minutes: number) {
+    const x = 20;
+    const y = 19;
     g.clear();
-    g.fillStyle(0x3c2431).fillCircle(x, y, radius);
-    g.fillStyle(0xbd8050).fillCircle(x, y, radius * 0.93);
-    g.fillStyle(0xf7d4a0).fillCircle(x, y, radius * 0.82);
-    g.fillStyle(0x513044);
-    for (let i = 0; i < 12; i++) {
-        const a = i * Math.PI / 6;
-        g.fillCircle(x + Math.sin(a) * radius * 0.70, y - Math.cos(a) * radius * 0.70, Math.max(2, radius * 0.025));
-    }
-    const hand = (fraction: number, length: number, width: number, color: number) => {
+    const hand = (fraction: number, length: number, thickness: number) => {
         const angle = fraction * Math.PI * 2;
-        g.lineStyle(Math.max(2, radius * width), color)
-            .lineBetween(x, y, x + Math.sin(angle) * radius * length, y - Math.cos(angle) * radius * length);
+        for (let step = 0; step <= length; step++) {
+            g.fillRect(x + Math.round(Math.sin(angle) * step), y - Math.round(Math.cos(angle) * step), thickness, 1);
+        }
     };
-    hand((11 + minutes / 60) / 12, 0.42, 0.095, 0x43273b);
-    hand(minutes / 60, 0.63, 0.055, 0x43273b);
-    hand(seconds / 60, 0.67, 0.024, 0xb84042);
-    g.fillStyle(0x43273b).fillCircle(x, y, radius * 0.05);
+    g.fillStyle(0x2d1525);
+    hand((11 + minutes / 60) / 12, 8, 2);
+    hand(minutes / 60, 12, 1);
+    g.fillStyle(0x713333).fillRect(x, y, 2, 2);
 }
 
 /** Keep the apartment at 23:59 even when the intro is skipped or the save is reopened. */
 export function installApartmentAtmosphere(scene: LevelScene): void {
     if (atmospheres.get(scene)?.actor === scene.ksyusha) return;
-    const clock = scene.add.graphics().setName('apartment-clock').setDepth(1);
     const clockPoint = scene.map.points.clock_fx;
-    drawClock(clock, clockPoint.x, clockPoint.y, 48, 59, 0);
+    const { face, hands: clock } = createClock(scene, clockPoint.x, clockPoint.y, 4, 1);
+    face.setName('apartment-clock');
+    drawClock(clock, 59);
     const snow = WINDOW_PANES.flatMap((pane, paneIndex) => Array.from({ length: 6 }, (_, i) => {
         const x = pane.x + 4 + ((i * 37 + paneIndex * 13) % (pane.width - 8));
         const y = pane.y + 4 + ((i * 29 + paneIndex * 17) % (pane.height - 8));
@@ -70,7 +78,7 @@ export function installApartmentAtmosphere(scene: LevelScene): void {
 registerCutscene('l01_intro', async (scene, skipped) => {
     installApartmentAtmosphere(scene);
     const { actor, clock, snow, lights } = atmospheres.get(scene)!;
-    const { spawn, clock_fx: clockPoint } = scene.map.points;
+    const { spawn } = scene.map.points;
     const sofa = scene.getSprite('sofa');
     const sofaY = sofa?.y;
     const objects: GameObjects.GameObject[] = [];
@@ -93,6 +101,15 @@ registerCutscene('l01_intro', async (scene, skipped) => {
     const frame = (name: string) => {
         if (scene.anims.exists(name)) actor.play(name, true).setScale(4);
     };
+    const walk = async (target: { x: number; y: number }) => {
+        try {
+            await Promise.race([scene.walkTo(target), interrupt]);
+            return !cancelled;
+        } catch (error) {
+            if (error instanceof WalkInterruptedError) return false;
+            throw error;
+        }
+    };
     const stopWindow = () => {
         for (const { sprite } of snow) scene.tweens.killTweensOf(sprite);
         for (const light of lights) scene.tweens.killTweensOf(light);
@@ -100,7 +117,7 @@ registerCutscene('l01_intro', async (scene, skipped) => {
 
     try {
         bus.emit('l01:intro', { active: true });
-        drawClock(clock, clockPoint.x, clockPoint.y, 48, 50, 0);
+        drawClock(clock, 50);
         const shade = scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x181528)
             .setDepth(TITLE_DEPTH).setName('intro-title-card');
         const lines = [1, 2, 3, 4].map(n => {
@@ -132,35 +149,39 @@ registerCutscene('l01_intro', async (scene, skipped) => {
         scene.tweens.add({ targets: ornament, alpha: { from: 0.15, to: 1 }, duration: 400, ease: 'Sine.easeOut' });
         if (!await wait(800)) return;
 
-        try {
-            await Promise.race([scene.walkTo({ x: 1064, y: 792 }), interrupt]);
-            if (cancelled) return;
-        } catch (error) {
-            if (error instanceof WalkInterruptedError) return;
-            throw error;
-        }
-        scene.setFacing('dr');
+        if (!await walk({ x: 1064, y: 792 })) return;
+        scene.setFacing('dr', 'r');
         frame('ksyusha_intro_box');
         if (!await wait(600)) return;
+        if (!await walk(spawn)) return;
+        scene.setFacing('ur');
+        if (!await wait(480)) return;
 
         const darken = scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x151123, 0.68)
             .setDepth(TITLE_DEPTH).setName('intro-clock-card');
         const card = scene.add.rectangle(960, 526, 660, 660, 0x412641)
             .setStrokeStyle(8, 0xd6a468).setDepth(TITLE_DEPTH + 1);
-        const dial = scene.add.graphics().setDepth(TITLE_DEPTH + 2);
+        const { face: closeFace, hands: dial } = createClock(scene, 960, 466, 12, TITLE_DEPTH + 2);
+        closeFace.setName('intro-clock-texture');
         const time = scene.add.text(960, 764, '', { fontFamily: 'monospace', fontSize: '76px', color: '#ffdc9d' })
-            .setOrigin(0.5).setDepth(TITLE_DEPTH + 2).setName('intro-clock-time');
-        objects.push(darken, card, dial, time);
-        for (let minute = 50; minute <= 59; minute++) {
+            .setOrigin(0.5).setDepth(TITLE_DEPTH + 3).setName('intro-clock-time');
+        const clockCard = [darken, card, closeFace, dial, time];
+        objects.push(...clockCard);
+        const setTime = (minute: number) => {
             time.setText(`23:${minute}`);
-            drawClock(dial, 960, 466, 218, minute, minute === 59 ? 0 : (minute - 50) * 6);
-            drawClock(clock, clockPoint.x, clockPoint.y, 48, minute, 0);
-            if (minute === 59) stopWindow();
-            else scene.playSfx('sfx_clock_tick');
-            if (!await wait(minute === 59 ? 1130 : 210)) return;
+            drawClock(dial, minute);
+            drawClock(clock, minute);
+        };
+        for (const [step, delay] of TICK_DELAYS_MS.entries()) {
+            setTime(50 + step);
+            scene.playSfx('sfx_clock_tick', 1 - 0.88 * step / (TICK_DELAYS_MS.length - 1));
+            if (!await wait(delay)) return;
         }
-        for (const object of [darken, card, dial, time]) object.setVisible(false);
-        scene.setFacing('ul');
+        setTime(59);
+        stopWindow();
+        if (!await wait(1130)) return;
+        for (const object of clockCard) object.setVisible(false);
+        scene.setFacing('dr', 'r');
 
         const flash = scene.add.ellipse(690, 729, 370, 46, 0xffdf9e, 0.95).setDepth(745).setName('sofa-flash');
         const spark = scene.add.ellipse(690, 739, 122, 20, 0xffefc0, 0.9).setDepth(745).setName('sofa-spark');
@@ -169,7 +190,12 @@ registerCutscene('l01_intro', async (scene, skipped) => {
         if (sofa) scene.tweens.add({ targets: sofa, y: sofa.y - 25, duration: 140, yoyo: true, ease: 'Sine.easeOut' });
         scene.tweens.add({ targets: flash, alpha: 0, duration: 280, ease: 'Sine.easeOut' });
         scene.tweens.add({ targets: spark, alpha: { from: 0, to: 1 }, delay: 240, duration: 200, yoyo: true, ease: 'Sine.easeInOut' });
-        await wait(1000);
+        if (!await wait(180)) return;
+        frame('ksyusha_intro_surprise');
+        const reaction = scene.caption('l01.cutscene.sofa_reaction').setName('intro-sofa-reaction')
+            .setPosition(spawn.x + 260, spawn.y - 335).setOrigin(0.5, 1);
+        objects.push(reaction);
+        await wait(1750);
     } finally {
         scene.events.off('shutdown', stop);
         bus.emit('l01:intro', { active: false });
@@ -179,7 +205,7 @@ registerCutscene('l01_intro', async (scene, skipped) => {
         }
         stopWindow();
         if (scene.ksyusha === actor && actor.scene) {
-            drawClock(clock, clockPoint.x, clockPoint.y, 48, 59, 0);
+            drawClock(clock, 59);
             if (sofa && sofaY !== undefined) {
                 scene.tweens.killTweensOf(sofa);
                 sofa.setY(sofaY);

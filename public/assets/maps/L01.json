@@ -11,7 +11,7 @@
  "version": "1.10",
  "tiledversion": "1.11.2",
  "nextlayerid": 6,
- "nextobjectid": 24,
+ "nextobjectid": 31,
  "tilesets": [],
  "properties": [
   {
@@ -445,7 +445,7 @@
      "rotation": 0,
      "visible": true,
      "x": 428,
-     "y": 210,
+     "y": 212,
      "width": 0,
      "height": 0,
      "point": true
@@ -470,6 +470,90 @@
      "visible": true,
      "x": 1096,
      "y": 380,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 24,
+     "name": "marker_wall_clock",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 480,
+     "y": 166,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 25,
+     "name": "marker_window",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 922,
+     "y": 164,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 26,
+     "name": "marker_tree",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 302,
+     "y": 427,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 27,
+     "name": "marker_sofa",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 858,
+     "y": 540,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 28,
+     "name": "marker_table",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1500,
+     "y": 597,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 29,
+     "name": "marker_fridge",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1782,
+     "y": 366,
+     "width": 0,
+     "height": 0,
+     "point": true
+    },
+    {
+     "id": 30,
+     "name": "marker_terrarium",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1152,
+     "y": 346,
      "width": 0,
      "height": 0,
      "point": true

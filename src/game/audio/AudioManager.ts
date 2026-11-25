@@ -47,8 +47,8 @@ export class AudioManager {
         this.startWanted();
     }
 
-    playSfx(key: string): void {
-        const v = effectiveVolume(this.settings.sfxVolume, false, false);
+    playSfx(key: string, gain = 1): void {
+        const v = effectiveVolume(this.settings.sfxVolume, false, false) * gain;
         if (!this.unlocked || v === 0 || !this.has(key)) return;
         this.mgr.play(key, { volume: v });
     }

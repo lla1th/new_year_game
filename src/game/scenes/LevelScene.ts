@@ -20,6 +20,7 @@ import { saveGame } from '../../state/SaveService';
 import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registry';
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 import { openShortcut } from './overlayClose';
+import { addInteractionMarker } from './interactionMarker';
 import { TransitionScene, type TransitionData } from './TransitionScene';
 import { applyNameChoice, applySpitzName } from '../data/names';
 import { getAudio } from '../audio/AudioManager';
@@ -125,6 +126,8 @@ export class LevelScene extends Scene
     private touch: { pt: Vec2; t0: number; dragged: boolean; timer: { remove: () => void } } | null = null;
     private tapFlash: { id: string; until: number } | null = null;
     private outlineGfx: GameObjects.Graphics;
+    private interactionMarkers: GameObjects.Container | null = null;
+    private spitzMarker: GameObjects.Graphics;
     private debugGfx: GameObjects.Graphics | null = null;
     private offBus: (() => void)[] = [];
     private actionHotspot: HotspotDef | null = null;
@@ -242,6 +245,7 @@ export class LevelScene extends Scene
             this.sprites.clear();
             if (this.script?.levelId !== script.levelId) this.screens.clear();   // puzzle state lives until the level ends
             this.placeholderBoxes = [];
+            this.interactionMarkers = null;
             this.spitz = null;
             this.spitzShadow = null;
             this.cameras.main.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
@@ -316,10 +320,10 @@ export class LevelScene extends Scene
     }
 
     /** Sound effect (AudioManager; missing files are skipped silently). */
-    playSfx (name: string): void
+    playSfx (name: string, gain = 1): void
     {
         if (isDebug()) console.debug(`[sfx] ${name}`);
-        getAudio()?.playSfx(name);
+        getAudio()?.playSfx(name, gain);
     }
 
     /** Music of the world (L07 after the reconciliation: the finale theme) and the level's background noise. */
@@ -350,6 +354,10 @@ export class LevelScene extends Scene
             const on = isHotspotActive(h, f => gameState.hasFlag(f));
             for (const o of objs) o.setVisible(on);
         }
+        for (const h of this.map?.hotspots ?? []) {
+            const marker = this.interactionMarkers?.getByName(h.id) as GameObjects.Graphics | undefined;
+            marker?.setVisible(isHotspotActive(h, f => gameState.hasFlag(f)));
+        }
         if (this.script) getLevelVisual(this.script.levelId)?.(this);
     }
 
@@ -369,6 +377,7 @@ export class LevelScene extends Scene
         this.scriptPhase = false;
         this.talking = 0;
         this.debugGfx = null;
+        this.interactionMarkers = null;
         this.spitz = null;
         this.spitzShadow = null;
         this.sprites = new Map();
@@ -447,6 +456,7 @@ export class LevelScene extends Scene
         this.syncSprite(delta);
         this.updateSpitz(delta);
         this.syncShadows();
+        this.syncInteractionMarkers();
         this.drawOutlines();
     }
 
@@ -478,6 +488,16 @@ export class LevelScene extends Scene
         this.ksyushaShadow = this.add.ellipse(this.pos.x, this.pos.y, 65, 16, SHADOW_COLOR);
         this.ksyusha = this.add.sprite(this.pos.x, this.pos.y, this.ksyushaKey(false, 'idle')).setOrigin(0.5, 1);
         this.setFacing('dr');
+        const markers = this.add.container().setDepth(OUTLINE_DEPTH - 1)
+            .setName('interaction-markers').setVisible(false);
+        this.interactionMarkers = markers;
+        for (const h of this.map.hotspots) {
+            const center = centroid(h.shape);
+            const { x, y } = this.map.points[`marker_${h.id}`] ?? { x: center.x, y: center.y - (bgMissing ? 34 : 0) };
+            markers.add(addInteractionMarker(this, x, y).setName(h.id));
+        }
+        this.spitzMarker = addInteractionMarker(this, 0, 0).setName('spitz-companion').setVisible(false);
+        markers.add(this.spitzMarker);
         this.outlineGfx = this.add.graphics().setDepth(OUTLINE_DEPTH);
         this.debugGfx = isDebug() ? this.add.graphics().setDepth(DEBUG_DEPTH) : null;
         if (gameState.hasFlag('L01_SPITZ_FREED')) {
@@ -777,8 +797,13 @@ export class LevelScene extends Scene
     /** Клик по шпице-напарнику открывает меню разговоров. */
     private spitzAt (pt: Vec2): boolean
     {
+        return this.talkableSpitz()?.getBounds().contains(pt.x, pt.y) ?? false;
+    }
+
+    private talkableSpitz (): GameObjects.Sprite | null
+    {
         const sp = this.spitz;
-        return !!sp && sp.visible && gameState.hasFlag('L01_SPITZ_FREED') && !!getGameData()?.talks.spitz && sp.getBounds().contains(pt.x, pt.y);
+        return sp?.visible && gameState.hasFlag('L01_SPITZ_FREED') && getGameData()?.talks.spitz ? sp : null;
     }
 
     async chooseName (): Promise<void>
@@ -1197,6 +1222,18 @@ export class LevelScene extends Scene
     }
 
     // --- drawing ------------------------------------------------------------
+
+    private syncInteractionMarkers ()
+    {
+        const markers = this.interactionMarkers;
+        if (!markers) return;
+        const show = !this.isBusy;
+        markers.setVisible(show);
+        if (!show) return;
+        const sp = this.talkableSpitz();
+        this.spitzMarker.setVisible(!!sp);
+        if (sp) this.spitzMarker.setPosition(sp.x + 30, sp.y - sp.displayHeight + 12);
+    }
 
     private drawOutlines ()
     {

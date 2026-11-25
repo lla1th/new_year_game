@@ -12,7 +12,8 @@ test('L01 intro decorates the tree, stops the clock and lands the sofa', async (
     await page.waitForFunction(() => {
         const scene = (window as DebugWindow).__levelScene;
         const title = scene?.children.getByName('intro-title-lines') as GameObjects.Text | undefined;
-        return title?.text.split('\n').length === 4;
+        const markers = scene?.children.getByName('interaction-markers') as GameObjects.Container | undefined;
+        return title?.text.split('\n').length === 4 && markers?.visible === false;
     });
     await expect(page.locator('[data-test=inventory]')).toBeHidden();
 
@@ -31,13 +32,21 @@ test('L01 intro decorates the tree, stops the clock and lands the sofa', async (
         await page.waitForFunction(expected => {
             const scene = (window as DebugWindow).__levelScene;
             const clock = scene?.children.getByName('intro-clock-time') as GameObjects.Text | undefined;
-            return clock?.text === expected;
+            const texture = scene?.children.getByName('intro-clock-texture') as GameObjects.Image | undefined;
+            const spawn = scene?.map.points.spawn;
+            return scene && spawn && clock?.text === expected && texture?.texture.key === 'l01_clock_dial' &&
+                Math.hypot(scene.position.x - spawn.x, scene.position.y - spawn.y) < 4;
         }, value);
     }
     await page.waitForFunction(() => {
         const scene = (window as DebugWindow).__levelScene;
         const sofa = scene?.getSprite('sofa');
         return sofa && sofa.y < 768 && scene?.children.getByName('sofa-flash');
+    });
+    await page.waitForFunction(() => {
+        const scene = (window as DebugWindow).__levelScene;
+        return scene?.ksyusha.anims.currentAnim?.key === 'ksyusha_intro_surprise' &&
+            scene.children.getByName('intro-sofa-reaction');
     });
     await expect(page.locator('[data-test=inventory]')).toBeVisible();
     expect(await page.evaluate(() => {
@@ -61,5 +70,11 @@ test('skipping while Ksyusha is walking returns control to the player', async ({
         const scene = (window as DebugWindow).__levelScene;
         return scene && [scene.position, scene.map.points.spawn, scene.isWalking];
     })).toEqual([{ x: 380, y: 780 }, { x: 380, y: 780 }, false]);
+    await page.waitForFunction(() => {
+        const scene = (window as DebugWindow).__levelScene;
+        const markers = scene?.children.getByName('interaction-markers') as GameObjects.Container | undefined;
+        const fridge = markers?.getByName('fridge') as GameObjects.Graphics | undefined;
+        return markers?.visible && fridge?.visible && !markers.getByName('ornament_box');
+    });
     expectNoErrors(game.errors);
 });

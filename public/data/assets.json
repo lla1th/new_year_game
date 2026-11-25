@@ -1,5 +1,14 @@
 {
  "entries": [
+  {
+   "key": "l01_clock_dial",
+   "path": "img/world1/l01_clock_dial.png",
+   "kind": "image",
+   "levels": [
+    "L01"
+   ],
+   "pixelArt": true
+  },
  {
   "key": "l01_sofa",
   "path": "img/world1/l01_sofa.png",
@@ -45,6 +54,10 @@
     "frames": [
      2
     ],
+    "repeat": 0
+   },
+   "surprise": {
+    "frames": [3],
     "repeat": 0
    }
   }

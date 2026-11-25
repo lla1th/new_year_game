@@ -3,6 +3,7 @@ import { ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { getGameData } from '../data/gameData';
 import type { Vec2 } from '../nav/geometry';
 import { OverlayScreen, registerScreen } from '../scenes/OverlayScene';
+import { addInteractionMarker } from '../scenes/interactionMarker';
 import type { LevelScene } from '../scenes/LevelScene';
 import { installApartmentAtmosphere } from './L01.intro';
 import { registerAnim, registerLevelVisual } from '../scenes/registry';
@@ -22,9 +23,11 @@ class FridgeScreen extends OverlayScreen {
         if (!available) return;   // empty shelf
         const key = ensureTexture(s, 'l01_sausage', 260, 110, t('item.ITEM_SAUSAGE.name'));
         const sausage = s.add.image(-120, 40, key).setInteractive({ useHandCursor: true }).setName('fridge-sausage');
-        container.add(sausage);
+        const marker = addInteractionMarker(s, -57, 9).setName('sausage-marker');
+        container.add([sausage, marker]);
         sausage.once('pointerdown', () => {
             sausage.destroy();
+            marker.destroy();
             if (state.addItem('ITEM_SAUSAGE')) this.services.progress();
             void this.services.say('ksyusha', 'l01.fridge.take');
         });
