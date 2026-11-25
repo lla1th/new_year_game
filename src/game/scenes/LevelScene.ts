@@ -45,6 +45,11 @@ const BOB_HEIGHT = 6;          // px
 const BOB_PERIOD_MS = 350;
 const TILT_DEG = 3;
 const USE_POSE_MS = 300;
+const BLINK_INTERVAL_MS = 3800;
+const BLINK_DURATION_MS = 140;
+const PHONE_IDLE_MS = 12000;
+const PHONE_DURATION_MS = 4000;
+const PHONE_INTERVAL_MS = 20000;
 const HIGHLIGHT_MS = 2000;
 const SPITZ_FOLLOW_DIST = 80;
 const KSYUSHA_W = 90;
@@ -97,6 +102,7 @@ export class LevelScene extends Scene
     private moveDir: MoveDir = 'd';     // screen direction of the current walk step (4-direction walk frames)
     private pose: Pose = 'idle';
     private idleElapsed = 0;
+    private idleDetailKey: string | undefined;
     private trail: Vec2[] = [];
     private spitzMoving = false;
     private ksyushaShadow: GameObjects.Ellipse;
@@ -203,6 +209,7 @@ export class LevelScene extends Scene
      */
     walkTo (target: Vec2): Promise<void>
     {
+        this.resetIdle();
         this.cancelWalk();
         const path = this.nav.findPath(this.pos, target);
         this.path = path;
@@ -467,6 +474,7 @@ export class LevelScene extends Scene
         this.trail = [{ ...this.pos }];
         this.pose = 'idle';
         this.idleElapsed = 0;
+        this.idleDetailKey = undefined;
         this.ksyushaShadow = this.add.ellipse(this.pos.x, this.pos.y, 65, 16, SHADOW_COLOR);
         this.ksyusha = this.add.sprite(this.pos.x, this.pos.y, this.ksyushaKey(false, 'idle')).setOrigin(0.5, 1);
         this.setFacing('dr');
@@ -519,6 +527,7 @@ export class LevelScene extends Scene
     {
         if (this.skipCutscene) { this.skipCutscene(); return; }   // any click skips a cutscene
         if (this.loading || !this.map) return;
+        this.resetIdle();
         const pt = { x: p.worldX, y: p.worldY };
         if (p.rightButtonDown()) { this.inspectAt(pt); return; }
         if (p.wasTouch) {
@@ -1019,7 +1028,8 @@ export class LevelScene extends Scene
         const poseKey = this.ksyushaKey(up, this.pose);
         const directionalIdle = `ksyusha_${this.charStyle()}_${this.moveDir}_idle`;
         const useDirectionalIdle = isPlaceholder(poseKey) && !this.anims.exists(poseKey) && this.anims.exists(directionalIdle);
-        const key = walk?.key ?? (useDirectionalIdle ? directionalIdle : poseKey);
+        const detail = this.pose === 'idle' && !this.isBusy ? this.idleDetailKey : undefined;
+        const key = walk?.key ?? detail ?? (useDirectionalIdle ? directionalIdle : poseKey);
         const { currentAnim, currentFrame, isPlaying } = this.ksyusha.anims;
         // All four pixel-art directions use the same step phases.
         const pixelWalk = /^ksyusha_w1_[dulr]_walk$/;
@@ -1031,7 +1041,7 @@ export class LevelScene extends Scene
         }
         this.ksyusha.setScale(this.spriteScale(key));
         // Directional frames already face the right way; diagonal poses are mirrored.
-        this.ksyusha.setFlipX(walk?.flipX ?? (!useDirectionalIdle && (this.facing === 'dl' || this.facing === 'ul')));
+        this.ksyusha.setFlipX(walk?.flipX ?? (!detail && !useDirectionalIdle && (this.facing === 'dl' || this.facing === 'ul')));
     }
 
     /**
@@ -1090,11 +1100,39 @@ export class LevelScene extends Scene
         k.setAngle(this.bob.angle);
         k.setDepth(this.pos.y);
         if (k.texture.key === 'ksyusha_w1') {
-            this.idleElapsed = this.walk || this.pose !== 'idle' ? 0 : this.idleElapsed + delta;
+            this.updateIdleDetail(delta);
             // A subtle breathing cycle with the soles fixed at the sprite origin.
             const breath = 1 + 0.01 * (1 - Math.cos(this.idleElapsed * 2 * Math.PI / 2600));
             k.setScale(k.scaleX, k.scaleX * breath);
         }
+    }
+
+    private resetIdle ()
+    {
+        this.idleElapsed = 0;
+        if (!this.idleDetailKey) return;
+        this.idleDetailKey = undefined;
+        this.applyTexture();
+    }
+
+    private updateIdleDetail (delta: number)
+    {
+        if (this.walk || this.pose !== 'idle' || this.isBusy) {
+            this.resetIdle();
+            return;
+        }
+
+        this.idleElapsed += delta;
+        const phoneTime = this.idleElapsed - PHONE_IDLE_MS;
+        const phone = phoneTime >= 0 && phoneTime % PHONE_INTERVAL_MS < PHONE_DURATION_MS;
+        const blink = this.idleElapsed % BLINK_INTERVAL_MS >= BLINK_INTERVAL_MS - BLINK_DURATION_MS;
+        // Turn toward the camera to check the phone if she was looking away.
+        const phoneDir = this.moveDir === 'u' ? 'd' : this.moveDir;
+        const candidate = phone ? `ksyusha_w1_${phoneDir}_phone` : blink ? `ksyusha_w1_${this.moveDir}_blink` : undefined;
+        const key = candidate && this.anims.exists(candidate) ? candidate : undefined;
+        if (key === this.idleDetailKey) return;
+        this.idleDetailKey = key;
+        this.applyTexture();
     }
 
     private syncShadows ()
