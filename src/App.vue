@@ -40,6 +40,7 @@ const stage = useStageRect();
 const debug = isDebug();
 const dialogBox = ref<InstanceType<typeof DialogBox> | null>(null);
 const menuKey = ref(0);
+const introActive = ref(false);
 const stageStyle = computed(() => ({
     left: `${stage.left}px`, top: `${stage.top}px`, width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`,
     transform: `scale(${stage.scale})`,
@@ -53,6 +54,7 @@ function inspectItem (id: ItemId) {
 }
 
 function play (level: LevelId, screen?: string | null) {
+    introActive.value = false;
     uiState.paused = false;
     uiState.dialogActive = false;
     uiState.puzzleOpen = false;
@@ -164,6 +166,7 @@ const onFsChange = () => { uiState.settings.fullscreen = isFullscreen(); };
 onMounted(async () => {
     offs.push(
         bus.on('cursor', ({ kind }) => { uiState.cursor = CURSORS[kind] ?? 'default'; }),
+        bus.on('l01:intro', ({ active }) => { introActive.value = active; }),
         bus.on('puzzle:open', ({ puzzleId }) => {
             uiState.puzzleOpen = true;
             uiState.puzzleTakesItems = PUZZLES_WITH_ITEMS.includes(puzzleId);
@@ -218,13 +221,13 @@ onUnmounted(() => {
             @mousedown.stop @touchstart.stop @click="onUiClick"
         >
             <template v-if="uiState.screen === 'game'">
-                <Hud v-show="!uiState.ending" @pause="pause(true)" />
+                <Hud v-show="!introActive && !uiState.ending" @pause="pause(true)" />
                 <!-- Hidden on overlay screens that take no items. -->
-                <div v-show="!uiState.ending && (!uiState.puzzleOpen || uiState.puzzleTakesItems)" class="layer"><Inventory @inspect="inspectItem" /></div>
+                <div v-show="!introActive && !uiState.ending && (!uiState.puzzleOpen || uiState.puzzleTakesItems)" class="layer"><Inventory @inspect="inspectItem" /></div>
                 <NameChoice v-if="uiState.nameOpen" />
                 <TalkMenu v-if="uiState.talkId" :key="uiState.talkId" :talk-id="uiState.talkId" />
                 <DialogBox ref="dialogBox" />
-                <DebugPanel v-if="debug" />
+                <DebugPanel v-if="debug && !introActive" />
                 <EndingCard v-if="uiState.ending === 'card'" @next="endingNext" />
                 <Credits v-if="uiState.ending === 'credits'" @done="creditsDone" />
                 <LoadingOverlay />

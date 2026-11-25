@@ -11,7 +11,7 @@
  "version": "1.10",
  "tiledversion": "1.11.2",
  "nextlayerid": 6,
- "nextobjectid": 21,
+ "nextobjectid": 24,
  "tilesets": [],
  "properties": [
   {
@@ -135,6 +135,17 @@
      "y": 660,
      "width": 245,
      "height": 14
+    },
+    {
+     "id": 23,
+     "name": "ornament_box_base",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1092,
+     "y": 724,
+     "width": 92,
+     "height": 41
     }
    ]
   },
@@ -433,8 +444,8 @@
      "type": "",
      "rotation": 0,
      "visible": true,
-     "x": 440,
-     "y": 220,
+     "x": 428,
+     "y": 210,
      "width": 0,
      "height": 0,
      "point": true
@@ -520,6 +531,54 @@
        "name": "texture",
        "type": "string",
        "value": "l01_terrarium_glow"
+      }
+     ]
+    },
+    {
+     "id": 21,
+     "name": "sofa",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 676,
+     "y": 768,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 748
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "l01_sofa"
+      }
+     ]
+    },
+    {
+     "id": 22,
+     "name": "ornament_box",
+     "type": "",
+     "rotation": 0,
+     "visible": true,
+     "x": 1136,
+     "y": 764,
+     "width": 0,
+     "height": 0,
+     "point": true,
+     "properties": [
+      {
+       "name": "depthY",
+       "type": "int",
+       "value": 764
+      },
+      {
+       "name": "texture",
+       "type": "string",
+       "value": "l01_ornament_box"
       }
      ]
     }

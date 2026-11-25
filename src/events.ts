@@ -11,6 +11,7 @@ export type GameEvents = {
     'highlight:all': void;
     'cursor': { kind: CursorKind };
     'scene:ready': { levelId: LevelId; screenId: string | null };
+    'l01:intro': { active: boolean };
     'puzzle:open': { puzzleId: PuzzleId };
     'puzzle:close': { puzzleId: PuzzleId; solved: boolean };
     'checkpoint': void;

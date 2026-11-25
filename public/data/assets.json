@@ -1,5 +1,62 @@
 {
  "entries": [
+ {
+  "key": "l01_sofa",
+  "path": "img/world1/l01_sofa.png",
+  "kind": "image",
+  "levels": [
+   "L01"
+  ],
+  "pixelArt": true
+ },
+ {
+  "key": "l01_ornament_box",
+  "path": "img/world1/l01_ornament_box.png",
+  "kind": "image",
+  "levels": [
+   "L01"
+  ],
+  "pixelArt": true
+ },
+ {
+  "key": "ksyusha_intro",
+  "path": "img/characters/ksyusha_intro.png",
+  "kind": "spritesheet",
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "levels": [
+   "L01"
+  ],
+  "pixelArt": true,
+  "anims": {
+   "ornament": {
+    "frames": [
+     0
+    ],
+    "repeat": 0
+   },
+   "reach": {
+    "frames": [
+     1
+    ],
+    "repeat": 0
+   },
+   "box": {
+    "frames": [
+     2
+    ],
+    "repeat": 0
+   }
+  }
+ },
+ {
+  "key": "sfx_clock_tick",
+  "path": "audio/sfx/sfx_clock_tick",
+  "kind": "audio",
+  "levels": [
+   "L01"
+  ]
+ },
   {
    "key": "w1_flat_bg",
    "path": "img/world1/w1_flat_bg.png",

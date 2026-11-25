@@ -4,7 +4,8 @@ import { getGameData } from '../data/gameData';
 import type { Vec2 } from '../nav/geometry';
 import { OverlayScreen, registerScreen } from '../scenes/OverlayScene';
 import type { LevelScene } from '../scenes/LevelScene';
-import { registerAnim, registerCutscene, registerLevelVisual } from '../scenes/registry';
+import { installApartmentAtmosphere } from './L01.intro';
+import { registerAnim, registerLevelVisual } from '../scenes/registry';
 
 const t = (key: string) => getGameData()?.texts.t(key) ?? key;
 const point = (scene: LevelScene, name: string, fallback: Vec2): Vec2 => scene.map.points[name] ?? fallback;
@@ -34,6 +35,7 @@ registerScreen('fridge', () => new FridgeScreen());
 // --- Level visuals ----------------------------------------------------------------
 
 registerLevelVisual('L01', scene => {
+    if (scene.currentScreenId === 'apartment') installApartmentAtmosphere(scene);
     // The mandarin on the table disappears once taken; the terrarium glows when the portal is open.
     scene.getSprite('mandarin')?.setVisible(!scene.registryState().hasItem('ITEM_MANDARIN'));
     const glow = scene.getSprite('terrarium_glow');
@@ -67,62 +69,3 @@ registerAnim('portal', scene => new Promise<void>(resolve => {
     scene.tweens.add({ targets, x: p.x, y: p.y, scale: 0, angle: 360, duration: 800, ease: 'Cubic.easeIn' });
     scene.time.delayedCall(800, () => { scene.cameras.main.flash(250, 255, 255, 255); resolve(); });
 }));
-
-// --- Intro cutscene (≈15 s) ---------------------------------------------------------
-
-registerCutscene('l01_intro', async (scene, skipped) => {
-    let isSkipped = false;
-    void skipped.then(() => { isSkipped = true; });
-    const wait = (ms: number) => Promise.race([new Promise<void>(r => scene.time.delayedCall(ms, () => r())), skipped]);
-    const objs: GameObjects.GameObject[] = [];
-    const spawn = point(scene, 'spawn', scene.position);
-    const clockP = point(scene, 'clock_fx', { x: 400, y: 260 });
-    const windowP = point(scene, 'window_fx', { x: 800, y: 260 });
-    const sofaP = point(scene, 'spitz_under_sofa', { x: 1000, y: 700 });
-    try {
-        scene.placeKsyusha(spawn);
-        scene.setFacing('ur');
-        const cap = scene.caption('l01.cutscene.1');
-        objs.push(cap);
-        const clock = scene.add.text(clockP.x, clockP.y, '23:58', { fontFamily: 'monospace', fontSize: '48px', color: '#ff5252', backgroundColor: '#000000' })
-            .setOrigin(0.5).setDepth(5000);
-        objs.push(clock);
-        const flakes: GameObjects.Rectangle[] = [];
-        for (let i = 0; i < 24; i++) {
-            const f = scene.add.rectangle(windowP.x - 140 + Math.random() * 280, windowP.y - 120, 8, 8, 0xffffff).setDepth(5000);
-            flakes.push(f);
-            objs.push(f);
-            scene.tweens.add({ targets: f, y: windowP.y + 120, duration: 1800 + Math.random() * 1200, repeat: -1, delay: Math.random() * 1500 });
-        }
-        await wait(3500);
-        if (isSkipped) return;
-        cap.setText(t('l01.cutscene.2'));
-        clock.setText('23:59');
-        scene.tweens.add({ targets: clock, alpha: 0.3, duration: 200, yoyo: true, repeat: 3 });
-        await wait(3500);
-        if (isSkipped) return;
-        cap.setText(t('l01.cutscene.3'));
-        for (const f of flakes) scene.tweens.getTweensOf(f).forEach(tw => tw.pause());   // snow freezes
-        await wait(3500);
-        if (isSkipped) return;
-        cap.setText(t('l01.cutscene.4'));
-        scene.setFacing('dr');
-        const sp = scene.createSpitzSprite(windowP).setOrigin(0.5).setDepth(6000);
-        objs.push(sp);
-        await Promise.race([
-            new Promise<void>(r => scene.tweens.add({ targets: sp, x: sofaP.x, y: sofaP.y, angle: 720, duration: 1600, ease: 'Quad.easeIn', onComplete: () => r() })),
-            skipped,
-        ]);
-        if (isSkipped) return;
-        await Promise.race([
-            new Promise<void>(r => scene.tweens.add({ targets: sp, alpha: 0, scale: sp.scaleX * 0.3, duration: 400, onComplete: () => r() })),
-            skipped,
-        ]);
-        await wait(1500);
-    } finally {
-        // Final state regardless of skipping: Ksyusha by the tree, the spitz hidden under the sofa.
-        for (const o of objs) { scene.tweens.killTweensOf(o); o.destroy(); }
-        scene.placeKsyusha(spawn);
-        scene.setFacing('dr');
-    }
-});
