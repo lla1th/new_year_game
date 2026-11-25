@@ -268,7 +268,8 @@
     },
     {
       "speaker": "ksyusha",
-      "key": "l01.dlg.intro.4"
+      "key": "l01.dlg.intro.4",
+      "mood": "surprised"
     },
     {
       "speaker": "spitz",

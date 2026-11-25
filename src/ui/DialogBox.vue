@@ -30,9 +30,10 @@ const shown = computed(() => {
 const done = computed(() => shown.value.length >= fullText.value.length);
 const choices = computed(() => (done.value && line.value?.choices?.length ? line.value.choices.slice(0, 3) : []));
 const name = computed(() => (line.value ? data.characters.names[line.value.speaker] : ''));
+const worldStyle = computed(() => LEVEL_STYLE[gameState.levelId]);
 const portrait = computed(() => {
     if (!line.value) return undefined;
-    const p = resolvePortrait(data.characters, line.value.speaker, LEVEL_STYLE[gameState.levelId], line.value.mood);
+    const p = resolvePortrait(data.characters, line.value.speaker, worldStyle.value, line.value.mood);
     return p ? `${import.meta.env.BASE_URL}assets/${p}` : undefined;
 });
 
@@ -102,7 +103,7 @@ defineExpose({ sayLocal });
 <template>
     <div v-if="line" class="catcher" data-test="dialog" @click="onClick" @contextmenu.prevent>
         <div class="box">
-            <div class="portrait"><Placeholder :src="portrait" :color-key="`portrait_${line.speaker}_${line.mood ?? ''}`" :label="name" /></div>
+            <div class="portrait" :class="{ pixel: worldStyle === 'w1' }"><Placeholder :src="portrait" :color-key="`portrait_${line.speaker}_${line.mood ?? ''}`" :label="name" /></div>
             <div class="body">
                 <div class="name">{{ name }}</div>
                 <div class="text" data-test="dialog-text">{{ shown }}</div>
@@ -119,6 +120,7 @@ defineExpose({ sayLocal });
 .catcher { position: absolute; inset: 0; pointer-events: auto; cursor: pointer; }
 .box { position: absolute; left: 260px; bottom: 168px; width: 1400px; height: 220px; box-sizing: border-box; display: flex; gap: 24px; padding: 20px 28px; background: rgba(20, 24, 48, .92); border: 4px solid #f3e3b5; border-radius: 16px; color: #fff; }
 .portrait { width: 176px; height: 176px; flex: none; border-radius: 12px; overflow: hidden; }
+.portrait.pixel :deep(.ph-img) { background: #47344b; image-rendering: pixelated; }
 .body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .name { font: bold 30px sans-serif; color: #ffd75e; margin-bottom: 6px; }
 .text { font: 30px/1.3 sans-serif; white-space: pre-wrap; }

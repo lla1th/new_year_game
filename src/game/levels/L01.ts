@@ -43,7 +43,7 @@ export const L01: LevelScript = {
                         ],
                         ITEM_SAUSAGE: [
                             { removeItem: 'ITEM_SAUSAGE' },
-                            { say: 'spitz', key: 'l01.sofa.sausage' },
+                            { say: 'spitz', key: 'l01.sofa.sausage', mood: 'happy' },
                             { anim: 'spitz_out' },
                             { setFlag: 'L01_SPITZ_FREED' },
                             // «Знакомство»: имя выбирается посреди диалога; дальше — «почему ко мне», Улитка, просьба о помощи.
