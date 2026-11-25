@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
+import type { GameObjects } from 'phaser';
+import type { LevelScene } from '../../src/game/scenes/LevelScene';
 import { expectNoErrors, openGame, startNewGame } from './helpers';
+
+type DebugWindow = Window & { __levelScene?: LevelScene };
 
 test('freeing the spitz is saved; «Продолжить» brings it back; a broken save hides «Продолжить»', async ({ page }) => {
     test.setTimeout(300_000);
@@ -14,6 +18,25 @@ test('freeing the spitz is saved; «Продолжить» brings it back; a bro
     expect(await game.inv()).toEqual(['ITEM_MANDARIN', 'ITEM_SAUSAGE']);
     await game.act(async () => game.drag(await game.slot('ITEM_SAUSAGE'), 690, 620));   // sausage → sofa
     expect((await game.state())?.flags).toContain('L01_SPITZ_FREED');
+
+    await game.click(1200, 888);
+    await expect.poll(() => p.evaluate(() => {
+        const scene = (window as DebugWindow).__levelScene;
+        const k = scene?.ksyusha;
+        const sp = scene?.spitz;
+        const shadows = scene?.children.list.filter(child => child.type === 'Ellipse') ?? [];
+        return {
+            animation: sp?.anims.currentAnim?.key,
+            grounded: [k, sp].every(actor => actor && shadows.some(shadow => {
+                const ellipse = shadow as GameObjects.Ellipse;
+                return ellipse.visible && ellipse.alpha > 0 &&
+                    ellipse.x === actor.x && ellipse.y === actor.y - 1;
+            })),
+        };
+    })).toEqual({ animation: 'spitz_w1_walk', grounded: true });
+    await game.settle();
+    await expect.poll(() => p.evaluate(() => (window as DebugWindow).__levelScene?.spitz?.anims.currentAnim?.key))
+        .toBe('spitz_w1_idle');
 
     await p.reload();
     await p.click('[data-test=menu-continue]');

@@ -3,7 +3,7 @@ import { ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { getGameData } from '../data/gameData';
 import type { Vec2 } from '../nav/geometry';
 import { OverlayScreen, registerScreen } from '../scenes/OverlayScene';
-import { characterName, type LevelScene } from '../scenes/LevelScene';
+import type { LevelScene } from '../scenes/LevelScene';
 import { registerAnim, registerCutscene, registerLevelVisual } from '../scenes/registry';
 
 const t = (key: string) => getGameData()?.texts.t(key) ?? key;
@@ -53,10 +53,9 @@ registerAnim('spitz_out', scene => new Promise<void>(resolve => {
     const p = point(scene, 'spitz_under_sofa', { x: scene.position.x + 120, y: scene.position.y });
     const sp = scene.showSpitz(p);
     scene.playSfx('sfx_spitz_bark');
-    sp.setScale(0.2);
     scene.tweens.add({
-        targets: sp, scale: 1, y: p.y - 80, duration: 260, ease: 'Back.easeOut', yoyo: true,
-        onComplete: () => { sp.setScale(1).setPosition(p.x, p.y); resolve(); },
+        targets: sp, y: p.y - 52, duration: 230, ease: 'Sine.easeOut', yoyo: true,
+        onComplete: () => { sp.setPosition(p.x, p.y); resolve(); },
     });
 }));
 
@@ -108,7 +107,7 @@ registerCutscene('l01_intro', async (scene, skipped) => {
         if (isSkipped) return;
         cap.setText(t('l01.cutscene.4'));
         scene.setFacing('dr');
-        const sp = scene.add.image(windowP.x, windowP.y, ensureTexture(scene, 'spitz_w1_idle', 120, 90, characterName('spitz'))).setDepth(6000);
+        const sp = scene.createSpitzSprite(windowP).setOrigin(0.5).setDepth(6000);
         objs.push(sp);
         await Promise.race([
             new Promise<void>(r => scene.tweens.add({ targets: sp, x: sofaP.x, y: sofaP.y, angle: 720, duration: 1600, ease: 'Quad.easeIn', onComplete: () => r() })),
@@ -116,7 +115,7 @@ registerCutscene('l01_intro', async (scene, skipped) => {
         ]);
         if (isSkipped) return;
         await Promise.race([
-            new Promise<void>(r => scene.tweens.add({ targets: sp, alpha: 0, scale: 0.3, duration: 400, onComplete: () => r() })),
+            new Promise<void>(r => scene.tweens.add({ targets: sp, alpha: 0, scale: sp.scaleX * 0.3, duration: 400, onComplete: () => r() })),
             skipped,
         ]);
         await wait(1500);

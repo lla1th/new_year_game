@@ -51,6 +51,8 @@ const KSYUSHA_W = 90;
 const KSYUSHA_H = 360;
 const SPITZ_W = 120;
 const SPITZ_H = 90;
+const SHADOW_COLOR = 0x221522;
+const SHADOW_ALPHA = 0.36;
 const SPRITE_PLACEHOLDER_W = 64;
 const SPRITE_PLACEHOLDER_H = 128;
 const OUTLINE_DEPTH = 900_000;
@@ -94,8 +96,11 @@ export class LevelScene extends Scene
     private facing: Facing = 'dr';
     private moveDir: MoveDir = 'd';     // screen direction of the current walk step (4-direction walk frames)
     private pose: Pose = 'idle';
+    private idleElapsed = 0;
     private trail: Vec2[] = [];
-    private spitzMoving: boolean | null = null;   // which spitz visual is shown (null = none yet)
+    private spitzMoving = false;
+    private ksyushaShadow: GameObjects.Ellipse;
+    private spitzShadow: GameObjects.Ellipse | null = null;
 
     // walking
     private path: Vec2[] = [];
@@ -169,15 +174,23 @@ export class LevelScene extends Scene
         this.applyTexture();
     }
 
+    /** A standalone spitz for cutscenes or for the follower. */
+    createSpitzSprite (p: Vec2): GameObjects.Sprite
+    {
+        const idle = `spitz_${this.charStyle()}_idle`;
+        const texture = animOwner(idle)?.key ?? ensureTexture(this, idle, SPITZ_W, SPITZ_H, characterName('spitz'));
+        const sprite = this.add.sprite(p.x, p.y, texture).setOrigin(0.5, 1);
+        showVisual(sprite, idle);
+        return sprite.setScale(this.spriteScale(idle));
+    }
+
     /** Shows (or creates) the spitz at `p` and makes him follow Ksyusha. */
     showSpitz (p: Vec2): GameObjects.Sprite
     {
         if (!this.spitz) {
-            const key = `spitz_${this.charStyle()}_idle`;
-            ensureTexture(this, key, SPITZ_W, SPITZ_H, characterName('spitz'));
-            this.spitz = this.add.sprite(p.x, p.y, key).setOrigin(0.5, 1);
-            this.spitzMoving = null;
-            this.applySpitzVisual(false);
+            this.spitz = this.createSpitzSprite(p);
+            this.spitzShadow = this.add.ellipse(p.x, p.y, 74, 18, SHADOW_COLOR);
+            this.spitzMoving = false;
         }
         this.spitz.setVisible(true).setPosition(p.x, p.y).setDepth(p.y);
         this.trail = [{ x: p.x, y: p.y }, { ...this.pos }];
@@ -223,6 +236,7 @@ export class LevelScene extends Scene
             if (this.script?.levelId !== script.levelId) this.screens.clear();   // puzzle state lives until the level ends
             this.placeholderBoxes = [];
             this.spitz = null;
+            this.spitzShadow = null;
             this.cameras.main.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
             this.busy = false;
             this.scriptPhase = false;
@@ -349,6 +363,7 @@ export class LevelScene extends Scene
         this.talking = 0;
         this.debugGfx = null;
         this.spitz = null;
+        this.spitzShadow = null;
         this.sprites = new Map();
         this.skipCutscene = null;
         this.actionHotspot = null;
@@ -399,7 +414,7 @@ export class LevelScene extends Scene
 
     update (_time: number, delta: number)
     {
-        if (!this.ksyusha) return;
+        if (!this.ksyusha || this.loading) return;
         if (this.path.length > 0) {
             let budget = (WALK_SPEED * delta) / 1000;
             while (budget > 0 && this.path.length > 0) {
@@ -422,8 +437,9 @@ export class LevelScene extends Scene
             this.stepSound(delta);
             this.drawDebug();
         }
-        this.syncSprite();
-        this.updateSpitz();
+        this.syncSprite(delta);
+        this.updateSpitz(delta);
+        this.syncShadows();
         this.drawOutlines();
     }
 
@@ -450,6 +466,8 @@ export class LevelScene extends Scene
         this.pos = { x: spawn.x, y: spawn.y };
         this.trail = [{ ...this.pos }];
         this.pose = 'idle';
+        this.idleElapsed = 0;
+        this.ksyushaShadow = this.add.ellipse(this.pos.x, this.pos.y, 65, 16, SHADOW_COLOR);
         this.ksyusha = this.add.sprite(this.pos.x, this.pos.y, this.ksyushaKey(false, 'idle')).setOrigin(0.5, 1);
         this.setFacing('dr');
         this.outlineGfx = this.add.graphics().setDepth(OUTLINE_DEPTH);
@@ -460,6 +478,7 @@ export class LevelScene extends Scene
         }
         this.refreshVisuals();
         this.syncSprite();
+        this.syncShadows();
         this.drawDebug();
     }
 
@@ -1063,12 +1082,35 @@ export class LevelScene extends Scene
         return e?.pixelArt ? PIXEL_SCALE : 1;
     }
 
-    private syncSprite ()
+    private syncSprite (delta = 0)
     {
-        if (!this.ksyusha) return;
-        this.ksyusha.setPosition(this.pos.x, this.pos.y + this.bob.y);
-        this.ksyusha.setAngle(this.bob.angle);
-        this.ksyusha.setDepth(this.pos.y);
+        const k = this.ksyusha;
+        if (!k || this.tweens.isTweening(k)) return;
+        k.setPosition(this.pos.x, this.pos.y + this.bob.y);
+        k.setAngle(this.bob.angle);
+        k.setDepth(this.pos.y);
+        if (k.texture.key === 'ksyusha_w1') {
+            this.idleElapsed = this.walk || this.pose !== 'idle' ? 0 : this.idleElapsed + delta;
+            // A subtle breathing cycle with the soles fixed at the sprite origin.
+            const breath = 1 + 0.01 * (1 - Math.cos(this.idleElapsed * 2 * Math.PI / 2600));
+            k.setScale(k.scaleX, k.scaleX * breath);
+        }
+    }
+
+    private syncShadows ()
+    {
+        const k = this.ksyusha;
+        const kAlpha = Math.min(1, k.scaleX) * k.alpha;
+        this.ksyushaShadow.setPosition(this.pos.x, this.pos.y - 1).setDepth(this.pos.y - 0.5)
+            .setVisible(k.visible).setAlpha(SHADOW_ALPHA * kAlpha);
+
+        const sp = this.spitz;
+        if (!sp || !this.spitzShadow) return;
+        // While he jumps out from under the sofa, his shadow stays on the floor.
+        const ground = gameState.hasFlag('L01_SPITZ_FREED') ? sp : this.trail[0];
+        const spread = 1 - Math.min(0.4, Math.max(0, ground.y - sp.y) / 200);
+        this.spitzShadow.setPosition(ground.x, ground.y - 1).setDepth(ground.y - 0.5)
+            .setVisible(sp.visible).setScale(spread).setAlpha(SHADOW_ALPHA * spread * Math.min(1, sp.scaleX) * sp.alpha);
     }
 
     private pushTrail ()
@@ -1084,10 +1126,10 @@ export class LevelScene extends Scene
     }
 
     /** The spitz walks along Ksyusha's trail and stays SPITZ_FOLLOW_DIST behind her. */
-    private updateSpitz ()
+    private updateSpitz (delta: number)
     {
         const sp = this.spitz;
-        if (!sp || !sp.visible || this.trail.length === 0) return;
+        if (!sp || !sp.visible || this.trail.length === 0 || this.tweens.isTweening(sp)) return;
         let remaining = SPITZ_FOLLOW_DIST;
         let target = this.trail[0];
         for (let i = this.trail.length - 1; i > 0; i--) {
@@ -1106,9 +1148,14 @@ export class LevelScene extends Scene
             // trail shorter than the follow distance: do not move closer than it
             if (distance({ x: sp.x, y: sp.y }, this.pos) <= SPITZ_FOLLOW_DIST) { this.applySpitzVisual(false); return; }
         }
-        this.applySpitzVisual(target.x !== sp.x || target.y !== sp.y);
-        if (target.x !== sp.x) sp.setFlipX(target.x < sp.x);
-        sp.setPosition(target.x, target.y).setDepth(target.y);
+        const gap = distance(sp, target);
+        this.applySpitzVisual(gap > 0.5);
+        if (gap <= 0.5) return;
+        const step = Math.min(1, ((WALK_SPEED + 60) * delta / 1000) / gap);
+        const x = sp.x + (target.x - sp.x) * step;
+        const y = sp.y + (target.y - sp.y) * step;
+        if (Math.abs(target.x - sp.x) > 1) sp.setFlipX(target.x < sp.x);
+        sp.setPosition(x, y).setDepth(y);
     }
 
     // --- drawing ------------------------------------------------------------
