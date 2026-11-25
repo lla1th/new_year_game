@@ -155,14 +155,17 @@ export class LevelScene extends Scene
     placeKsyusha (p: Vec2): void
     {
         this.cancelWalk();
+        this.stopBob();
+        this.applyTexture();
         this.pos = { x: p.x, y: p.y };
         this.trail = [{ ...this.pos }];
         this.syncSprite();
     }
 
-    setFacing (f: Facing): void
+    setFacing (f: Facing, dir: MoveDir = f.startsWith('u') ? 'u' : 'd'): void
     {
         this.facing = f;
+        this.moveDir = dir;
         this.applyTexture();
     }
 
@@ -193,6 +196,7 @@ export class LevelScene extends Scene
         this.drawDebug();
         if (path.length === 0) {
             this.stopBob();
+            this.applyTexture();
             return Promise.resolve();
         }
         return new Promise<void>((resolve, reject) => {
@@ -984,8 +988,7 @@ export class LevelScene extends Scene
         const dx = p.x - this.pos.x;
         const dy = p.y - this.pos.y;
         if (dx === 0 && dy === 0) return;
-        this.moveDir = moveDirFromVector(dx, dy);
-        this.setFacing(facingFromVector(dx, dy));
+        this.setFacing(facingFromVector(dx, dy), moveDirFromVector(dx, dy));
     }
 
     private applyTexture ()
@@ -993,11 +996,22 @@ export class LevelScene extends Scene
         if (!this.ksyusha) return;
         const up = this.facing === 'ur' || this.facing === 'ul';
         const walk = this.walkAnim();
-        const key = walk?.key ?? this.ksyushaKey(up, this.pose);
-        showVisual(this.ksyusha, key);
+        const poseKey = this.ksyushaKey(up, this.pose);
+        const directionalIdle = `ksyusha_${this.charStyle()}_${this.moveDir}_idle`;
+        const useDirectionalIdle = isPlaceholder(poseKey) && !this.anims.exists(poseKey) && this.anims.exists(directionalIdle);
+        const key = walk?.key ?? (useDirectionalIdle ? directionalIdle : poseKey);
+        const { currentAnim, currentFrame, isPlaying } = this.ksyusha.anims;
+        // All four pixel-art directions use the same step phases.
+        const pixelWalk = /^ksyusha_w1_[dulr]_walk$/;
+        if (isPlaying && currentAnim && currentFrame && currentAnim.key !== key &&
+            pixelWalk.test(currentAnim.key) && pixelWalk.test(key)) {
+            this.ksyusha.play({ key, startFrame: currentFrame.index - 1 });
+        } else {
+            showVisual(this.ksyusha, key);
+        }
         this.ksyusha.setScale(this.spriteScale(key));
-        // left poses mirror the right ones; walk animations say themselves
-        this.ksyusha.setFlipX(walk ? walk.flipX : this.facing === 'dl' || this.facing === 'ul');
+        // Directional frames already face the right way; diagonal poses are mirrored.
+        this.ksyusha.setFlipX(walk?.flipX ?? (!useDirectionalIdle && (this.facing === 'dl' || this.facing === 'ul')));
     }
 
     /**
