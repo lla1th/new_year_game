@@ -37,6 +37,7 @@ export const FLAG_IDS = [
   'L04_CAKES_DONE', 'L04_SORT_DONE', 'L04_VALVE_TAKEN', 'L04_VALVE_INSTALLED', 'L04_PIPES_DONE',
   'L04_GINGER_MET', 'L04_CAKE_MOLD', 'L04_GLAZE_BAG', 'L04_KLAVA_MET', 'L04_KLAVA_NOTE', 'L04_SORT_KEY', 'L04_RECONCILED', 'L04_SORT_FUSE',
   'L04_LEKHA_MET', 'L04_BELT', 'L04_GASKET',
+  'L04_ORDER_CLUE', 'L04_LOCKER_CLUE', 'L04_KEY_LOG', 'L04_DRIVE_CLUE',
   'L04_MARMELADYCH_AWAY', 'L04_TANK_FILLED',
   'L05_ENTERED', 'L05_CRATES_DONE',
   'L05_SEMYON_AGREED', 'L05_SEMYON_PASSED', 'L05_STRANGER_SEEN', 'L05_PEN_HINT',
@@ -48,7 +49,7 @@ export const FLAG_IDS = [
 export type FlagId = typeof FLAG_IDS[number];
 
 export type PuzzleId = 'P-02' | 'P-03' | 'P-04' | 'P-05' | 'P-06' | 'P-08' | 'P-09' | 'S-02b'
-  | FactoryDeductionId | 'l04-cakes' | 'l04-candy' | 'fridge' | 'fresco' | 'drawing' | 'clock';   // приближённые экраны без логики головоломки тоже открываются как «puzzle»
+  | FactoryDeductionId | 'l04-locker' | 'l04-cakes' | 'l04-candy' | 'fridge' | 'fresco' | 'drawing' | 'clock';   // приближённые экраны без логики головоломки тоже открываются как «puzzle»
 
 export type SpeakerId = 'ksyusha' | 'spitz' | 'cat' | 'snail' | 'nika' | 'lekha' | 'owl' | 'snowman' | 'ginger'
   | 'sveta' | 'vendor' | 'monkey' | 'timofey' | 'grisha' | 'marmeladych' | 'klava' | 'semyon'

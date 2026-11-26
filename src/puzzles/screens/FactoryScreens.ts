@@ -1,4 +1,4 @@
-import { FACTORY_DEDUCTIONS, type FactoryDeductionId } from '../logic/factoryDeductions';
+import { FACTORY_DEDUCTIONS, LOCKER_CODE, LOCKER_SYMBOLS, type FactoryDeductionId } from '../logic/factoryDeductions';
 import type { GameObjects } from 'phaser';
 import { OverlayScreen } from '../../game/scenes/OverlayScene';
 import { CakeOrders, INGREDIENTS } from '../logic/cakes';
@@ -98,6 +98,38 @@ export class DeductionScreen extends FactoryScreen {
             }
         }, 1030));
         this.label(0, 338, this.feedback, 26, '#ffbbbe').setWordWrapWidth(1040);
+    }
+}
+
+export class GlazeLockerScreen extends FactoryScreen {
+    private code: number[] = [];
+    private feedback = '';
+
+    protected draw(): void {
+        this.frame('Шкафчик глазури', 'Три значка из памятки стажёру. Порядок важен.');
+        this.label(0, -181, '«Сначала позови смену. Потом мука должна пойти снегом.', 32);
+        this.label(0, -127, 'В конце подними метель в миске. Чай — после работы».', 32);
+        this.label(0, -40, this.code.map(index => LOCKER_SYMBOLS[index]).join(' → ') || '○  ○  ○', 35);
+        LOCKER_SYMBOLS.forEach((symbol, index) => this.button((index % 2 ? 1 : -1) * 235, 38 + Math.floor(index / 2) * 75,
+            symbol, () => {
+                this.code.push(index);
+                this.feedback = '';
+                if (this.code.length === LOCKER_CODE.length) {
+                    if (this.code.every((key, position) => key === LOCKER_CODE[position])) {
+                        this.solve();
+                        return;
+                    }
+                    this.code = [];
+                    this.feedback = 'Замок хрюкнул. Порядок не совпал, набери три значка заново.';
+                }
+                this.draw();
+            }, 385));
+        this.button(0, 210, 'Стереть ввод', () => {
+            this.code = [];
+            this.feedback = '';
+            this.draw();
+        });
+        this.label(0, 312, this.feedback, 26, '#ffbbbe');
     }
 }
 

@@ -27,7 +27,7 @@ export interface SideRoomTarget {
     at: number;
     label: string;
     icon: string;
-    kind: 'worker' | 'supply';
+    kind: 'worker' | 'supply' | 'clue';
     when?: FlagId;
     unless?: FlagId;
 }

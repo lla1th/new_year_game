@@ -11,9 +11,13 @@ describe('L04 «Кондитерский завод»', () => {
         await h.click('panel');
         expect(h.log).not.toContain('puzzle:l04-cakes');
         await h.click('bag');
+        expect(h.log).not.toContain('puzzle:l04-locker');
+        await h.click('legend');
+        await h.click('bag');
         await h.click('ginger');
         await h.click('panel');
         expect(h.log.at(-1)).toBe('say:ksyusha:l04.quest.need_cake_mold');
+        await h.click('order');
         await h.click('mold');
         await h.click('panel');
         await h.click('right');
@@ -26,7 +30,11 @@ describe('L04 «Кондитерский завод»', () => {
         expect(h.state.hasFlag('L04_SORT_KEY')).toBe(false);
         await h.click('right');
         await h.click('note');
+        await h.click('fuse');
         await h.click('left');
+        await h.click('ginger');
+        expect(h.log).not.toContain('puzzle:l04-key-story');
+        await h.click('log');
         await h.click('ginger');
         expect(h.state.hasFlag('L04_SORT_KEY')).toBe(true);
         await h.click('right');
@@ -39,6 +47,7 @@ describe('L04 «Кондитерский завод»', () => {
         expect(h.screen).toBe('technical');
 
         await h.click('lekha');
+        await h.click('drive');
         await h.click('belt');
         await h.click('panel');
         expect(h.log).not.toContain('puzzle:P-04');
@@ -64,6 +73,7 @@ describe('L04 «Кондитерский завод»', () => {
 
     test('closing deduction panels keeps parts and the key unavailable', async () => {
         const h = harness(L04, { puzzles: { 'l04-mold': false, 'l04-fuse': false, 'l04-belt': false, 'l04-key-story': false } });
+        await h.click('order');
         await h.click('mold');
         expect(h.state.hasFlag('L04_CAKE_MOLD')).toBe(false);
         h.state.setFlag('L04_CAKES_DONE');
@@ -72,13 +82,29 @@ describe('L04 «Кондитерский завод»', () => {
         expect(h.state.hasFlag('L04_SORT_FUSE')).toBe(false);
         await h.click('klava');
         await h.click('note');
+        await h.click('fuse');
         await h.click('left');
+        await h.click('log');
         await h.click('ginger');
         expect(h.log).toContain('puzzle:l04-key-story');
         expect(h.state.hasFlag('L04_SORT_KEY')).toBe(false);
         await h.enter('technical');
+        await h.click('drive');
         await h.click('belt');
         expect(h.state.hasFlag('L04_BELT')).toBe(false);
+    });
+
+    test('silicone from sorting can replace the salvaged gasket', async () => {
+        const h = harness(L04);
+        await h.enter('sorting');
+        await h.click('silicone');
+        expect(h.state.hasFlag('L04_GASKET')).toBe(false);
+        await h.enter('technical');
+        await h.click('lekha');
+        await h.click('left');
+        await h.click('silicone');
+        expect(h.state.hasFlag('L04_GASKET')).toBe(true);
+        expect(h.log).not.toContain('puzzle:l04-gasket');
     });
 
     test('each line in the quest has a Russian text entry', () => {

@@ -204,7 +204,7 @@ export class FactoryRoom {
 
     private visible(def: SideRoomTarget): boolean {
         return (!def.when || this.hasFlag(def.when)) && (!def.unless || !this.hasFlag(def.unless)) &&
-            (def.kind === 'worker' || !this.completed());
+            (def.kind === 'worker' || !this.completed() || def.when !== undefined);
     }
 
     private nearbyTarget() {
@@ -359,7 +359,7 @@ export class FactoryRoom {
         this.panelOutline.fillStyle(done ? 0x83e6a5 : 0xffbc78).fillCircle(this.panelX, 810, 11);
         const result = done ? '✓ Готово' : `E / касание · ${this.spec.action}`;
         this.prompt.setPosition(target?.x ?? this.panelX, target ? 565 : 572)
-            .setText(target ? (target.def.kind === 'worker' ? 'E / касание · Поговорить' : 'E / касание · Взять') : result)
+            .setText(target ? (target.def.kind === 'worker' ? 'E / касание · Поговорить' : target.def.kind === 'clue' ? 'E / касание · Осмотреть' : 'E / касание · Взять') : result)
             .setVisible(!!target || near || done);
         this.door.clear();
         this.drawDoor(108, !!this.spec.left);

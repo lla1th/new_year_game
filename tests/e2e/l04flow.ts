@@ -74,9 +74,15 @@ async function checkWorker(game: Game, id: string, pose: 'work' | 'idle') {
 export async function playL04(game: Game) {
     const { p, click, overlayClosed } = game;
     await checkWorker(game, 'ginger', 'work');
-    await solveDeduction(game, 1.6, 0.28, 2, 0);
+    await useTarget(game, 1.6, 0.38);
+    await solveDeduction(game, 1.6, 0.24, 2, 0);
     await useTarget(game, 1.6, 0.50);
-    await useTarget(game, 1.6, 0.79);
+    await useTarget(game, 1.6, 0.68);
+    const locker = await approachL04(game, 1.6, 0.83);
+    await click(locker, 750);
+    await game.overlay();
+    for (const [x, y] of [[725, 613], [1195, 538], [1195, 613]]) await click(x, y);
+    await overlayClosed();
     await openL04Panel(game, 1.6);
     for (const recipe of ORDERS) {
         for (const [, ingredient] of recipe) await click(960 + (ingredient - 1) * 260, 729);
@@ -89,10 +95,11 @@ export async function playL04(game: Game) {
     await walkL04(game, 'ArrowRight', 'L04', 'sorting');
 
     await checkWorker(game, 'klava', 'work');
-    await solveDeduction(game, 1.8, 0.29, 0);
     await useTarget(game, 1.8, 0.50);
     await useTarget(game, 1.8, 0.79);
+    await solveDeduction(game, 1.8, 0.29, 0);
     await walkL04(game, 'ArrowLeft', 'L04', 'factory');
+    await useTarget(game, 1.6, 0.38);
     await solveDeduction(game, 1.6, 0.50, 1);
     await walkL04(game, 'ArrowRight', 'L04', 'sorting');
     await useTarget(game, 1.8, 0.50);
@@ -119,8 +126,9 @@ async function playL04Glaze(game: Game) {
     const { p, click, overlayClosed } = game;
     await checkWorker(game, 'lekha', 'work');
     await useTarget(game, 1.5, 0.49);
-    await solveDeduction(game, 1.5, 0.785, 3);
-    await useTarget(game, 1.5, 0.30);
+    await useTarget(game, 1.5, 0.68);
+    await solveDeduction(game, 1.5, 0.84, 3);
+    await solveDeduction(game, 1.5, 0.27, 2);
     await openL04Panel(game, 1.5);
     for (const [i, rotation] of [[6, 0], [7, 0], [8, 2], [13, 0], [14, 2], [19, 1], [24, 0]]) {
         for (let n = 0; n < (rotation - PIPE_START[i] + 4) % 4; n++) {
