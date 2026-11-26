@@ -1,7 +1,7 @@
 import { Input, type GameObjects, type Scene } from 'phaser';
 import { showVisual } from '../assets/anims';
 import { ensureTexture } from '../assets/placeholder';
-import { GAME_WIDTH, type FlagId, type SpeakerId } from '../data/types';
+import { GAME_HEIGHT, GAME_WIDTH, type FlagId, type SpeakerId } from '../data/types';
 import type { SideRoomSpec, SideRoomTarget } from '../script/types';
 
 const FLOOR = 889;
@@ -31,7 +31,7 @@ export class FactoryRoom {
     private readonly direction: GameObjects.Text;
     private readonly cargo: GameObjects.Container[];
     private readonly targets: { def: SideRoomTarget; x: number; label: GameObjects.Text; prop?: GameObjects.Graphics; worker?: GameObjects.Sprite }[];
-    private readonly slats: GameObjects.Graphics;
+    private readonly tread: GameObjects.TileSprite;
     private readonly machineFlow: GameObjects.Graphics;
     private speaker: SpeakerId | null = null;
     private target: number | null = null;
@@ -63,7 +63,8 @@ export class FactoryRoom {
         }
 
         this.drawBackdrop();
-        this.slats = scene.add.graphics().setDepth(13);
+        this.tread = scene.add.tileSprite(0, BELT + 14, this.width, 32, 'l04_conveyor_tread')
+            .setOrigin(0).setDepth(13);
         this.cargo = Array.from({ length: Math.ceil(this.width / 260) + 1 }, (_, i) => this.makeCargo(i));
         this.machineFlow = scene.add.graphics().setDepth(15);
         this.drawMachine();
@@ -230,23 +231,36 @@ export class FactoryRoom {
         }[this.spec.theme];
         const parallax = 0.18;
         const span = GAME_WIDTH + parallax * (this.width - GAME_WIDTH);
-        this.scene.add.image(0, 0, scenery.key).setOrigin(0).setDisplaySize(span, 1080)
+        const backdrop = this.scene.add.image(span / 2, GAME_HEIGHT / 2, scenery.key)
             .setScrollFactor(parallax, 1).setDepth(1);
+        backdrop.setScale(Math.max(span / backdrop.width, GAME_HEIGHT / backdrop.height));
+        // Each strip spans the camera's full travel at its own scroll rate.
+        for (const layer of [
+            { key: 'l04_overhead', rate: 0.52, depth: 4, y: -12, originY: 0, height: 186 },
+            { key: 'l04_foreground', rate: 1.16, depth: 25, y: GAME_HEIGHT + 4, originY: 1, height: 136 },
+        ]) {
+            const reach = GAME_WIDTH + (this.width - GAME_WIDTH) * layer.rate;
+            let x = 0;
+            let mirror = false;
+            while (x < reach) {
+                const strip = this.scene.add.image(x, layer.y, layer.key).setOrigin(0, layer.originY)
+                    .setScrollFactor(layer.rate, 1).setDepth(layer.depth).setFlipX(mirror);
+                strip.setScale(layer.height / strip.height);
+                x += strip.displayWidth;
+                mirror = !mirror;
+            }
+        }
+        const left = backdrop.x - backdrop.displayWidth / 2;
+        const deck = backdrop.y + (scenery.deck / GAME_HEIGHT - 0.5) * backdrop.displayHeight;
         for (const i of [0, 2]) {
-            const worker = this.scene.add.sprite(0, scenery.deck, 'factory_mechanic')
+            const worker = this.scene.add.sprite(0, deck, 'factory_mechanic')
                 .setOrigin(0.5, 1).setScale(i === 0 ? 0.72 : 0.82).setAlpha(0.76)
                 .setScrollFactor(parallax, 1).setDepth(2);
-            this.mechanics.push({ worker, left: span * scenery.pipes[i] + 20,
-                right: span * scenery.pipes[i + 1] - 20, offset: i * 4100 });
+            this.mechanics.push({ worker, left: left + backdrop.displayWidth * scenery.pipes[i] + 20,
+                right: left + backdrop.displayWidth * scenery.pipes[i + 1] - 20, offset: i * 4100 });
         }
-        const floor = this.scene.add.graphics().setDepth(8);
-        floor.fillStyle(INK).fillRoundedRect(-28, BELT + 37, this.width + 56, 124, 36);
-        floor.fillStyle(0x6d576e).fillRoundedRect(-20, BELT + 46, this.width + 40, 97, 29);
-        for (let x = 44; x <= this.width; x += 256) {
-            floor.fillStyle(INK).fillCircle(x, BELT + 94, 34);
-            floor.fillStyle(0xc09282).fillCircle(x, BELT + 94, 24);
-            floor.fillStyle(0xffcd94).fillCircle(x - 4, BELT + 88, 8);
-        }
+        this.scene.add.tileSprite(0, BELT + 46, this.width, 128, 'l04_conveyor_frame')
+            .setOrigin(0).setDepth(8);
         this.text(114, 189, this.spec.title, 46).setOrigin(0, 0.5).setScrollFactor(0).setDepth(20);
         this.text(108, 965, '← →  Ходьба   ·   E  Взаимодействие   ·   Касание пола  Идти', 26)
             .setOrigin(0, 0).setScrollFactor(0).setDepth(29);
@@ -312,13 +326,10 @@ export class FactoryRoom {
 
     private drawConveyor(): void {
         const done = this.completed();
-        const g = this.slats.clear().fillStyle(0x745465).fillRect(0, BELT + 14, this.width, 36);
-        g.lineStyle(7, 0xc69b93);
-        for (let x = (this.conveyorElapsed * 0.154) % 60 - 60; x < this.width; x += 60) {
-            g.lineBetween(x, BELT + 18, x + 17, BELT + 43);
-        }
+        const distance = this.conveyorElapsed * 0.154;
+        this.tread.tilePositionX = -distance;
         this.cargo.forEach((cargo, i) => {
-            cargo.x = ((this.conveyorElapsed * 0.154 + i * 260) % (this.cargo.length * 260)) - 90;
+            cargo.x = ((distance + i * 260) % (this.cargo.length * 260)) - 90;
             cargo.setVisible(done || this.spec.theme === 'glaze');
             const icing = cargo.getByName('icing') as GameObjects.Graphics | null;
             icing?.setVisible(this.spec.theme === 'cakes' || (this.spec.theme === 'glaze' && done && cargo.x > this.panelX + 380));
