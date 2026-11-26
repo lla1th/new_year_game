@@ -661,82 +661,82 @@
      "repeat": 0
     },
     "d_walk": {
-     "frames": [1, 2, 3, 4, 5, 6, 7, 8],
-     "frameRate": 16,
+     "frames": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+     "frameRate": 24,
      "repeat": -1
     },
     "d_blink": {
-     "frames": [9],
-     "frameRate": 8,
-     "repeat": 0
-    },
-    "d_phone": {
-     "frames": [10, 10, 11, 11, 11, 12, 12, 11, 11, 12, 12, 11, 11, 10],
-     "frameRate": 4,
-     "repeat": 0
-    },
-    "u_idle": {
      "frames": [13],
      "frameRate": 8,
      "repeat": 0
     },
+    "d_phone": {
+     "frames": [14, 14, 15, 15, 15, 16, 16, 15, 15, 16, 16, 15, 15, 14],
+     "frameRate": 4,
+     "repeat": 0
+    },
+    "u_idle": {
+     "frames": [17],
+     "frameRate": 8,
+     "repeat": 0
+    },
     "u_walk": {
-     "frames": [14, 15, 16, 17, 18, 19, 20, 21],
-     "frameRate": 16,
+     "frames": [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+     "frameRate": 24,
      "repeat": -1
     },
     "r_idle": {
-     "frames": [22],
+     "frames": [30],
      "frameRate": 8,
      "repeat": 0
     },
     "r_walk": {
-     "frames": [23, 24, 25, 26, 27, 28, 29, 30],
-     "frameRate": 16,
+     "frames": [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
+     "frameRate": 24,
      "repeat": -1
     },
     "r_blink": {
-     "frames": [31],
+     "frames": [47],
      "frameRate": 8,
      "repeat": 0
     },
     "r_phone": {
-     "frames": [32, 32, 33, 33, 33, 34, 34, 33, 33, 34, 34, 33, 33, 32],
+     "frames": [48, 48, 49, 49, 49, 50, 50, 49, 49, 50, 50, 49, 49, 48],
      "frameRate": 4,
      "repeat": 0
     },
     "l_idle": {
-     "frames": [35],
+     "frames": [51],
      "frameRate": 8,
      "repeat": 0
     },
     "l_walk": {
-     "frames": [36, 37, 38, 39, 40, 41, 42, 43],
-     "frameRate": 16,
+     "frames": [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67],
+     "frameRate": 24,
      "repeat": -1
     },
     "l_blink": {
-     "frames": [44],
+     "frames": [68],
      "frameRate": 8,
      "repeat": 0
     },
     "l_phone": {
-     "frames": [45, 45, 46, 46, 46, 47, 47, 46, 46, 47, 47, 46, 46, 45],
+     "frames": [69, 69, 70, 70, 70, 71, 71, 70, 70, 71, 71, 70, 70, 69],
      "frameRate": 4,
      "repeat": 0
     },
     "dr_use": {
-     "frames": [48, 49, 50, 51, 50, 49],
+     "frames": [72, 73, 74, 75, 74, 73],
      "frameRate": 20,
      "repeat": 0
     },
     "dr_talk": {
-     "frames": [52, 53, 54, 55, 55, 54, 53, 52],
+     "frames": [76, 77, 78, 79, 79, 78, 77, 76],
      "frameRate": 12,
      "repeat": -1
     },
     "dr_hihik": {
-     "frames": [56, 57, 58, 59, 59, 58, 57, 56],
+     "frames": [80, 81, 82, 83, 83, 82, 81, 80],
      "frameRate": 12,
      "repeat": -1
     }

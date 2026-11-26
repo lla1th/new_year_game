@@ -1157,7 +1157,7 @@ export class LevelScene extends Scene
         const directionalWalk = /^ksyusha_w[12]_[dulr]_walk$/;
         if (isPlaying && currentAnim && currentFrame && currentAnim.key !== key &&
             directionalWalk.test(currentAnim.key) && directionalWalk.test(key)) {
-            this.ksyusha.play({ key, startFrame: currentFrame.index - 1 });
+            this.ksyusha.play({ key, startFrame: Math.floor((currentFrame.index - 1) * (this.anims.get(key)?.frames.length ?? currentAnim.frames.length) / currentAnim.frames.length) });
         } else {
             showVisual(this.ksyusha, key);
         }
