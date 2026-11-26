@@ -1,5 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { animConfigs } from '../../src/game/assets/anims';
+import { parseManifest } from '../../src/game/assets/manifest';
 import { parseTiledMap } from '../../src/game/map/parseTiledMap';
 import { NavGrid } from '../../src/game/nav/NavGrid';
 import { L01 } from '../../src/game/levels/L01';
@@ -20,8 +22,25 @@ describe('L01 workshop map', () => {
     expect(nav.isWalkable(map.points.spitz_spawn)).toBe(true);
     for (const h of map.hotspots) expect(nav.isWalkable(h.approach), h.id).toBe(true);
   });
-  test('the helpers are placed as sprites with placeholder textures', () => {
-    expect(map.sprites.map(s => s.texture).sort()).toEqual(['l01b_pendulum', 'l01b_snail', 'l01b_tak', 'l01b_tik']);
+  test('the workshop sprites use registered animations and each elf can patrol and be reached', () => {
+    const manifest = parseManifest(JSON.parse(readFileSync(new URL('../../public/data/assets.json', import.meta.url), 'utf8')));
+    const animations = new Set(manifest.entries.flatMap(animConfigs).map(a => a.key));
+    for (const sprite of map.sprites) expect(animations.has(sprite.texture), sprite.name).toBe(true);
+
+    for (const name of ['tik', 'tak']) {
+      expect(animations.has(`l01b_${name}_walk`)).toBe(true);
+      const start = map.sprites.find(s => s.name === name)!.pos;
+      const end = map.points[`patrol_${name}`];
+      const approach = map.hotspots.find(h => h.id === name)!.approach;
+      const steps = Math.ceil(Math.hypot(end.x - start.x, end.y - start.y) / 8);
+      expect(steps).toBeGreaterThan(0);
+      for (let step = 0; step <= steps; step++) {
+        const dx = (end.x - start.x) * step / steps;
+        const dy = (end.y - start.y) * step / steps;
+        expect(nav.isWalkable({ x: start.x + dx, y: start.y + dy }), name).toBe(true);
+        expect(nav.isWalkable({ x: approach.x + dx, y: approach.y + dy }), name).toBe(true);
+      }
+    }
   });
 });
 

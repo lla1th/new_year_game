@@ -80,6 +80,111 @@
    "pixelArt": true
   },
   {
+   "key": "w1_workshop_bg",
+   "path": "img/world1/w1_workshop_bg.png",
+   "kind": "image",
+   "levels": ["L01"],
+   "pixelArt": true
+  },
+  {
+   "key": "l01b_snail",
+   "path": "img/world1/l01b_snail.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 42,
+   "frameHeight": 31,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 7 }, "frameRate": 4 }
+   }
+  },
+  {
+   "key": "l01b_tik",
+   "path": "img/world1/l01b_tik.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 30,
+   "frameHeight": 31,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 3 }, "frameRate": 4 },
+    "walk": { "frames": { "start": 4, "end": 11 }, "frameRate": 12 }
+   }
+  },
+  {
+   "key": "l01b_tak",
+   "path": "img/world1/l01b_tak.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 30,
+   "frameHeight": 31,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 3 }, "frameRate": 3 },
+    "walk": { "frames": { "start": 4, "end": 11 }, "frameRate": 8 }
+   }
+  },
+  {
+   "key": "l01b_pendulum",
+   "path": "img/world1/l01b_pendulum.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 35,
+   "frameHeight": 48,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 11 }, "frameRate": 10 }
+   }
+  },
+  {
+   "key": "l01b_gears",
+   "path": "img/world1/l01b_gears.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 57,
+   "frameHeight": 40,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 11 }, "frameRate": 8 }
+   }
+  },
+  {
+   "key": "l01b_lamp",
+   "path": "img/world1/l01b_lamp.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 58,
+   "frameHeight": 33,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 7 }, "frameRate": 3 }
+   }
+  },
+  {
+   "key": "l01b_bubbles",
+   "path": "img/world1/l01b_bubbles.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 85,
+   "frameHeight": 28,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 9 }, "frameRate": 8 }
+   }
+  },
+  {
+   "key": "l01b_clock_hand",
+   "path": "img/world1/l01b_clock_hand.png",
+   "kind": "spritesheet",
+   "levels": ["L01"],
+   "pixelArt": true,
+   "frameWidth": 48,
+   "frameHeight": 48,
+   "anims": {
+    "idle": { "frames": { "start": 0, "end": 23 }, "frameRate": 1 }
+   }
+  },
+  {
    "key": "w1_fridge_close",
    "path": "img/world1/w1_fridge_close.png",
    "kind": "image",

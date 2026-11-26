@@ -131,6 +131,7 @@ export class LevelScene extends Scene
     private debugGfx: GameObjects.Graphics | null = null;
     private offBus: (() => void)[] = [];
     private actionHotspot: HotspotDef | null = null;
+    private movingHotspots = new Map<string, (delta: number) => void>();
     private screens = new Map<PuzzleId, OverlayScreen>();
     private skipCutscene: (() => void) | null = null;
     private pendingTalk = new Set<() => void>();   // resolvers of say/dialog promises waiting for the UI
@@ -164,6 +165,32 @@ export class LevelScene extends Scene
 
     /** A sprite placed through the Tiled `sprites` layer, by its name. */
     getSprite (name: string): GameObjects.Sprite | undefined { return this.sprites.get(name); }
+
+    /** Keeps a moving NPC's interaction geometry aligned with its map sprite. */
+    animateHotspot (id: string, advance: (delta: number) => void): void
+    {
+        if (this.movingHotspots.has(id)) return;
+        const sprite = this.getSprite(id);
+        const hotspot = this.map.hotspots.find(h => h.id === id);
+        if (!sprite || !hotspot) return;
+        const start = { x: sprite.x, y: sprite.y };
+        const shape = hotspot.shape.map(p => ({ ...p }));
+        const approach = { ...hotspot.approach };
+        const marker = this.interactionMarkers?.getByName(id) as GameObjects.Graphics | undefined;
+        const markerOrigin = marker && { x: marker.x, y: marker.y };
+        this.movingHotspots.set(id, delta => {
+            advance(delta);
+            const dx = sprite.x - start.x;
+            const dy = sprite.y - start.y;
+            for (const [i, p] of hotspot.shape.entries()) {
+                p.x = shape[i].x + dx;
+                p.y = shape[i].y + dy;
+            }
+            hotspot.approach.x = approach.x + dx;
+            hotspot.approach.y = approach.y + dy;
+            if (markerOrigin) marker?.setPosition(markerOrigin.x + dx, markerOrigin.y + dy);
+        });
+    }
 
     /** Teleports Ksyusha (cutscenes / animations). */
     placeKsyusha (p: Vec2): void
@@ -243,6 +270,7 @@ export class LevelScene extends Scene
             this.tweens.killAll();
             this.children.removeAll(true);
             this.sprites.clear();
+            this.movingHotspots.clear();
             if (this.script?.levelId !== script.levelId) this.screens.clear();   // puzzle state lives until the level ends
             this.placeholderBoxes = [];
             this.interactionMarkers = null;
@@ -381,6 +409,7 @@ export class LevelScene extends Scene
         this.spitz = null;
         this.spitzShadow = null;
         this.sprites = new Map();
+        this.movingHotspots.clear();
         this.skipCutscene = null;
         this.actionHotspot = null;
         this.pendingTalk = new Set();
@@ -431,6 +460,12 @@ export class LevelScene extends Scene
     update (_time: number, delta: number)
     {
         if (!this.ksyusha || this.loading) return;
+        if (this.movingHotspots.size) {
+            const patrolDelta = this.isBusy || this.touch ? 0 : delta;
+            for (const advance of this.movingHotspots.values()) advance(patrolDelta);
+            const pointer = this.input.activePointer;
+            if (!pointer.wasTouch) this.updateHover({ x: pointer.worldX, y: pointer.worldY });
+        }
         if (this.path.length > 0) {
             let budget = (WALK_SPEED * delta) / 1000;
             while (budget > 0 && this.path.length > 0) {
@@ -592,7 +627,12 @@ export class LevelScene extends Scene
             this.touch.timer.remove();
         }
         if (p.wasTouch || !this.map) return;
-        const h = this.isBusy ? null : this.hotspotAt({ x: p.worldX, y: p.worldY });
+        this.updateHover({ x: p.worldX, y: p.worldY });
+    }
+
+    private updateHover (pt: Vec2)
+    {
+        const h = this.isBusy ? null : this.hotspotAt(pt);
         const id = h?.id ?? null;
         if (id !== this.hoverId) this.hoverId = id;
         const kind = h ? this.cursorFor(h) : 'default';

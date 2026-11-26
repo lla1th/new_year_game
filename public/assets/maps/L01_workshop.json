@@ -450,8 +450,8 @@
           "type": "",
           "rotation": 0,
           "visible": true,
-          "x": 1220,
-          "y": 640,
+          "x": 1224,
+          "y": 732,
           "width": 0,
           "height": 0,
           "polygon": [
@@ -460,16 +460,16 @@
               "y": 0
             },
             {
-              "x": 120,
+              "x": 112,
               "y": 0
             },
             {
-              "x": 120,
-              "y": 120
+              "x": 112,
+              "y": 140
             },
             {
               "x": 0,
-              "y": 120
+              "y": 140
             }
           ],
           "properties": [
@@ -480,7 +480,7 @@
             },
             {
               "name": "approachY",
-              "value": 840,
+              "value": 952,
               "type": "int"
             },
             {
@@ -501,8 +501,8 @@
           "type": "",
           "rotation": 0,
           "visible": true,
-          "x": 1380,
-          "y": 640,
+          "x": 1384,
+          "y": 620,
           "width": 0,
           "height": 0,
           "polygon": [
@@ -511,16 +511,16 @@
               "y": 0
             },
             {
-              "x": 120,
+              "x": 112,
               "y": 0
             },
             {
-              "x": 120,
-              "y": 120
+              "x": 112,
+              "y": 132
             },
             {
               "x": 0,
-              "y": 120
+              "y": 132
             }
           ],
           "properties": [
@@ -644,6 +644,54 @@
           "y": 780,
           "width": 0,
           "height": 0
+        },
+        {
+          "id": 16,
+          "name": "marker_tik",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1328,
+          "y": 752,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 17,
+          "name": "marker_tak",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1488,
+          "y": 632,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 18,
+          "name": "patrol_tik",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 640,
+          "y": 880,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 19,
+          "name": "patrol_tak",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1680,
+          "y": 810,
+          "width": 0,
+          "height": 0
         }
       ]
     },
@@ -658,7 +706,103 @@
       "y": 0,
       "objects": [
         {
-          "id": 16,
+          "id": 20,
+          "name": "gears",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 122,
+          "y": 508,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 0,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_gears_idle",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "lamp",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1120,
+          "y": 396,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 0,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_lamp_idle",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "bubbles",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1142,
+          "y": 516,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 0,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_bubbles_idle",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "name": "clock_hand",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1600,
+          "y": 476,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 0,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l01b_clock_hand_idle",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 24,
           "name": "snail",
           "type": "",
           "rotation": 0,
@@ -676,37 +820,37 @@
             },
             {
               "name": "texture",
-              "value": "l01b_snail",
+              "value": "l01b_snail_idle",
               "type": "string"
             }
           ]
         },
         {
-          "id": 17,
+          "id": 25,
           "name": "tik",
           "type": "",
           "rotation": 0,
           "visible": true,
           "point": true,
           "x": 1280,
-          "y": 740,
+          "y": 852,
           "width": 0,
           "height": 0,
           "properties": [
             {
               "name": "depthY",
-              "value": 741,
+              "value": 853,
               "type": "int"
             },
             {
               "name": "texture",
-              "value": "l01b_tik",
+              "value": "l01b_tik_idle",
               "type": "string"
             }
           ]
         },
         {
-          "id": 18,
+          "id": 26,
           "name": "tak",
           "type": "",
           "rotation": 0,
@@ -724,13 +868,13 @@
             },
             {
               "name": "texture",
-              "value": "l01b_tak",
+              "value": "l01b_tak_idle",
               "type": "string"
             }
           ]
         },
         {
-          "id": 19,
+          "id": 27,
           "name": "pendulum",
           "type": "",
           "rotation": 0,
@@ -748,7 +892,7 @@
             },
             {
               "name": "texture",
-              "value": "l01b_pendulum",
+              "value": "l01b_pendulum_idle",
               "type": "string"
             }
           ]
@@ -757,5 +901,5 @@
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 20
+  "nextobjectid": 28
 }

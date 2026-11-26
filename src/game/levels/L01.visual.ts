@@ -1,4 +1,5 @@
 import type { GameObjects } from 'phaser';
+import { showVisual } from '../assets/anims';
 import { ensureTexture, isPlaceholder } from '../assets/placeholder';
 import { getGameData } from '../data/gameData';
 import type { Vec2 } from '../nav/geometry';
@@ -37,8 +38,38 @@ registerScreen('fridge', () => new FridgeScreen());
 
 // --- Level visuals ----------------------------------------------------------------
 
+function patrolWorkshop (scene: LevelScene, name: 'tik' | 'tak', speed: number, rest: number): void {
+    const elf = scene.getSprite(name);
+    const end = scene.map.points[`patrol_${name}`];
+    if (!elf || !end) return;
+    const start = { x: elf.x, y: elf.y };
+    const travel = Math.hypot(end.x - start.x, end.y - start.y) * 1000 / speed;
+    if (travel === 0) return;
+    const leg = rest + travel;
+    let elapsed = 0;
+    scene.animateHotspot(name, delta => {
+        if (delta === 0) {
+            showVisual(elf, `l01b_${name}_idle`);
+            return;
+        }
+        elapsed = (elapsed + delta) % (2 * leg);
+        const returning = elapsed >= leg;
+        const phase = elapsed % leg;
+        const progress = Math.max(0, (phase - rest) / travel);
+        const t = returning ? 1 - progress : progress;
+        elf.setPosition(start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t).setDepth(elf.y + 1);
+        const walking = phase >= rest;
+        if (walking) elf.setFlipX(returning ? start.x < end.x : end.x < start.x);
+        showVisual(elf, `l01b_${name}_${walking ? 'walk' : 'idle'}`);
+    });
+}
+
 registerLevelVisual('L01', scene => {
     if (scene.currentScreenId === 'apartment') installApartmentAtmosphere(scene);
+    if (scene.currentScreenId === 'workshop') {
+        patrolWorkshop(scene, 'tik', 140, 650);
+        patrolWorkshop(scene, 'tak', 85, 1600);
+    }
     // The mandarin on the table disappears once taken; the terrarium glows when the portal is open.
     scene.getSprite('mandarin')?.setVisible(!scene.registryState().hasItem('ITEM_MANDARIN'));
     const glow = scene.getSprite('terrarium_glow');
