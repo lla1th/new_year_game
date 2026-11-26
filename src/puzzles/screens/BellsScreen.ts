@@ -7,13 +7,13 @@ import { BELL_LAYOUT, createBells, ringBell, type BellSymbol, type BellsState } 
 export const BELL_MARK: Record<BellSymbol, string> = { snowflake: '❄', star: '★', tree: '▲', bell: '🔔' };
 const BELL_GAP = 240;
 const BELL_Y = 120;
-const OFF = 0x8d6e63;
+const OFF = 0xc5c7df;
 const ON = 0xffd54f;
 
 /** P-03 close-up: four bells under the beam with the cat. */
 export class BellsScreen extends OverlayScreen {
     state: BellsState = createBells();
-    private bodies: GameObjects.Arc[] = [];
+    private bodies: GameObjects.Image[] = [];
     private cat: GameObjects.Image;
     private locked = false;
 
@@ -25,14 +25,15 @@ export class BellsScreen extends OverlayScreen {
         container.add(s.add.rectangle(0, -230, 1100, 24, 0x5d4037));   // beam
         const catName = getGameData()?.characters.names.cat ?? 'cat';
         this.cat = s.add.image(0, -290, ensureTexture(s, 'cat_w1_idle', 120, 90, catName));
+        this.cat.setScale(4).setOrigin(0.5, 1).setY(-242);
         container.add(this.cat);
         this.bodies = [];
         BELL_LAYOUT.forEach((sym, i) => {
             const x = (i - 1.5) * BELL_GAP;
-            container.add(s.add.line(0, 0, x, -218, x, BELL_Y - 80, 0x3e2723).setOrigin(0, 0).setLineWidth(4));
+            container.add(s.add.line(0, 0, x, -218, x, BELL_Y - 130, 0x3e2723).setOrigin(0, 0).setLineWidth(4));
             const bell = s.add.container(x, BELL_Y);
-            const body = s.add.circle(0, 0, 80, OFF).setStrokeStyle(6, 0x4e342e).setInteractive({ useHandCursor: true });
-            const mark = s.add.text(0, 0, BELL_MARK[sym], { fontFamily: 'sans-serif', fontSize: '64px', color: '#ffffff' }).setOrigin(0.5);
+            const body = s.add.image(0, 0, 'l03_bell').setScale(4).setInteractive({ useHandCursor: true });
+            const mark = s.add.text(0, 32, BELL_MARK[sym], { fontFamily: 'sans-serif', fontSize: '64px', color: '#ffffff' }).setOrigin(0.5);
             bell.add([body, mark]).setName(`bell-${sym}`);
             body.on('pointerdown', () => this.ring(sym, bell));
             container.add(bell);
@@ -44,7 +45,7 @@ export class BellsScreen extends OverlayScreen {
     /** Correctly pressed bells (the first `progress` of the order) stay lit. */
     private paint(): void {
         const lit = new Set(this.litSymbols());
-        BELL_LAYOUT.forEach((sym, i) => this.bodies[i]?.setFillStyle(lit.has(sym) ? ON : OFF));
+        BELL_LAYOUT.forEach((sym, i) => this.bodies[i]?.setTint(lit.has(sym) ? ON : OFF));
     }
 
     private litSymbols(): BellSymbol[] {

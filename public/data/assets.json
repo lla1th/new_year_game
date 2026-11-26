@@ -1149,6 +1149,13 @@
    "pixelArt": true
   },
   {
+   "key": "l03_bell",
+   "path": "img/world1/l03_bell.png",
+   "kind": "image",
+   "levels": ["L03"],
+   "pixelArt": true
+  },
+  {
    "key": "l03_owl",
    "path": "img/world1/l03_owl.png",
    "kind": "image",
