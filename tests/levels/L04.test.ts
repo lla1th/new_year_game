@@ -3,34 +3,67 @@ import { L04, l04SaveScreen } from '../../src/game/levels/L04';
 import { CakeOrders, ORDERS } from '../../src/puzzles/logic/cakes';
 import { CandySort, candyMatches, candyMoves } from '../../src/puzzles/logic/candySort';
 import { PIPE_START, traceGlaze } from '../../src/puzzles/logic/glazeLine';
-import { harness } from './harness';
+import { allSteps, harness, ru } from './harness';
 
 describe('L04 «Кондитерский завод»', () => {
-    test('each panel unlocks its right door and only the final panel rewards mittens', async () => {
+    test('supplies, reconciliation, and each mini-game gate the next room', async () => {
         const h = harness(L04);
-        for (const [screen, puzzle, next] of [
-            ['factory', 'l04-cakes', 'L04:sorting'],
-            ['sorting', 'l04-candy', 'L04:technical'],
-            ['technical', 'P-04', 'L05:'],
-        ]) {
-            expect(h.screen).toBe(screen);
-            await h.click('right');
-            expect(h.log).not.toContain(`goto:${next}`);
-            await h.click('panel');
-            expect(h.log).toContain(`puzzle:${puzzle}`); expect(h.log.slice(-2)).toEqual(['sfx:sfx_factory_door', 'checkpoint']);
-            expect(h.state.hasItem('ITEM_MITTENS')).toBe(screen === 'technical');
-            await h.click('right');
-            expect(h.log.at(-1)).toBe(`goto:${next}`);
-        }
+        await h.click('panel');
+        expect(h.log).not.toContain('puzzle:l04-cakes');
+        await h.click('bag');
+        await h.click('ginger');
+        await h.click('panel');
+        expect(h.log.at(-1)).toBe('say:ksyusha:l04.quest.need_cake_mold');
+        await h.click('mold');
+        await h.click('panel');
+        await h.click('right');
+        expect(h.screen).toBe('sorting');
+
+        await h.click('fuse');
+        await h.click('klava');
+        await h.click('left');
+        await h.click('ginger');
+        expect(h.state.hasFlag('L04_SORT_KEY')).toBe(false);
+        await h.click('right');
+        await h.click('note');
+        await h.click('left');
+        await h.click('ginger');
+        expect(h.state.hasFlag('L04_SORT_KEY')).toBe(true);
+        await h.click('right');
+        await h.click('panel');
+        expect(h.log).not.toContain('puzzle:l04-candy');
+        await h.click('klava');
+        expect(h.state.hasFlag('L04_RECONCILED')).toBe(true);
+        await h.click('panel');
+        await h.click('right');
+        expect(h.screen).toBe('technical');
+
+        await h.click('lekha');
+        await h.click('belt');
+        await h.click('panel');
+        expect(h.log).not.toContain('puzzle:P-04');
+        await h.click('gasket');
+        await h.click('panel');
+        expect(h.state.hasItem('ITEM_MITTENS')).toBe(true);
+        await h.click('right');
+        expect(h.log.at(-1)).toBe('goto:L05:');
     });
 
-    test('unfinished attempts do not unlock a room and its left door remains usable', async () => {
+    test('unfinished attempts keep the right door locked and the left door usable', async () => {
         const h = harness(L04, { puzzles: { 'l04-candy': false } });
         await h.enter('sorting');
+        for (const [flag] of L04.screens.sorting.sideRoom!.tasks) h.state.setFlag(flag);
         await h.click('panel');
+        expect(h.log).toContain('puzzle:l04-candy');
         expect(h.state.hasFlag('L04_SORT_DONE')).toBe(false);
+        await h.click('right');
+        expect(h.screen).toBe('sorting');
         await h.click('left');
         expect(h.screen).toBe('factory');
+    });
+
+    test('each line in the quest has a Russian text entry', () => {
+        for (const step of allSteps(L04)) if ('say' in step) expect(ru[step.key], step.key).toBeTruthy();
     });
 
     test('legacy completed saves resume by the unlocked exit', () => {

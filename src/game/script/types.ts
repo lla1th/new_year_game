@@ -22,6 +22,15 @@ export interface HotspotScript {
     when?: FlagId; unless?: FlagId;           // variants of one hotspot by flags; first match wins
 }
 export interface Goal { flag: FlagId; hintKeys: [string, string, string] }
+export interface SideRoomTarget {
+    id: string;
+    at: number;
+    label: string;
+    icon: string;
+    kind: 'worker' | 'supply';
+    when?: FlagId;
+    unless?: FlagId;
+}
 export interface SideRoomSpec {
     title: string;
     action: string;
@@ -31,6 +40,8 @@ export interface SideRoomSpec {
     flag: FlagId;
     left?: string;
     puzzle: PuzzleId;
+    targets: SideRoomTarget[];
+    tasks: [FlagId, string][];
 }
 export interface ScreenScript { map: string /* path to the Tiled JSON */; hotspots: HotspotScript[]; onEnter?: Step[]; sideRoom?: SideRoomSpec }
 export interface LevelScript { levelId: LevelId; screens: Record<string, ScreenScript>; firstScreen: string; goals: Goal[] }

@@ -1,14 +1,16 @@
 import { Input, type GameObjects, type Scene } from 'phaser';
 import { showVisual } from '../assets/anims';
 import { ensureTexture } from '../assets/placeholder';
-import { GAME_WIDTH } from '../data/types';
-import type { SideRoomSpec } from '../script/types';
+import { GAME_WIDTH, type FlagId } from '../data/types';
+import type { SideRoomSpec, SideRoomTarget } from '../script/types';
+import { drawFactoryWorker } from './factoryWorker';
 
 const FLOOR = 889;
 const BELT = 660;
 const PORTAL_MARGIN = 100;
 const SPEED = 575;
-const INTERACTION_RANGE = 165;
+const PANEL_RANGE = 165;
+const TARGET_RANGE = 120;
 const INK = 0x392439;
 const CREAM = 0xffefc6;
 
@@ -29,6 +31,7 @@ export class FactoryRoom {
     private readonly prompt: GameObjects.Text;
     private readonly direction: GameObjects.Text;
     private readonly cargo: GameObjects.Container[];
+    private readonly targets: { def: SideRoomTarget; x: number; label: GameObjects.Text; prop?: GameObjects.Graphics }[];
     private readonly slats: GameObjects.Graphics;
     private readonly machineFlow: GameObjects.Graphics;
     private target: number | null = null;
@@ -44,7 +47,8 @@ export class FactoryRoom {
         fromRight: boolean,
         private readonly completed: () => boolean,
         private readonly progress: () => string,
-        private readonly action: (id: 'panel' | 'left' | 'right') => void,
+        private readonly hasFlag: (flag: FlagId) => boolean,
+        private readonly action: (id: string) => void,
         private readonly footstep: () => void,
     ) {
         this.width = Math.round(GAME_WIDTH * spec.width);
@@ -61,6 +65,19 @@ export class FactoryRoom {
         this.cargo = Array.from({ length: Math.ceil(this.width / 260) + 1 }, (_, i) => this.makeCargo(i));
         this.machineFlow = scene.add.graphics().setDepth(15);
         this.drawMachine();
+        this.targets = spec.targets.map(def => {
+            const x = this.width * def.at;
+            if (def.kind === 'worker') {
+                drawFactoryWorker(scene, def.id, x, FLOOR);
+                return { def, x, label: this.text(x, 629, def.label, 33).setDepth(23) };
+            }
+            const prop = scene.add.graphics().setDepth(21);
+            prop.fillStyle(INK).fillRoundedRect(x - 60, 733, 120, 114, 19);
+            prop.fillStyle(0x9a6359).fillRoundedRect(x - 53, 740, 106, 100, 15);
+            prop.fillStyle(CREAM).fillCircle(x, 774, 27);
+            const label = this.text(x, 699, `${def.icon}  ${def.label}`, 32).setDepth(23);
+            return { def, x, label, prop };
+        });
         this.panelOutline = scene.add.graphics().setDepth(22);
         this.door = scene.add.graphics().setDepth(21);
         this.prompt = this.text(this.panelX, 572, '', 37).setDepth(26);
@@ -78,8 +95,14 @@ export class FactoryRoom {
 
     pointer(worldX: number, worldY: number, blocked: boolean): void {
         if (blocked || worldY < 350) return;
+        const item = this.targets.find(t => this.visible(t.def) && Math.abs(worldX - t.x) < 120 && worldY >= 600 && worldY < 865);
+        if (item) {
+            if (Math.abs(this.actor.x - item.x) <= TARGET_RANGE) this.interact(item.def.id);
+            else this.target = item.x;
+            return;
+        }
         if (Math.abs(worldX - this.panelX) < 175 && worldY < 815) {
-            if (this.nearPanel()) this.interact();
+            if (this.nearPanel()) this.interact('panel');
             else this.target = this.panelX;
             return;
         }
@@ -90,13 +113,16 @@ export class FactoryRoom {
 
     update(delta: number, blocked: boolean): void {
         const dt = Math.min(delta, 50);
-        this.conveyorElapsed += dt;
+        if (this.spec.theme !== 'glaze' || this.completed()) this.conveyorElapsed += dt;
         this.drawConveyor();
         const keys = this.keys;
         const use = keys && Input.Keyboard.JustDown(keys.use);
-        if (!blocked && use && this.nearPanel()) {
-            this.interact();
-            return;
+        if (!blocked && use) {
+            const target = this.nearbyTarget();
+            if (target || this.nearPanel()) {
+                this.interact(target?.def.id ?? 'panel');
+                return;
+            }
         }
 
         const right = Number(!!keys && (keys.right.isDown || keys.d.isDown));
@@ -151,12 +177,21 @@ export class FactoryRoom {
     }
 
     private nearPanel(): boolean {
-        return Math.abs(this.actor.x - this.panelX) <= INTERACTION_RANGE;
+        return Math.abs(this.actor.x - this.panelX) <= PANEL_RANGE;
     }
 
-    private interact(): void {
+    private visible(def: SideRoomTarget): boolean {
+        return (!def.when || this.hasFlag(def.when)) && (!def.unless || !this.hasFlag(def.unless)) &&
+            (def.kind === 'worker' || !this.completed());
+    }
+
+    private nearbyTarget() {
+        return this.targets.find(t => this.visible(t.def) && Math.abs(this.actor.x - t.x) <= TARGET_RANGE);
+    }
+
+    private interact(id: string): void {
         this.target = null;
-        if (!this.completed()) this.action('panel');
+        if (id !== 'panel' || !this.completed()) this.action(id);
     }
 
     private text(x: number, y: number, value: string, size: number): GameObjects.Text {
@@ -200,7 +235,7 @@ export class FactoryRoom {
             floor.fillStyle(0xffcd94).fillCircle(x - 4, BELT + 88, 8);
         }
         this.text(114, 189, this.spec.title, 46).setOrigin(0, 0.5).setScrollFactor(0).setDepth(20);
-        this.text(108, 965, '← →  Ходьба   ·   E  Панель   ·   Касание пола  Идти', 26)
+        this.text(108, 965, '← →  Ходьба   ·   E  Взаимодействие   ·   Касание пола  Идти', 26)
             .setOrigin(0, 0).setScrollFactor(0).setDepth(29);
     }
 
@@ -284,21 +319,29 @@ export class FactoryRoom {
 
     private drawForeground(): void {
         const done = this.completed();
-        const near = this.nearPanel();
+        const target = this.nearbyTarget();
+        const near = !target && this.nearPanel();
+        for (const t of this.targets) {
+            const visible = this.visible(t.def);
+            t.label.setVisible(visible);
+            t.prop?.setVisible(visible);
+        }
         this.panelOutline.clear();
         if (near) this.panelOutline.lineStyle(7, CREAM).strokeRoundedRect(this.panelX - 148, 688, 296, 170, 34);
         this.panelOutline.fillStyle(done ? 0x83e6a5 : 0xffbc78).fillCircle(this.panelX, 810, 11);
         const result = done ? '✓ Готово' : `E / касание · ${this.spec.action}`;
-        this.prompt.setText(result).setVisible(near || done);
+        this.prompt.setPosition(target?.x ?? this.panelX, target ? 565 : 572)
+            .setText(target ? (target.def.kind === 'worker' ? 'E / касание · Поговорить' : 'E / касание · Взять') : result)
+            .setVisible(!!target || near || done);
         this.door.clear();
         this.drawDoor(108, !!this.spec.left);
         this.drawDoor(this.width - 116, done);
         const scroll = this.scene.cameras.main.scrollX;
         const doorVisible = scroll + GAME_WIDTH >= this.width - 116;
         const progress = this.progress();
-        this.direction.setText(done ? (doorVisible ? '' : 'Проход открыт →') : doorVisible
-            ? `${scroll > this.panelX ? '← ' : ''}🔒 ${this.spec.objective}${progress ? ` · ${progress}` : ''}`
-            : '');
+        const task = this.spec.tasks.find(([flag]) => !this.hasFlag(flag))?.[1] ?? this.spec.objective;
+        this.direction.setText(done ? (doorVisible ? '' : 'Проход открыт →') :
+            `${doorVisible ? '🔒 ' : ''}${task}${progress ? ` · ${progress}` : ''}`);
     }
 
     private drawDoor(x: number, open: boolean): void {

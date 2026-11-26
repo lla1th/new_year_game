@@ -306,6 +306,7 @@ export class LevelScene extends Scene
                 this.factoryRoom = new FactoryRoom(this, config, fromRight,
                     () => gameState.hasFlag(config.flag),
                     () => this.screens.get(config.puzzle)?.progressCaption?.() ?? '',
+                    flag => gameState.hasFlag(flag),
                     id => {
                         const action = this.runner.pickScript(screenScript.hotspots, id)?.onUse;
                         if (!this.isBusy && action) void this.runScript(action);
@@ -922,7 +923,7 @@ export class LevelScene extends Scene
     say (speaker: SpeakerId, key: string, mood?: MoodId): Promise<void>
     {
         // Ksyusha speaks in the talk pose; a «Хихик» line uses the hihik pose.
-        const own = speaker === 'ksyusha' && !!this.ksyusha && this.pose === 'idle';
+        const own = !this.factoryRoom && speaker === 'ksyusha' && !!this.ksyusha && this.pose === 'idle';
         if (own) {
             this.pose = isHihik(getGameData()?.texts.t(key) ?? '') ? 'hihik' : 'talk';
             this.applyTexture();

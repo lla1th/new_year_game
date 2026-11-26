@@ -19,22 +19,38 @@ export async function walkL04(game: Game, direction: 'ArrowLeft' | 'ArrowRight',
     await game.settle();
 }
 
-export async function openL04Panel(game: Game, aspect: number) {
-    const { p, click, overlay } = game;
-    const panel = Math.round(1920 * aspect) * 0.59;
-    await p.keyboard.down('ArrowRight');
-    try {
-        await p.waitForFunction(x => ((window as DebugWindow).__levelScene?.position.x ?? 0) > x - 115, panel);
-    } finally {
-        await p.keyboard.up('ArrowRight');
+async function approachL04(game: Game, aspect: number, fraction: number) {
+    const { p } = game;
+    const x = Math.round(1920 * aspect) * fraction;
+    const current = await p.evaluate(() => (window as DebugWindow).__levelScene?.position.x ?? 0);
+    if (Math.abs(x - current) > 40) {
+        const key = current < x ? 'ArrowRight' : 'ArrowLeft';
+        await p.keyboard.down(key);
+        try {
+            await p.waitForFunction(target => Math.abs(((window as DebugWindow).__levelScene?.position.x ?? 0) - target) < 42, x);
+        } finally {
+            await p.keyboard.up(key);
+        }
     }
-    const x = await p.evaluate(world => world - ((window as DebugWindow).__levelScene?.cameras.main.scrollX ?? 0), panel);
-    await click(x, 750);
-    await overlay();
+    return p.evaluate(world => world - ((window as DebugWindow).__levelScene?.cameras.main.scrollX ?? 0), x);
+}
+
+async function useTarget(game: Game, aspect: number, fraction: number) {
+    const x = await approachL04(game, aspect, fraction);
+    await game.act(() => game.click(x, 750));
+}
+
+async function openL04Panel(game: Game, aspect: number) {
+    const x = await approachL04(game, aspect, 0.59);
+    await game.click(x, 750);
+    await game.overlay();
 }
 
 export async function playL04(game: Game) {
     const { p, click, overlayClosed } = game;
+    await useTarget(game, 1.6, 0.28);
+    await useTarget(game, 1.6, 0.50);
+    await useTarget(game, 1.6, 0.79);
     await openL04Panel(game, 1.6);
     for (const recipe of ORDERS) {
         for (const [, ingredient] of recipe) await click(960 + (ingredient - 1) * 260, 729);
@@ -45,6 +61,14 @@ export async function playL04(game: Game) {
     expect((await game.state())?.flags).toContain('L04_CAKES_DONE');
     await walkL04(game, 'ArrowRight', 'L04', 'sorting');
 
+    await useTarget(game, 1.8, 0.29);
+    await useTarget(game, 1.8, 0.50);
+    await useTarget(game, 1.8, 0.79);
+    await walkL04(game, 'ArrowLeft', 'L04', 'factory');
+    await useTarget(game, 1.6, 0.50);
+    await walkL04(game, 'ArrowRight', 'L04', 'sorting');
+    await useTarget(game, 1.8, 0.50);
+    expect((await game.state())?.flags).toContain('L04_RECONCILED');
     await openL04Panel(game, 1.8);
     for (const [a, b] of [[8, 9], [9, 16], [8, 15], [5, 6], [4, 11], [3, 10], [17, 24], [25, 26]]) {
         for (const i of [a, b]) await click(485 + i % 7 * 75, 310 + Math.floor(i / 7) * 75);
@@ -64,6 +88,9 @@ export async function playL04(game: Game) {
 
 async function playL04Glaze(game: Game) {
     const { p, click, overlayClosed } = game;
+    await useTarget(game, 1.5, 0.49);
+    await useTarget(game, 1.5, 0.785);
+    await useTarget(game, 1.5, 0.30);
     await openL04Panel(game, 1.5);
     for (const [i, rotation] of [[6, 0], [7, 0], [8, 2], [13, 0], [14, 2], [19, 1], [24, 0]]) {
         for (let n = 0; n < (rotation - PIPE_START[i] + 4) % 4; n++) {
