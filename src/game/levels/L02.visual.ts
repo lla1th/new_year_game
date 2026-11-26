@@ -7,6 +7,7 @@ function climbPole(scene: LevelScene): void {
     const monkey = scene.getSprite('monkey');
     if (!monkey || scene.tweens.getTweensOf(monkey).length) return;
     showVisual(monkey, 'l02_monkey_climb');
+    syncMonkeyKey(scene);
     scene.tweens.add({
         targets: monkey, y: 286, duration: 2100, ease: 'Sine.easeInOut',
         yoyo: true, hold: 350, repeat: -1, repeatDelay: 380,
@@ -18,7 +19,7 @@ function syncMonkeyKey(scene: LevelScene): void {
     const monkey = scene.getSprite('monkey');
     if (!monkey) return;
     monkey.setDepth(monkey.y + 1);
-    scene.getSprite('monkey_key')?.setPosition(monkey.x + 32, monkey.y - 19).setDepth(monkey.depth + 1);
+    scene.getSprite('monkey_key')?.setPosition(monkey.x + 9 * monkey.scaleX, monkey.y - 11 * monkey.scaleY).setDepth(monkey.depth + 1);
 }
 
 /** The entrance couple's marker and inspect area travel with them. */
@@ -134,12 +135,14 @@ registerAnim('cat_jump', scene => new Promise<void>(resolve => {
     const start = { x: cat.x, y: cat.y };
     const scale = cat.scale;
     const jump = { progress: 0 };
-    showVisual(cat, 'cat_w1_motion_jump');
+    cat.anims.stop();
+    cat.setTexture('cat_w1_motion', 8);
     cat.setFlipX(hole.x < start.x);
     scene.tweens.add({
         targets: jump, progress: 1, duration: 730, ease: 'Sine.easeInOut',
         onUpdate: () => {
             const t = jump.progress;
+            cat.setFrame(t < 0.12 ? 8 : t < 0.48 ? 9 : t < 0.82 ? 10 : 11);
             const floorY = start.y + (hole.y - start.y) * t;
             cat.setPosition(start.x + (hole.x - start.x) * t, floorY - 104 * Math.sin(Math.PI * t))
                 .setDepth(floorY + 1).setScale(scale * (1 - 0.78 * t));
