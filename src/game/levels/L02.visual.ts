@@ -61,9 +61,11 @@ function walkFairGuest(scene: LevelScene, name: string, speed: number, delay: nu
     if (!guest || !end || scene.tweens.getTweensOf(guest).length) return;
     const movingLeft = end.x < guest.x;
     guest.setFlipX(movingLeft);
+    guest.anims.pause();
     scene.tweens.add({
         targets: guest, x: end.x, y: end.y, duration: distance(guest, end) * 1000 / speed,
         delay, yoyo: true, repeat: -1,
+        onStart: () => guest.anims.resume(),
         onUpdate: () => guest.setDepth(guest.y + 1),
         onYoyo: () => guest.setFlipX(!movingLeft),
         onRepeat: () => guest.setFlipX(movingLeft),
@@ -116,13 +118,15 @@ registerAnim('monkey_swap', scene => new Promise<void>(resolve => {
     if (!monkey) { resolve(); return; }
     scene.tweens.killTweensOf(monkey);
     scene.tweens.add({
-        targets: monkey, y: 605, duration: 550, ease: 'Sine.easeInOut', yoyo: true,
+        targets: monkey, y: 605, duration: 550, ease: 'Sine.easeInOut',
         onUpdate: () => syncMonkeyKey(scene),
-        onYoyo: () => scene.getSprite('monkey_key')?.setVisible(false),
         onComplete: () => {
-            monkey.setY(540);
-            syncMonkeyKey(scene);
-            resolve();
+            scene.getSprite('monkey_key')?.setVisible(false);
+            scene.tweens.add({
+                targets: monkey, y: 540, duration: 450, ease: 'Sine.easeInOut',
+                onUpdate: () => syncMonkeyKey(scene),
+                onComplete: () => resolve(),
+            });
         },
     });
 }));
