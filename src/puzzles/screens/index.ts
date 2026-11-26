@@ -10,9 +10,11 @@ import { FrescoScreen } from './FrescoScreen';
 
 registerScreen('P-03', () => new BellsScreen());
 registerScreen('fresco', () => new FrescoScreen());
-import { PipesScreen } from './PipesScreen';
+import { CakesScreen, CandyScreen, GlazeScreen } from './FactoryScreens';
 
-registerScreen('P-04', () => new PipesScreen());
+registerScreen('l04-cakes', () => new CakesScreen());
+registerScreen('l04-candy', () => new CandyScreen());
+registerScreen('P-04', () => new GlazeScreen());
 import { IceScreen } from './IceScreen';
 
 registerScreen('P-05', () => new IceScreen());

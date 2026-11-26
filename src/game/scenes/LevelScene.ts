@@ -21,6 +21,8 @@ import { getAnim, getCutscene, getHintResolver, getLevelVisual } from './registr
 import { createScreen, type OverlayScreen, type OverlaySceneData } from './OverlayScene';
 import { openShortcut } from './overlayClose';
 import { addInteractionMarker } from './interactionMarker';
+import { FactoryRoom } from './FactoryRoom';
+import { l04SaveScreen } from '../levels/L04';
 import { TransitionScene, type TransitionData } from './TransitionScene';
 import { applyNameChoice, applySpitzName } from '../data/names';
 import { getAudio } from '../audio/AudioManager';
@@ -82,6 +84,7 @@ export class LevelScene extends Scene
     // level
     private script: LevelScript | null = null;
     private screenId = '';
+    private factoryRoom: FactoryRoom | null = null;
     private screen: ScreenScript | null = null;
     map: LevelMap;
     nav: NavGrid;
@@ -150,7 +153,7 @@ export class LevelScene extends Scene
     /** Current position of Ksyusha's feet (copy). */
     get position (): Vec2 { return { x: this.pos.x, y: this.pos.y }; }
 
-    get isWalking (): boolean { return this.walk !== null; }
+    get isWalking (): boolean { return this.factoryRoom?.isWalking ?? this.walk !== null; }
 
     get isTransitioning (): boolean { return this.transitioning; }
 
@@ -260,6 +263,7 @@ export class LevelScene extends Scene
     async loadLevel (script: LevelScript, screen?: string): Promise<void>
     {
         const screenId = screen ?? script.firstScreen;
+        const fromRight = this.script?.levelId === script.levelId && this.screen?.sideRoom?.left === screenId;
         const screenScript = script.screens[screenId];
         if (!screenScript) throw new Error(`level ${script.levelId} has no screen "${screenId}"`);
         this.loading = true;
@@ -269,6 +273,7 @@ export class LevelScene extends Scene
             this.stopBob();
             this.tweens.killAll();
             this.children.removeAll(true);
+            this.factoryRoom = null;
             this.sprites.clear();
             this.movingHotspots.clear();
             if (this.script?.levelId !== script.levelId) this.screens.clear();   // puzzle state lives until the level ends
@@ -276,7 +281,7 @@ export class LevelScene extends Scene
             this.interactionMarkers = null;
             this.spitz = null;
             this.spitzShadow = null;
-            this.cameras.main.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+            this.cameras.main.removeBounds().setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
             this.busy = false;
             this.scriptPhase = false;
             this.hoverId = null;
@@ -296,7 +301,19 @@ export class LevelScene extends Scene
             this.screen = screenScript;
             gameState.levelId = script.levelId;
             gameState.screenId = screen ?? null;
-            this.buildScene(bgKey);
+            if (screenScript.sideRoom) {
+                const config = screenScript.sideRoom;
+                this.factoryRoom = new FactoryRoom(this, config, fromRight,
+                    () => gameState.hasFlag(config.flag),
+                    () => this.screens.get(config.puzzle)?.progressCaption?.() ?? '',
+                    id => {
+                        const action = this.runner.pickScript(screenScript.hotspots, id)?.onUse;
+                        if (!this.isBusy && action) void this.runScript(action);
+                    },
+                    () => this.playSfx('sfx_step_metal'));
+                this.ksyusha = this.factoryRoom.actor;
+                this.pos = { x: this.ksyusha.x, y: this.ksyusha.y };
+            } else this.buildScene(bgKey);
             this.hints = new HintSystem(script.goals, f => gameState.hasFlag(f), () => this.time.now);
         } finally {
             this.loading = false;
@@ -365,13 +382,13 @@ export class LevelScene extends Scene
     }
 
     /** Camera fade out (true) / in (false), FADE_MS. */
-    private fade (out: boolean): Promise<void>
+    private fade (out: boolean, duration = FADE_MS): Promise<void>
     {
         const cam = this.cameras.main;
         return new Promise(resolve => {
             cam.once(out ? 'camerafadeoutcomplete' : 'camerafadeincomplete', () => resolve());
-            if (out) cam.fadeOut(FADE_MS, 0, 0, 0);
-            else cam.fadeIn(FADE_MS, 0, 0, 0);
+            if (out) cam.fadeOut(duration, 0, 0, 0);
+            else cam.fadeIn(duration, 0, 0, 0);
         });
     }
 
@@ -394,6 +411,15 @@ export class LevelScene extends Scene
     init (data: LevelSceneData)
     {
         this.pendingStart = data ?? {};
+        this.factoryRoom = null;
+        if (data?.script?.levelId === 'L04') {
+            const screen = l04SaveScreen(data.screen, flag => gameState.hasFlag(flag));
+            if (screen === 'technical' && gameState.hasFlag('L04_PIPES_DONE')) {
+                gameState.setFlag('L04_CAKES_DONE');
+                gameState.setFlag('L04_SORT_DONE');
+            }
+            this.pendingStart = { ...data, screen: screen === 'factory' && !data.screen ? undefined : screen };
+        }
         // A fresh start (new game, Continue, level select) begins with fresh puzzles; goto inside a level keeps them.
         this.screens = new Map();
         this.script = null;
@@ -460,6 +486,11 @@ export class LevelScene extends Scene
     update (_time: number, delta: number)
     {
         if (!this.ksyusha || this.loading) return;
+        if (this.factoryRoom) {
+            this.factoryRoom.update(delta, this.isBusy);
+            this.pos.x = this.ksyusha.x;
+            return;
+        }
         if (this.movingHotspots.size) {
             const patrolDelta = this.isBusy || this.touch ? 0 : delta;
             for (const advance of this.movingHotspots.values()) advance(patrolDelta);
@@ -582,6 +613,11 @@ export class LevelScene extends Scene
     {
         if (this.skipCutscene) { this.skipCutscene(); return; }   // any click skips a cutscene
         if (this.loading || !this.map) return;
+        if (this.factoryRoom) {
+            const point = this.cameras.main.getWorldPoint(p.x, p.y);
+            if (!p.rightButtonDown()) this.factoryRoom.pointer(point.x, point.y, this.isBusy);
+            return;
+        }
         this.resetIdle();
         const pt = { x: p.worldX, y: p.worldY };
         if (p.rightButtonDown()) { this.inspectAt(pt); return; }
@@ -626,7 +662,7 @@ export class LevelScene extends Scene
             this.touch.dragged = true;   // a drag/scroll gesture: no use, no inspect
             this.touch.timer.remove();
         }
-        if (p.wasTouch || !this.map) return;
+        if (p.wasTouch || !this.map || this.factoryRoom) return;
         this.updateHover({ x: p.worldX, y: p.worldY });
     }
 
@@ -651,6 +687,7 @@ export class LevelScene extends Scene
 
     private hotspotAt (pt: Vec2): HotspotDef | null
     {
+        if (this.factoryRoom) return null;
         return hitTestHotspots(this.map.hotspots, pt, f => gameState.hasFlag(f));
     }
 
@@ -800,6 +837,19 @@ export class LevelScene extends Scene
                 const from = this.script ? LEVEL_STYLE[this.script.levelId] : null;
                 if (from && from !== LEVEL_STYLE[next.levelId]) {
                     await this.brushTransition(() => this.loadLevel(next, screen));   // a new world: «перерисовка кистью»
+                } else if (this.factoryRoom) {
+                    this.transitioning = true;
+                    try {
+                        await this.fade(true, 200);
+                        await this.loadLevel(next, screen);
+                        await this.fade(false, 200);
+                    } finally {
+                        this.transitioning = false;
+                    }
+                    this.updateMusic();
+                    const enter = this.heldEnter;
+                    this.heldEnter = null;
+                    if (enter) void this.runScript(enter);
                 } else {
                     await this.fade(true);   // the same world: 0.4 s fade
                     await this.loadLevel(next, screen);
@@ -930,7 +980,7 @@ export class LevelScene extends Scene
         if (!screen) { console.warn(`[LevelScene] no overlay screen "${puzzleId}"`); return false; }
         if (openShortcut(screen)) return true;   // solved before (e.g. closed during the success animation)
         const cam = this.cameras.main;
-        const h = this.actionHotspot;
+        const h = this.factoryRoom ? null : this.actionHotspot;
         if (h) {
             const c = centroid(h.shape);
             cam.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -950,12 +1000,12 @@ export class LevelScene extends Scene
                     sfx: name => this.playSfx(name),
                 },
                 onFinish: resolve,
-                bgKey: CLOSEUP_BG[puzzleId],
+                bgKey: this.factoryRoom ? undefined : CLOSEUP_BG[puzzleId],
             };
             this.scene.launch('OverlayScene', data);
             this.scene.bringToTop('OverlayScene');
         });
-        cam.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+        if (!this.factoryRoom) cam.setZoom(1).centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2);
         bus.emit('puzzle:close', { puzzleId, solved });
         if (solved) this.hints?.notifyProgress();   // checkpoints come from the scripts' { checkpoint: true }
         this.refreshVisuals();

@@ -32,7 +32,7 @@ export const FLAG_IDS = [
   'L02_BULBS_PLACED', 'L02_PUMP_FILLED', 'L02_VENDOR_MET', 'L02_FUELED', 'L02_GENERATOR_ON', 'L02_FAIR_ALIVE', 'L02_GALLERY_WON', 'L02_FINISHED',
   'L03_DOOR_OPEN', 'L03_OWL_AWAKE', 'L03_FRESCO_SEEN', 'L03_BELLS_DONE',
   'L03_PARCEL_TAKEN', 'L03_BELLS_OILED',
-  'L04_VALVE_TAKEN', 'L04_VALVE_INSTALLED', 'L04_PIPES_DONE',
+  'L04_CAKES_DONE', 'L04_SORT_DONE', 'L04_VALVE_TAKEN', 'L04_VALVE_INSTALLED', 'L04_PIPES_DONE',
   'L04_MARMELADYCH_AWAY', 'L04_TANK_FILLED',
   'L05_ENTERED', 'L05_CRATES_DONE',
   'L05_SEMYON_AGREED', 'L05_SEMYON_PASSED', 'L05_STRANGER_SEEN', 'L05_PEN_HINT',
@@ -44,7 +44,7 @@ export const FLAG_IDS = [
 export type FlagId = typeof FLAG_IDS[number];
 
 export type PuzzleId = 'P-02' | 'P-03' | 'P-04' | 'P-05' | 'P-06' | 'P-08' | 'P-09' | 'S-02b'
-  | 'fridge' | 'fresco' | 'drawing' | 'clock';   // приближённые экраны без логики головоломки тоже открываются как «puzzle»
+  | 'l04-cakes' | 'l04-candy' | 'fridge' | 'fresco' | 'drawing' | 'clock';   // приближённые экраны без логики головоломки тоже открываются как «puzzle»
 
 export type SpeakerId = 'ksyusha' | 'spitz' | 'cat' | 'snail' | 'nika' | 'lekha' | 'owl' | 'snowman' | 'ginger'
   | 'sveta' | 'vendor' | 'monkey' | 'timofey' | 'grisha' | 'marmeladych' | 'klava' | 'semyon'

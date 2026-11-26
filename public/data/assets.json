@@ -1736,6 +1736,14 @@
    ]
   },
   {
+   "key": "sfx_factory_door",
+   "path": "audio/sfx/sfx_factory_door",
+   "kind": "audio",
+   "levels": [
+    "L04"
+   ]
+  },
+  {
    "key": "sfx_pipe_rotate",
    "path": "audio/sfx/sfx_pipe_rotate",
    "kind": "audio",

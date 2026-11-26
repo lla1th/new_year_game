@@ -41,6 +41,8 @@ export abstract class OverlayScreen {
     /** Optional: called once when the screen is closed (`solved` = the result passed to openPuzzle). */
     onClosed?(solved: boolean): void;
 
+    progressCaption?(): string;
+
     /** Closes the screen; openPuzzle → true. */
     solve(): void { this.finishFn?.(true); }
 

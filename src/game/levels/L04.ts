@@ -1,65 +1,44 @@
-import type { LevelScript } from '../script/types';
+import type { FlagId } from '../data/types';
+import type { LevelScript, ScreenScript, SideRoomSpec, Step } from '../script/types';
 
-/** L04 «Пряничный цех» (LEVEL_DESIGN.md L04, TASK-008/009; PUZZLE_SPECIFICATIONS.md P-04). */
+const rooms = {
+    factory: { title: 'Цех сборки', action: 'Собрать торт', objective: 'Выполните три заказа', width: 1.6, theme: 'cakes', flag: 'L04_CAKES_DONE', puzzle: 'l04-cakes' },
+    sorting: { title: 'Цех сортировки', action: 'Сортировать конфеты', objective: 'Отсортируйте конфеты', width: 1.8, theme: 'candy', flag: 'L04_SORT_DONE', left: 'factory', puzzle: 'l04-candy' },
+    technical: { title: 'Технический отсек', action: 'Соединить трубы', objective: 'Запустите глазирование', width: 1.5, theme: 'glaze', flag: 'L04_PIPES_DONE', left: 'sorting', puzzle: 'P-04' },
+} satisfies Record<string, SideRoomSpec>;
+
+function room(sideRoom: SideRoomSpec, next: Step[], reward: Step[] = []): ScreenScript {
+    return {
+        map: 'assets/maps/L04.json',
+        sideRoom,
+        hotspots: [
+            { hotspot: 'panel', unless: sideRoom.flag, onUse: [{ openPuzzle: sideRoom.puzzle, onSolved: [
+                { setFlag: sideRoom.flag }, ...reward, { sfx: 'sfx_factory_door' }, { checkpoint: true },
+            ] }] },
+            { hotspot: 'right', when: sideRoom.flag, onUse: next },
+            ...(sideRoom.left ? [{ hotspot: 'left', onUse: [{ goto: { level: 'L04', screen: sideRoom.left } } as const] }] : []),
+        ],
+    };
+}
+
 export const L04: LevelScript = {
     levelId: 'L04',
     firstScreen: 'factory',
-    goals: [
-        { flag: 'L04_VALVE_TAKEN', hintKeys: ['hint.l04.valve.1', 'hint.l04.valve.2', 'hint.l04.valve.3'] },
-        { flag: 'L04_VALVE_INSTALLED', hintKeys: ['hint.l04.install', 'hint.l04.install', 'hint.l04.install'] },
-        { flag: 'L04_PIPES_DONE', hintKeys: ['hint.P-04.1', 'hint.P-04.2', 'hint.P-04.3'] },   // step 3 highlights tiles (L04.visual)
-    ],
+    goals: [],
     screens: {
-        factory: {
-            map: 'assets/maps/L04.json',
-            onEnter: [{ ifFlag: 'L04_PIPES_DONE', then: [], else: [{ dialog: 'l04_lekha_intro' }] }],
-            hotspots: [
-                { hotspot: 'lekha', when: 'L04_PIPES_DONE', onUse: [{ say: 'lekha', key: 'l04.lekha.after' }] },
-                { hotspot: 'lekha', onUse: [{ say: 'lekha', key: 'l04.dlg.lekha.2' }] },
-                // The cane: once (after the trade the jar is "done" even though the cane is gone).
-                { hotspot: 'candy_jar', when: 'L04_VALVE_TAKEN', onInspect: [{ say: 'ksyusha', key: 'l04.candy_jar.empty' }] },
-                { hotspot: 'candy_jar', onUse: [{ giveItem: 'ITEM_CANDY_CANE' }, { say: 'ksyusha', key: 'l04.candy_jar.take' }] },
-                {
-                    hotspot: 'ginger',
-                    when: 'L04_VALVE_TAKEN',
-                    onInspect: [{ say: 'ksyusha', key: 'l04.ginger.happy.inspect' }],
-                    onUse: [{ say: 'ginger', key: 'l04.ginger.beep' }],
-                },
-                {
-                    hotspot: 'ginger',
-                    onUse: [{ say: 'ginger', key: 'l04.ginger.talk' }],
-                    onItem: {
-                        ITEM_CANDY_CANE: [
-                            { removeItem: 'ITEM_CANDY_CANE' }, { giveItem: 'ITEM_VALVE' }, { setFlag: 'L04_VALVE_TAKEN' },
-                            { say: 'ginger', key: 'l04.ginger.beep' },
-                        ],
-                    },
-                },
-                { hotspot: 'tank', when: 'L04_PIPES_DONE', onInspect: [{ say: 'ksyusha', key: 'l04.tank.done.inspect' }] },
-                {
-                    hotspot: 'tank',
-                    when: 'L04_VALVE_INSTALLED',
-                    onInspect: [{ say: 'ksyusha', key: 'l04.tank.installed.inspect' }],
-                    onUse: [{
-                        openPuzzle: 'P-04',
-                        onSolved: [
-                            { setFlag: 'L04_PIPES_DONE' }, { sfx: 'sfx_glaze_flow' }, { dialog: 'l04_lekha_done' },
-                            { giveItem: 'ITEM_MITTENS' }, { checkpoint: true },
-                        ],
-                    }],
-                },
-                {
-                    hotspot: 'tank',
-                    onItem: {
-                        ITEM_VALVE: [
-                            { removeItem: 'ITEM_VALVE' }, { sfx: 'sfx_pipe_rotate' }, { setFlag: 'L04_VALVE_INSTALLED' },
-                            { say: 'ksyusha', key: 'l04.tank.valve' },
-                        ],
-                    },
-                },
-                { hotspot: 'conveyor', when: 'L04_PIPES_DONE', onInspect: [{ say: 'ksyusha', key: 'l04.conveyor.done.inspect' }] },
-                { hotspot: 'freezer_door', onUse: [{ goto: { level: 'L05' } }] },   // active only after L04_PIPES_DONE (map)
-            ],
-        },
+        factory: room(rooms.factory, [{ goto: { level: 'L04', screen: 'sorting' } }]),
+        sorting: room(rooms.sorting, [{ goto: { level: 'L04', screen: 'technical' } }]),
+        technical: room(rooms.technical, [
+            // Legacy completed checkpoints may also arrive here without the original reward.
+            { removeItem: 'ITEM_VALVE' }, { removeItem: 'ITEM_CANDY_CANE' },
+            { ifItem: 'ITEM_MITTENS', then: [], else: [{ giveItem: 'ITEM_MITTENS' }] }, { goto: { level: 'L05' } },
+        ], [{ sfx: 'sfx_glaze_flow' }, { giveItem: 'ITEM_MITTENS' }]),
     },
 };
+
+/** The previous build saved one screen named factory; keep completed saves at the unlocked exit. */
+export function l04SaveScreen(screen: string | undefined, hasFlag: (flag: FlagId) => boolean): string {
+    if ((!screen || screen === 'factory') && hasFlag('L04_PIPES_DONE') && !hasFlag('L04_CAKES_DONE')) return 'technical';
+    if (!screen || !(screen in rooms)) return 'factory';
+    return screen;
+}

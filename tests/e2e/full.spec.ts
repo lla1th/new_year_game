@@ -1,4 +1,5 @@
 import { playL02 } from './l02flow';
+import { playL04 } from './l04flow';
 import { test, expect } from '@playwright/test';
 import { solveBoard } from '../../src/puzzles/logic/fifteen';
 import { expectNoErrors, openGame, startNewGame } from './helpers';
@@ -39,21 +40,7 @@ test('full playthrough L01 → post-credits → main menu with the level select'
     await act(() => click(960, 450)); await overlay();
     for (const x of [1080, 600, 1320, 840]) { await click(x, 620); await p.waitForTimeout(500); }
     await waitLevel('L04');
-    // ---- L04
-    await act(() => click(680, 370));
-    await act(async () => drag(await slot('ITEM_CANDY_CANE'), 1080, 680));
-    await act(async () => drag(await slot('ITEM_VALVE'), 190, 440));
-    await act(() => click(190, 440)); await overlay();
-    const T = (c: number, r: number) => [960 + (c - 1.5) * 150, 470 + (r - 1.5) * 150] as const;
-    const start: Record<string, number> = { '0,0': 1, '1,0': 0, '1,1': 0, '1,2': 2, '2,2': 3, '2,3': 1, '3,3': 1 };
-    const want: Record<string, number> = { '0,0': 0, '1,0': 2, '1,1': 1, '1,2': 0, '2,2': 2, '2,3': 0, '3,3': 0 };
-    for (const k of Object.keys(want)) {
-        const [c, r] = k.split(',').map(Number);
-        for (let i = 0; i < (want[k] - start[k] + 4) % 4; i++) { await click(...T(c, r)); await p.waitForTimeout(250); }
-    }
-    await overlayClosed();
-    await act(() => click(1760, 420));
-    await waitLevel('L05');
+    await playL04(game);
     // ---- L05
     await act(() => click(960, 810)); await overlay();
     const C = (x: number, y: number) => [960 + (x - 2) * 124, 460 + (y - 2) * 124] as const;

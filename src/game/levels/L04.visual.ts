@@ -1,32 +1,9 @@
 import { ensureTexture } from '../assets/placeholder';
 import type { Vec2 } from '../nav/geometry';
-import type { PipesScreen } from '../../puzzles/screens/PipesScreen';
 import type { LevelScene } from '../scenes/LevelScene';
-import { registerCutscene, registerHintResolver, registerLevelVisual } from '../scenes/registry';
+import { registerCutscene, registerLevelVisual } from '../scenes/registry';
 
 const point = (scene: LevelScene, name: string, fallback: Vec2): Vec2 => scene.map.points[name] ?? fallback;
-
-registerLevelVisual('L04', scene => {
-    const st = scene.registryState();
-    scene.getSprite('tank_valve')?.setVisible(st.hasFlag('L04_VALVE_INSTALLED'));
-    scene.getSprite('ginger_cane')?.setVisible(st.hasFlag('L04_VALVE_TAKEN'));
-    const g = scene.getSprite('gingerbreads');
-    if (g) {
-        const on = st.hasFlag('L04_PIPES_DONE');
-        g.setVisible(on);
-        if (on && !scene.tweens.isTweening(g)) {
-            scene.tweens.add({ targets: g, x: { from: g.x - 300, to: g.x + 300 }, duration: 2500, repeat: -1 });   // gingerbread on the conveyor
-        }
-    }
-});
-
-/** P-04 hint step 3: the reference tiles that are rotated wrong get highlighted on the pipes screen. */
-registerHintResolver('L04', (key, scene) => {
-    if (key !== 'hint.P-04.3') return null;
-    const screen = scene.ensureScreen('P-04') as PipesScreen | null;
-    if (screen) screen.showHint = true;
-    return [key];
-});
 
 registerLevelVisual('L05', scene => {
     scene.getSprite('cat')?.setVisible(!scene.registryState().hasFlag('L05_CRATES_DONE'));

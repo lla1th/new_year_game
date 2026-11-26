@@ -22,5 +22,15 @@ export interface HotspotScript {
     when?: FlagId; unless?: FlagId;           // variants of one hotspot by flags; first match wins
 }
 export interface Goal { flag: FlagId; hintKeys: [string, string, string] }
-export interface ScreenScript { map: string /* path to the Tiled JSON */; hotspots: HotspotScript[]; onEnter?: Step[] }
+export interface SideRoomSpec {
+    title: string;
+    action: string;
+    objective: string;
+    width: number;
+    theme: 'cakes' | 'candy' | 'glaze';
+    flag: FlagId;
+    left?: string;
+    puzzle: PuzzleId;
+}
+export interface ScreenScript { map: string /* path to the Tiled JSON */; hotspots: HotspotScript[]; onEnter?: Step[]; sideRoom?: SideRoomSpec }
 export interface LevelScript { levelId: LevelId; screens: Record<string, ScreenScript>; firstScreen: string; goals: Goal[] }
