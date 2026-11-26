@@ -40,6 +40,22 @@ async function useTarget(game: Game, aspect: number, fraction: number) {
     await game.act(() => game.click(x, 750));
 }
 
+async function solveDeduction(game: Game, aspect: number, fraction: number, answer: number, wrong?: number) {
+    const x = await approachL04(game, aspect, fraction);
+    await game.click(x, 750);
+    await game.overlay();
+    if (wrong !== undefined) {
+        await game.click(960, 528 + wrong * 69);
+        await expect.poll(() => game.p.evaluate(() => {
+            const level = (window as DebugWindow).__levelScene;
+            const overlay = level?.scene.get('OverlayScene') as unknown as { data_: { screen: { feedback: string } } };
+            return overlay.data_.screen.feedback;
+        })).not.toBe('');
+    }
+    await game.click(960, 528 + answer * 69);
+    await game.overlayClosed();
+}
+
 async function openL04Panel(game: Game, aspect: number) {
     const x = await approachL04(game, aspect, 0.59);
     await game.click(x, 750);
@@ -48,7 +64,7 @@ async function openL04Panel(game: Game, aspect: number) {
 
 export async function playL04(game: Game) {
     const { p, click, overlayClosed } = game;
-    await useTarget(game, 1.6, 0.28);
+    await solveDeduction(game, 1.6, 0.28, 2, 0);
     await useTarget(game, 1.6, 0.50);
     await useTarget(game, 1.6, 0.79);
     await openL04Panel(game, 1.6);
@@ -61,11 +77,11 @@ export async function playL04(game: Game) {
     expect((await game.state())?.flags).toContain('L04_CAKES_DONE');
     await walkL04(game, 'ArrowRight', 'L04', 'sorting');
 
-    await useTarget(game, 1.8, 0.29);
+    await solveDeduction(game, 1.8, 0.29, 0);
     await useTarget(game, 1.8, 0.50);
     await useTarget(game, 1.8, 0.79);
     await walkL04(game, 'ArrowLeft', 'L04', 'factory');
-    await useTarget(game, 1.6, 0.50);
+    await solveDeduction(game, 1.6, 0.50, 1);
     await walkL04(game, 'ArrowRight', 'L04', 'sorting');
     await useTarget(game, 1.8, 0.50);
     expect((await game.state())?.flags).toContain('L04_RECONCILED');
@@ -89,7 +105,7 @@ export async function playL04(game: Game) {
 async function playL04Glaze(game: Game) {
     const { p, click, overlayClosed } = game;
     await useTarget(game, 1.5, 0.49);
-    await useTarget(game, 1.5, 0.785);
+    await solveDeduction(game, 1.5, 0.785, 3);
     await useTarget(game, 1.5, 0.30);
     await openL04Panel(game, 1.5);
     for (const [i, rotation] of [[6, 0], [7, 0], [8, 2], [13, 0], [14, 2], [19, 1], [24, 0]]) {

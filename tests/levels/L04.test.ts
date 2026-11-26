@@ -62,6 +62,25 @@ describe('L04 «Кондитерский завод»', () => {
         expect(h.screen).toBe('factory');
     });
 
+    test('closing deduction panels keeps parts and the key unavailable', async () => {
+        const h = harness(L04, { puzzles: { 'l04-mold': false, 'l04-fuse': false, 'l04-belt': false, 'l04-key-story': false } });
+        await h.click('mold');
+        expect(h.state.hasFlag('L04_CAKE_MOLD')).toBe(false);
+        h.state.setFlag('L04_CAKES_DONE');
+        await h.enter('sorting');
+        await h.click('fuse');
+        expect(h.state.hasFlag('L04_SORT_FUSE')).toBe(false);
+        await h.click('klava');
+        await h.click('note');
+        await h.click('left');
+        await h.click('ginger');
+        expect(h.log).toContain('puzzle:l04-key-story');
+        expect(h.state.hasFlag('L04_SORT_KEY')).toBe(false);
+        await h.enter('technical');
+        await h.click('belt');
+        expect(h.state.hasFlag('L04_BELT')).toBe(false);
+    });
+
     test('each line in the quest has a Russian text entry', () => {
         for (const step of allSteps(L04)) if ('say' in step) expect(ru[step.key], step.key).toBeTruthy();
     });

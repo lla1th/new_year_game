@@ -10,8 +10,11 @@ import { FrescoScreen } from './FrescoScreen';
 
 registerScreen('P-03', () => new BellsScreen());
 registerScreen('fresco', () => new FrescoScreen());
-import { CakesScreen, CandyScreen, GlazeScreen } from './FactoryScreens';
+import { CakesScreen, CandyScreen, DeductionScreen, GlazeScreen } from './FactoryScreens';
 
+for (const id of ['l04-mold', 'l04-fuse', 'l04-belt', 'l04-key-story'] as const) {
+    registerScreen(id, () => new DeductionScreen(id));
+}
 registerScreen('l04-cakes', () => new CakesScreen());
 registerScreen('l04-candy', () => new CandyScreen());
 registerScreen('P-04', () => new GlazeScreen());

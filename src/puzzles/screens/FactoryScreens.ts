@@ -1,3 +1,4 @@
+import { FACTORY_DEDUCTIONS, type FactoryDeductionId } from '../logic/factoryDeductions';
 import type { GameObjects } from 'phaser';
 import { OverlayScreen } from '../../game/scenes/OverlayScene';
 import { CakeOrders, INGREDIENTS } from '../logic/cakes';
@@ -75,6 +76,28 @@ abstract class FactoryScreen extends OverlayScreen {
         this.controls.forEach(({ text }, index) => {
             text.setBackgroundColor(index === this.focus ? '#96617b' : '#4b3f68');
         });
+    }
+}
+
+export class DeductionScreen extends FactoryScreen {
+    private feedback = '';
+
+    constructor(private readonly id: FactoryDeductionId) { super(); }
+
+    protected draw(): void {
+        const { title, clues, options } = FACTORY_DEDUCTIONS[this.id];
+        this.frame(title, 'Сопоставьте подсказки и выберите ответ');
+        clues.forEach((clue, i) => {
+            this.label(0, -205 + i * 58, clue, 27).setWordWrapWidth(1060);
+        });
+        options.forEach(({ label, mismatch }, i) => this.button(0, 28 + i * 69, label, () => {
+            if (mismatch === null) this.solve();
+            else {
+                this.feedback = mismatch;
+                this.draw();
+            }
+        }, 1030));
+        this.label(0, 338, this.feedback, 26, '#ffbbbe').setWordWrapWidth(1040);
     }
 }
 

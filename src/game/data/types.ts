@@ -1,3 +1,5 @@
+import type { FactoryDeductionId } from '../../puzzles/logic/factoryDeductions';
+
 export type LevelId = 'L01' | 'L02' | 'L03' | 'L04' | 'L05' | 'L06' | 'L07' | 'L08';
 export const LEVEL_ORDER: readonly LevelId[] = ['L01', 'L02', 'L03', 'L04', 'L05', 'L06', 'L07', 'L08'];
 export type WorldStyle = 'w1' | 'w2' | 'w3' | 'fin';
@@ -46,7 +48,7 @@ export const FLAG_IDS = [
 export type FlagId = typeof FLAG_IDS[number];
 
 export type PuzzleId = 'P-02' | 'P-03' | 'P-04' | 'P-05' | 'P-06' | 'P-08' | 'P-09' | 'S-02b'
-  | 'l04-cakes' | 'l04-candy' | 'fridge' | 'fresco' | 'drawing' | 'clock';   // приближённые экраны без логики головоломки тоже открываются как «puzzle»
+  | FactoryDeductionId | 'l04-cakes' | 'l04-candy' | 'fridge' | 'fresco' | 'drawing' | 'clock';   // приближённые экраны без логики головоломки тоже открываются как «puzzle»
 
 export type SpeakerId = 'ksyusha' | 'spitz' | 'cat' | 'snail' | 'nika' | 'lekha' | 'owl' | 'snowman' | 'ginger'
   | 'sveta' | 'vendor' | 'monkey' | 'timofey' | 'grisha' | 'marmeladych' | 'klava' | 'semyon'
