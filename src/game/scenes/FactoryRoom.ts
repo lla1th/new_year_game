@@ -35,6 +35,8 @@ export class FactoryRoom {
     private readonly machineFlow: GameObjects.Graphics;
     private speaker: SpeakerId | null = null;
     private target: number | null = null;
+    private readonly mechanics: { worker: GameObjects.Sprite; left: number; right: number; offset: number }[] = [];
+    private maintenanceTime = 0;
     private conveyorElapsed = 0;
     private walking = false;
     private phase = 0;
@@ -120,6 +122,18 @@ export class FactoryRoom {
 
     update(delta: number, blocked: boolean): void {
         const dt = Math.min(delta, 50);
+        this.maintenanceTime += dt;
+        for (const { worker, left, right, offset } of this.mechanics) {
+            const travel = (right - left) / 0.065;
+            const leg = travel + 3200;
+            const t = (this.maintenanceTime + offset) % (2 * leg);
+            const returning = t >= leg;
+            const phase = t % leg;
+            const progress = Math.min(phase / travel, 1);
+            worker.x = left + (right - left) * (returning ? 1 - progress : progress);
+            worker.setFlipX(returning);
+            worker.play(phase < travel ? 'factory_mechanic_walk' : 'factory_mechanic_repair', true);
+        }
         if (this.spec.theme !== 'glaze' || this.completed()) this.conveyorElapsed += dt;
         this.drawConveyor();
         const keys = this.keys;
@@ -209,31 +223,23 @@ export class FactoryRoom {
     }
 
     private drawBackdrop(): void {
-        const { wall, shade, accent } = PALETTES[this.spec.theme];
-        const far = this.scene.add.graphics().setScrollFactor(0.35).setDepth(1);
-        far.fillStyle(wall).fillRect(0, 0, this.width, FLOOR);
-        far.fillStyle(shade).fillRect(0, 163, this.width, 18).fillRect(0, 480, this.width, 106);
-        for (let x = 110; x < this.width; x += 386) {
-            far.fillStyle(shade).fillRoundedRect(x, 232, 244, 212, 66);
-            far.fillStyle(0xffe5b2).fillRoundedRect(x + 14, 248, 216, 180, 55);
-            far.lineStyle(12, shade).lineBetween(x + 121, 249, x + 121, 427).lineBetween(x + 15, 338, x + 229, 338);
-        }
-        const mid = this.scene.add.graphics().setDepth(3).setScrollFactor(0.65);
-        mid.lineStyle(32, INK).lineBetween(0, 108, this.width, 108);
-        mid.lineStyle(21, accent).lineBetween(0, 103, this.width, 103);
-        for (let x = 440; x < this.width; x += 780) {
-            mid.lineStyle(26, INK).lineBetween(x, 108, x, 556);
-            mid.lineStyle(15, accent).lineBetween(x, 105, x, 556);
-            mid.fillStyle(INK).fillEllipse(x, 552, 186, 58);
-            mid.fillStyle(CREAM).fillEllipse(x, 559, 130, 25);
+        const scenery = {
+            cakes: { key: 'w2_factory_bg', deck: 563, pipes: [0.08, 0.43, 0.73, 0.93] },
+            candy: { key: 'w2_sorting_bg', deck: 564, pipes: [0.12, 0.24, 0.53, 0.74] },
+            glaze: { key: 'w2_technical_bg', deck: 553, pipes: [0.04, 0.25, 0.63, 0.89] },
+        }[this.spec.theme];
+        const parallax = 0.18;
+        const span = GAME_WIDTH + parallax * (this.width - GAME_WIDTH);
+        this.scene.add.image(0, 0, scenery.key).setOrigin(0).setDisplaySize(span, 1080)
+            .setScrollFactor(parallax, 1).setDepth(1);
+        for (const i of [0, 2]) {
+            const worker = this.scene.add.sprite(0, scenery.deck, 'factory_mechanic')
+                .setOrigin(0.5, 1).setScale(i === 0 ? 0.72 : 0.82).setAlpha(0.76)
+                .setScrollFactor(parallax, 1).setDepth(2);
+            this.mechanics.push({ worker, left: span * scenery.pipes[i] + 20,
+                right: span * scenery.pipes[i + 1] - 20, offset: i * 4100 });
         }
         const floor = this.scene.add.graphics().setDepth(8);
-        floor.fillStyle(0x69485e).fillRect(0, FLOOR - 20, this.width, 220);
-        floor.fillStyle(0x986879).fillRect(0, FLOOR - 16, this.width, 61);
-        floor.lineStyle(7, INK).lineBetween(0, FLOOR - 20, this.width, FLOOR - 20);
-        floor.lineStyle(3, 0x815568);
-        for (let x = 0; x <= this.width; x += 124) floor.lineBetween(x, FLOOR + 51, x - 52, 1080);
-        floor.lineBetween(0, 1015, this.width, 1015);
         floor.fillStyle(INK).fillRoundedRect(-28, BELT + 37, this.width + 56, 124, 36);
         floor.fillStyle(0x6d576e).fillRoundedRect(-20, BELT + 46, this.width + 40, 97, 29);
         for (let x = 44; x <= this.width; x += 256) {
