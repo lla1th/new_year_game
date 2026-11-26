@@ -13,6 +13,7 @@ export default {
     spot('exit_right', 1740, 300, 120, 300, { x: 1700, y: 780 }, 'exit'),
   ], [
     sprite('vendor_ice', 700, 700),
+    sprite('vendor', 700, 700),
     sprite('lantern_bulb', 880, 500),
     sprite('booth_key', 1260, 520),
     sprite('frozen_walkers', 300, 640),

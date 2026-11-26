@@ -593,19 +593,43 @@
         },
         {
           "id": 13,
-          "name": "snowman_nose",
+          "name": "snowman",
           "type": "",
           "rotation": 0,
           "visible": true,
           "point": true,
-          "x": 380,
-          "y": 400,
+          "x": 379,
+          "y": 560,
           "width": 0,
           "height": 0,
           "properties": [
             {
               "name": "depthY",
-              "value": 401,
+              "value": 561,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_snowman",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "name": "snowman_nose",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 375,
+          "y": 444,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 562,
               "type": "int"
             },
             {
@@ -616,20 +640,20 @@
           ]
         },
         {
-          "id": 14,
+          "id": 15,
           "name": "snowman_mandarin",
           "type": "",
           "rotation": 0,
           "visible": true,
           "point": true,
-          "x": 380,
-          "y": 400,
+          "x": 375,
+          "y": 444,
           "width": 0,
           "height": 0,
           "properties": [
             {
               "name": "depthY",
-              "value": 402,
+              "value": 562,
               "type": "int"
             },
             {
@@ -640,7 +664,7 @@
           ]
         },
         {
-          "id": 15,
+          "id": 16,
           "name": "bulb_blue",
           "type": "",
           "rotation": 0,
@@ -664,7 +688,7 @@
           ]
         },
         {
-          "id": 16,
+          "id": 17,
           "name": "pump_hose",
           "type": "",
           "rotation": 0,
@@ -691,5 +715,5 @@
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 17
+  "nextobjectid": 18
 }

@@ -13,5 +13,6 @@ export default {
   ], [
     sprite('gate_bars', 1660, 620),
     sprite('monkey', 780, 540),
+    sprite('monkey_key', 792, 503, 542),
   ]),
 };

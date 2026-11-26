@@ -14,8 +14,9 @@ export default {
     spot('exit_left', 80, 300, 100, 300, { x: 180, y: 780 }, 'exit'),
   ], [
     sprite('tent_ice', 910, 600),
-    sprite('snowman_nose', 380, 400),
-    sprite('snowman_mandarin', 380, 400, 402),
+    sprite('snowman', 379, 560),
+    sprite('snowman_nose', 375, 444, 562),
+    sprite('snowman_mandarin', 375, 444, 562),
     sprite('bulb_blue', 1380, 700),
     sprite('pump_hose', 1660, 640),
   ]),

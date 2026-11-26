@@ -788,8 +788,62 @@
    "pixelArt": true
   },
   {
-   "key": "l02_nika_ice",
-   "path": "img/world1/l02_nika_ice.png",
+   "key": "l02_monkey",
+   "path": "img/world1/l02_monkey.png",
+   "kind": "image",
+   "levels": [
+    "L02"
+   ],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_monkey_key",
+   "path": "img/world1/l02_monkey_key.png",
+   "kind": "image",
+   "levels": [
+    "L02"
+   ],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_vendor",
+   "path": "img/world1/l02_vendor.png",
+   "kind": "image",
+   "levels": [
+    "L02"
+   ],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_vendor_ice",
+   "path": "img/world1/l02_vendor_ice.png",
+   "kind": "image",
+   "levels": [
+    "L02"
+   ],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_walkers",
+   "path": "img/world1/l02_walkers.png",
+   "kind": "image",
+   "levels": [
+    "L02"
+   ],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_frozen_walkers",
+   "path": "img/world1/l02_frozen_walkers.png",
+   "kind": "image",
+   "levels": [
+    "L02"
+   ],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_snowman",
+   "path": "img/world1/l02_snowman.png",
    "kind": "image",
    "levels": [
     "L02"

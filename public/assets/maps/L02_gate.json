@@ -502,10 +502,34 @@
               "type": "string"
             }
           ]
+        },
+        {
+          "id": 12,
+          "name": "monkey_key",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 792,
+          "y": 503,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 542,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_monkey_key",
+              "type": "string"
+            }
+          ]
         }
       ]
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 12
+  "nextobjectid": 13
 }

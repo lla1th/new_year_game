@@ -40,6 +40,7 @@
       "fin": "img/portraits/spitz_fin.png"
     },
     "cat": {
+      "w1": "img/portraits/cat_w1.png",
       "w3": "img/portraits/cat_w3.png",
       "fin": "img/portraits/cat_fin.png"
     },
@@ -59,6 +60,12 @@
     },
     "snowman": {
       "w1": "img/portraits/snowman_w1.png"
+    },
+    "vendor": {
+      "w1": "img/portraits/vendor_w1.png"
+    },
+    "monkey": {
+      "w1": "img/portraits/monkey_w1.png"
     },
     "ginger": {
       "w2": "img/portraits/ginger_w2.png"

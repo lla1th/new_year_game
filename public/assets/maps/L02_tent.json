@@ -345,13 +345,37 @@
             },
             {
               "name": "texture",
-              "value": "l02_nika_ice",
+              "value": "nika_w1_frozen",
               "type": "string"
             }
           ]
         },
         {
           "id": 10,
+          "name": "nika",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1100,
+          "y": 640,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 641,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "nika_w1_idle",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 11,
           "name": "cat",
           "type": "",
           "rotation": 0,
@@ -369,7 +393,7 @@
             },
             {
               "name": "texture",
-              "value": "l02_cat",
+              "value": "cat_w1_idle",
               "type": "string"
             }
           ]
@@ -378,5 +402,5 @@
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 11
+  "nextobjectid": 12
 }

@@ -8,7 +8,8 @@ export default {
     spot('teleporter', 1360, 220, 320, 400, { x: 1500, y: 780 }, 'gear'),
     spot('exit_tent', 80, 300, 120, 300, { x: 190, y: 780 }, 'exit'),
   ], [
-    sprite('nika_ice', 1100, 640),
-    sprite('cat', 900, 740),
+    { ...sprite('nika_ice', 1100, 640), texture: 'nika_w1_frozen' },
+    { ...sprite('nika', 1100, 640), texture: 'nika_w1_idle' },
+    { ...sprite('cat', 900, 740), texture: 'cat_w1_idle' },
   ], { cat_start: { x: 900, y: 740 }, cat_hole: { x: 1420, y: 520 } }),
 };

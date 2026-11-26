@@ -542,6 +542,30 @@
         },
         {
           "id": 12,
+          "name": "vendor",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 700,
+          "y": 700,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 701,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_vendor",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 13,
           "name": "lantern_bulb",
           "type": "",
           "rotation": 0,
@@ -565,7 +589,7 @@
           ]
         },
         {
-          "id": 13,
+          "id": 14,
           "name": "booth_key",
           "type": "",
           "rotation": 0,
@@ -589,7 +613,7 @@
           ]
         },
         {
-          "id": 14,
+          "id": 15,
           "name": "frozen_walkers",
           "type": "",
           "rotation": 0,
@@ -613,7 +637,7 @@
           ]
         },
         {
-          "id": 15,
+          "id": 16,
           "name": "walkers",
           "type": "",
           "rotation": 0,
@@ -640,5 +664,5 @@
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 16
+  "nextobjectid": 17
 }
