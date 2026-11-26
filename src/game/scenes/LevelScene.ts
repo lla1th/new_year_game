@@ -1092,14 +1092,15 @@ export class LevelScene extends Scene
         const walk = this.walkAnim();
         const poseKey = this.ksyushaKey(up, this.pose);
         const directionalIdle = `ksyusha_${this.charStyle()}_${this.moveDir}_idle`;
-        const useDirectionalIdle = isPlaceholder(poseKey) && !this.anims.exists(poseKey) && this.anims.exists(directionalIdle);
+        const useDirectionalIdle = this.pose === 'idle' && this.anims.exists(directionalIdle) &&
+            (this.charStyle() === 'w2' || (isPlaceholder(poseKey) && !this.anims.exists(poseKey)));
         const detail = this.pose === 'idle' && !this.isBusy ? this.idleDetailKey : undefined;
         const key = walk?.key ?? detail ?? (useDirectionalIdle ? directionalIdle : poseKey);
         const { currentAnim, currentFrame, isPlaying } = this.ksyusha.anims;
-        // All four pixel-art directions use the same step phases.
-        const pixelWalk = /^ksyusha_w1_[dulr]_walk$/;
+        // Direction changes retain the current step phase.
+        const directionalWalk = /^ksyusha_w[12]_[dulr]_walk$/;
         if (isPlaying && currentAnim && currentFrame && currentAnim.key !== key &&
-            pixelWalk.test(currentAnim.key) && pixelWalk.test(key)) {
+            directionalWalk.test(currentAnim.key) && directionalWalk.test(key)) {
             this.ksyusha.play({ key, startFrame: currentFrame.index - 1 });
         } else {
             showVisual(this.ksyusha, key);
@@ -1164,7 +1165,7 @@ export class LevelScene extends Scene
         k.setPosition(this.pos.x, this.pos.y + this.bob.y);
         k.setAngle(this.bob.angle);
         k.setDepth(this.pos.y);
-        if (k.texture.key === 'ksyusha_w1') {
+        if (k.texture.key === 'ksyusha_w1' || k.texture.key === 'ksyusha_w2') {
             this.updateIdleDetail(delta);
             // A subtle breathing cycle with the soles fixed at the sprite origin.
             const breath = 1 + 0.01 * (1 - Math.cos(this.idleElapsed * 2 * Math.PI / 2600));
@@ -1193,7 +1194,8 @@ export class LevelScene extends Scene
         const blink = this.idleElapsed % BLINK_INTERVAL_MS >= BLINK_INTERVAL_MS - BLINK_DURATION_MS;
         // Turn toward the camera to check the phone if she was looking away.
         const phoneDir = this.moveDir === 'u' ? 'd' : this.moveDir;
-        const candidate = phone ? `ksyusha_w1_${phoneDir}_phone` : blink ? `ksyusha_w1_${this.moveDir}_blink` : undefined;
+        const prefix = `ksyusha_${this.charStyle()}`;
+        const candidate = phone ? `${prefix}_${phoneDir}_phone` : blink ? `${prefix}_${this.moveDir}_blink` : undefined;
         const key = candidate && this.anims.exists(candidate) ? candidate : undefined;
         if (key === this.idleDetailKey) return;
         this.idleDetailKey = key;
