@@ -36,7 +36,8 @@ export class GalleryScreen extends OverlayScreen {
     create(container: GameObjects.Container): void {
         this.container = container;
         const s = this.scene;
-        const bg = s.add.rectangle(AREA.x, AREA.y, AREA.w, AREA.h, 0x263238, 1).setStrokeStyle(4, 0x90a4ae).setInteractive();
+        const bg = s.add.rectangle(AREA.x, AREA.y, AREA.w, AREA.h, 0x263238, 0.25)
+            .setStrokeStyle(4, 0xd3a877).setInteractive();
         bg.on('pointerdown', () => this.shoot(null));   // a miss still costs a shot
         container.add(bg);
         this.info = s.add.text(AREA.x - AREA.w / 2 + 20, AREA.y - AREA.h / 2 + 12, '', { fontFamily: 'sans-serif', fontSize: '34px', color: '#ffffff' });

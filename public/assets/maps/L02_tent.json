@@ -393,7 +393,7 @@
             },
             {
               "name": "texture",
-              "value": "cat_w1_idle",
+              "value": "cat_w1_motion_idle",
               "type": "string"
             }
           ]

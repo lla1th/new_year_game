@@ -442,6 +442,78 @@
           "y": 900,
           "width": 0,
           "height": 0
+        },
+        {
+          "id": 10,
+          "name": "marker_gate",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1776,
+          "y": 330,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 11,
+          "name": "marker_chain",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1705,
+          "y": 487,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 12,
+          "name": "marker_pole",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 735,
+          "y": 246,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 13,
+          "name": "marker_crate",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1085,
+          "y": 546,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 14,
+          "name": "marker_urn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 423,
+          "y": 470,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 15,
+          "name": "marker_poster",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 613,
+          "y": 245,
+          "width": 0,
+          "height": 0
         }
       ]
     },
@@ -456,7 +528,7 @@
       "y": 0,
       "objects": [
         {
-          "id": 10,
+          "id": 16,
           "name": "gate_bars",
           "type": "",
           "rotation": 0,
@@ -480,13 +552,13 @@
           ]
         },
         {
-          "id": 11,
+          "id": 17,
           "name": "monkey",
           "type": "",
           "rotation": 0,
           "visible": true,
           "point": true,
-          "x": 780,
+          "x": 788,
           "y": 540,
           "width": 0,
           "height": 0,
@@ -498,20 +570,20 @@
             },
             {
               "name": "texture",
-              "value": "l02_monkey",
+              "value": "l02_monkey_climb",
               "type": "string"
             }
           ]
         },
         {
-          "id": 12,
+          "id": 18,
           "name": "monkey_key",
           "type": "",
           "rotation": 0,
           "visible": true,
           "point": true,
-          "x": 792,
-          "y": 503,
+          "x": 820,
+          "y": 521,
           "width": 0,
           "height": 0,
           "properties": [
@@ -526,10 +598,34 @@
               "type": "string"
             }
           ]
+        },
+        {
+          "id": 19,
+          "name": "foil",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 376,
+          "y": 490,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 491,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_foil",
+              "type": "string"
+            }
+          ]
         }
       ]
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 13
+  "nextobjectid": 20
 }

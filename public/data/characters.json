@@ -72,6 +72,22 @@
     }
   },
   "moods": {
+    "cat": {
+      "smug": {
+        "w1": "img/portraits/cat_smug_w1.png"
+      },
+      "happy": {
+        "w1": "img/portraits/cat_happy_w1.png"
+      }
+    },
+    "vendor": {
+      "smug": {
+        "w1": "img/portraits/vendor_smug_w1.png"
+      },
+      "happy": {
+        "w1": "img/portraits/vendor_happy_w1.png"
+      }
+    },
     "spitz": {
       "happy": {
         "w1": "img/portraits/spitz_happy_w1.png"

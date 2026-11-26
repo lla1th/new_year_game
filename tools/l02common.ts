@@ -1,6 +1,6 @@
 import { rect, type HotspotDef, type MapSpec, type SpriteDef, type Vec2 } from './mapSpec.ts';
 
-/** Общие настройки экранов L02 (мир 1, пиксель). Фоны — заглушки по ключу, пока автор не нарисовал ассеты. */
+/** Общие настройки экранов L02 (мир 1, пиксель). */
 export const FLOOR = rect(80, 540, 1760, 460);
 
 export const spot = (

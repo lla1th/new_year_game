@@ -1,4 +1,73 @@
+import { showVisual } from '../assets/anims';
+import { distance } from '../nav/geometry';
+import type { LevelScene } from '../scenes/LevelScene';
 import { registerAnim, registerLevelVisual } from '../scenes/registry';
+
+function climbPole(scene: LevelScene): void {
+    const monkey = scene.getSprite('monkey');
+    if (!monkey || scene.tweens.getTweensOf(monkey).length) return;
+    showVisual(monkey, 'l02_monkey_climb');
+    scene.tweens.add({
+        targets: monkey, y: 286, duration: 2100, ease: 'Sine.easeInOut',
+        yoyo: true, hold: 350, repeat: -1, repeatDelay: 380,
+        onUpdate: () => syncMonkeyKey(scene),
+    });
+}
+
+function syncMonkeyKey(scene: LevelScene): void {
+    const monkey = scene.getSprite('monkey');
+    if (!monkey) return;
+    monkey.setDepth(monkey.y + 1);
+    scene.getSprite('monkey_key')?.setPosition(monkey.x + 32, monkey.y - 19).setDepth(monkey.depth + 1);
+}
+
+/** The entrance couple's marker and inspect area travel with them. */
+function walkEntranceCouple(scene: LevelScene): void {
+    const couple = scene.getSprite('walkers');
+    const { walkers_corner: corner, walkers_turn: end } = scene.map.points;
+    if (!couple || !corner || !end) return;
+    const start = { x: couple.x, y: couple.y };
+    const first = distance(start, corner);
+    const second = distance(corner, end);
+    if (!first || !second) return;
+    const length = first + second;
+    const speed = 127 / 1000;
+    const rest = 720;
+    const leg = rest + length / speed;
+    let elapsed = 0;
+    scene.animateHotspot('walkers', delta => {
+        elapsed = (elapsed + delta) % (2 * leg);
+        const returning = elapsed >= leg;
+        const phase = elapsed % leg;
+        const travelled = Math.max(0, phase - rest) * speed;
+        const along = returning ? length - travelled : travelled;
+        const t = along < first ? along / first : (along - first) / second;
+        const [a, b] = along < first ? [start, corner] : [corner, end];
+        couple.setPosition(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t).setDepth(couple.y + 1);
+        if (delta > 0 && phase >= rest) {
+            couple.setFlipX(returning);
+            showVisual(couple, 'l02_walkers_walk');
+        } else {
+            showVisual(couple, 'l02_walkers_idle');
+        }
+    });
+}
+
+/** Background guests have distinct routes and don't take over hotspot input. */
+function walkFairGuest(scene: LevelScene, name: string, speed: number, delay: number): void {
+    const guest = scene.getSprite(name);
+    const end = scene.map.points[`${name}_turn`];
+    if (!guest || !end || scene.tweens.getTweensOf(guest).length) return;
+    const movingLeft = end.x < guest.x;
+    guest.setFlipX(movingLeft);
+    scene.tweens.add({
+        targets: guest, x: end.x, y: end.y, duration: distance(guest, end) * 1000 / speed,
+        delay, yoyo: true, repeat: -1,
+        onUpdate: () => guest.setDepth(guest.y + 1),
+        onYoyo: () => guest.setFlipX(!movingLeft),
+        onRepeat: () => guest.setFlipX(movingLeft),
+    });
+}
 
 /** The fair's characters and props follow the current puzzle state. */
 registerLevelVisual('L02', scene => {
@@ -7,12 +76,24 @@ registerLevelVisual('L02', scene => {
     const alive = st.hasFlag('L02_FAIR_ALIVE');
     show('gate_bars', !st.hasFlag('L02_GATE_OPEN'));
     show('monkey_key', !st.hasItem('ITEM_GATE_KEY') && !st.hasFlag('L02_GATE_OPEN'));
+    show('foil', !st.hasFlag('L02_FOIL_TAKEN'));
+    if (scene.currentScreenId === 'gate') climbPole(scene);
     show('vendor_ice', !alive);
     show('vendor', alive);
     show('lantern_bulb', !st.hasFlag('L02_BULB_RED_TAKEN'));
     show('booth_key', !st.hasFlag('L02_SHED_KEY_TAKEN'));
     show('frozen_walkers', !alive);
     show('walkers', alive);
+    for (const name of ['square_couple', 'guest_balloon', 'guest_cocoa', 'guest_muffs']) show(name, alive);
+    if (alive && scene.currentScreenId === 'entrance') {
+        walkEntranceCouple(scene);
+        walkFairGuest(scene, 'guest_muffs', 115, 200);
+    }
+    if (alive && scene.currentScreenId === 'square') {
+        walkFairGuest(scene, 'square_couple', 127, 0);
+        walkFairGuest(scene, 'guest_balloon', 151, 160);
+        walkFairGuest(scene, 'guest_cocoa', 93, 410);
+    }
     show('tent_ice', !alive);
     show('nika_ice', !alive);
     show('nika', alive);
@@ -28,12 +109,21 @@ registerAnim('carousel_spin', scene => new Promise<void>(resolve => {
     scene.time.delayedCall(600, () => resolve());
 }));
 
-/** The monkey climbs down for the foil and back up (0.6 s). */
+/** The monkey leaves its patrol long enough to reach the exchange crate. */
 registerAnim('monkey_swap', scene => new Promise<void>(resolve => {
     const monkey = scene.getSprite('monkey');
     if (!monkey) { resolve(); return; }
-    const key = scene.getSprite('monkey_key');
-    scene.tweens.add({ targets: key ? [monkey, key] : monkey, y: '+=140', duration: 300, yoyo: true, onComplete: () => resolve() });
+    scene.tweens.killTweensOf(monkey);
+    scene.tweens.add({
+        targets: monkey, y: 605, duration: 550, ease: 'Sine.easeInOut', yoyo: true,
+        onUpdate: () => syncMonkeyKey(scene),
+        onYoyo: () => scene.getSprite('monkey_key')?.setVisible(false),
+        onComplete: () => {
+            monkey.setY(540);
+            syncMonkeyKey(scene);
+            resolve();
+        },
+    });
 }));
 
 /** The cat jumps into the «hole in space» next to the unfinished teleporter and disappears. */
@@ -41,9 +131,19 @@ registerAnim('cat_jump', scene => new Promise<void>(resolve => {
     const cat = scene.getSprite('cat');
     const hole = scene.map.points.cat_hole;
     if (!cat || !hole) { resolve(); return; }
-    const scale = cat.scale;   // real world-1 sprites are shown ×4
+    const start = { x: cat.x, y: cat.y };
+    const scale = cat.scale;
+    const jump = { progress: 0 };
+    showVisual(cat, 'cat_w1_motion_jump');
+    cat.setFlipX(hole.x < start.x);
     scene.tweens.add({
-        targets: cat, x: hole.x, y: hole.y, scale: scale * 0.2, duration: 700, ease: 'Quad.easeIn',
+        targets: jump, progress: 1, duration: 730, ease: 'Sine.easeInOut',
+        onUpdate: () => {
+            const t = jump.progress;
+            const floorY = start.y + (hole.y - start.y) * t;
+            cat.setPosition(start.x + (hole.x - start.x) * t, floorY - 104 * Math.sin(Math.PI * t))
+                .setDepth(floorY + 1).setScale(scale * (1 - 0.78 * t));
+        },
         onComplete: () => { cat.setVisible(false).setScale(scale); resolve(); },
     });
 }));

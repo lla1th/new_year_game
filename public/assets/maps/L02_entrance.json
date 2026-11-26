@@ -316,8 +316,8 @@
           "type": "",
           "rotation": 0,
           "visible": true,
-          "x": 200,
-          "y": 360,
+          "x": 180,
+          "y": 415,
           "width": 0,
           "height": 0,
           "polygon": [
@@ -326,16 +326,16 @@
               "y": 0
             },
             {
-              "x": 200,
+              "x": 240,
               "y": 0
             },
             {
-              "x": 200,
-              "y": 260
+              "x": 240,
+              "y": 238
             },
             {
               "x": 0,
-              "y": 260
+              "y": 238
             }
           ],
           "properties": [
@@ -346,7 +346,7 @@
             },
             {
               "name": "approachY",
-              "value": 760,
+              "value": 736,
               "type": "int"
             },
             {
@@ -503,6 +503,78 @@
           "y": 900,
           "width": 0,
           "height": 0
+        },
+        {
+          "id": 11,
+          "name": "marker_lantern",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 920,
+          "y": 416,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 12,
+          "name": "marker_booth",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1347,
+          "y": 477,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 13,
+          "name": "marker_walkers",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 398,
+          "y": 431,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 14,
+          "name": "walkers_corner",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 450,
+          "y": 875,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 15,
+          "name": "walkers_turn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1410,
+          "y": 895,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 16,
+          "name": "guest_muffs_turn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1120,
+          "y": 967,
+          "width": 0,
+          "height": 0
         }
       ]
     },
@@ -517,7 +589,7 @@
       "y": 0,
       "objects": [
         {
-          "id": 11,
+          "id": 17,
           "name": "vendor_ice",
           "type": "",
           "rotation": 0,
@@ -541,7 +613,7 @@
           ]
         },
         {
-          "id": 12,
+          "id": 18,
           "name": "vendor",
           "type": "",
           "rotation": 0,
@@ -559,13 +631,13 @@
             },
             {
               "name": "texture",
-              "value": "l02_vendor",
+              "value": "l02_vendor_idle",
               "type": "string"
             }
           ]
         },
         {
-          "id": 13,
+          "id": 19,
           "name": "lantern_bulb",
           "type": "",
           "rotation": 0,
@@ -589,7 +661,7 @@
           ]
         },
         {
-          "id": 14,
+          "id": 20,
           "name": "booth_key",
           "type": "",
           "rotation": 0,
@@ -613,7 +685,7 @@
           ]
         },
         {
-          "id": 15,
+          "id": 21,
           "name": "frozen_walkers",
           "type": "",
           "rotation": 0,
@@ -637,7 +709,7 @@
           ]
         },
         {
-          "id": 16,
+          "id": 22,
           "name": "walkers",
           "type": "",
           "rotation": 0,
@@ -655,7 +727,31 @@
             },
             {
               "name": "texture",
-              "value": "l02_walkers",
+              "value": "l02_walkers_idle",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "name": "guest_muffs",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1720,
+          "y": 956,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 957,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_guest_muffs_walk",
               "type": "string"
             }
           ]
@@ -664,5 +760,5 @@
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 17
+  "nextobjectid": 24
 }

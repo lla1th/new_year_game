@@ -10,6 +10,6 @@ export default {
   ], [
     { ...sprite('nika_ice', 1100, 640), texture: 'nika_w1_frozen' },
     { ...sprite('nika', 1100, 640), texture: 'nika_w1_idle' },
-    { ...sprite('cat', 900, 740), texture: 'cat_w1_idle' },
+    { ...sprite('cat', 900, 740), texture: 'cat_w1_motion_idle' },
   ], { cat_start: { x: 900, y: 740 }, cat_hole: { x: 1420, y: 520 } }),
 };

@@ -554,6 +554,90 @@
           "y": 900,
           "width": 0,
           "height": 0
+        },
+        {
+          "id": 12,
+          "name": "marker_tent",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 975,
+          "y": 418,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 13,
+          "name": "marker_snowdrift",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1713,
+          "y": 609,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 14,
+          "name": "marker_shed_door",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1801,
+          "y": 368,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 15,
+          "name": "marker_carousel",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1460,
+          "y": 479,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 16,
+          "name": "square_couple_turn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1430,
+          "y": 902,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 17,
+          "name": "guest_balloon_turn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1035,
+          "y": 832,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "id": 18,
+          "name": "guest_cocoa_turn",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 965,
+          "y": 962,
+          "width": 0,
+          "height": 0
         }
       ]
     },
@@ -568,7 +652,7 @@
       "y": 0,
       "objects": [
         {
-          "id": 12,
+          "id": 19,
           "name": "tent_ice",
           "type": "",
           "rotation": 0,
@@ -592,7 +676,7 @@
           ]
         },
         {
-          "id": 13,
+          "id": 20,
           "name": "snowman",
           "type": "",
           "rotation": 0,
@@ -616,7 +700,7 @@
           ]
         },
         {
-          "id": 14,
+          "id": 21,
           "name": "snowman_nose",
           "type": "",
           "rotation": 0,
@@ -640,7 +724,7 @@
           ]
         },
         {
-          "id": 15,
+          "id": 22,
           "name": "snowman_mandarin",
           "type": "",
           "rotation": 0,
@@ -664,13 +748,13 @@
           ]
         },
         {
-          "id": 16,
+          "id": 23,
           "name": "bulb_blue",
           "type": "",
           "rotation": 0,
           "visible": true,
           "point": true,
-          "x": 1380,
+          "x": 1410,
           "y": 700,
           "width": 0,
           "height": 0,
@@ -688,7 +772,7 @@
           ]
         },
         {
-          "id": 17,
+          "id": 24,
           "name": "pump_hose",
           "type": "",
           "rotation": 0,
@@ -710,10 +794,82 @@
               "type": "string"
             }
           ]
+        },
+        {
+          "id": 25,
+          "name": "square_couple",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 410,
+          "y": 890,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 891,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_walkers_walk",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 26,
+          "name": "guest_balloon",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 575,
+          "y": 820,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 821,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_guest_balloon_walk",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "name": "guest_cocoa",
+          "type": "",
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "x": 1585,
+          "y": 955,
+          "width": 0,
+          "height": 0,
+          "properties": [
+            {
+              "name": "depthY",
+              "value": 956,
+              "type": "int"
+            },
+            {
+              "name": "texture",
+              "value": "l02_guest_cocoa_walk",
+              "type": "string"
+            }
+          ]
         }
       ]
     }
   ],
   "nextlayerid": 6,
-  "nextobjectid": 18
+  "nextobjectid": 28
 }

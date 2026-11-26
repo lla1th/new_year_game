@@ -2,6 +2,16 @@ import type { HotspotScript, LevelScript, Step } from '../script/types';
 
 const say = (key: string): Step => ({ say: 'ksyusha', key });
 const inspect = (hotspot: string, key = `l02.${hotspot}.inspect`): HotspotScript => ({ hotspot, onInspect: [say(key)] });
+const unlockGate: Step[] = [
+    { removeItem: 'ITEM_GATE_KEY' }, { sfx: 'sfx_gate' },
+    { setFlag: 'L02_GATE_OPEN' }, say('l02.gate.open'),
+];
+const enterFair: HotspotScript = {
+    hotspot: 'gate',
+    when: 'L02_GATE_OPEN',
+    onInspect: [say('l02.gate.open.inspect')],
+    onUse: [{ goto: { level: 'L02', screen: 'entrance' } }],
+};
 
 /** A way out to another screen of the level: inspect says a short line, use goes there. */
 const exit = (hotspot: string, screen: string): HotspotScript => ({
@@ -29,22 +39,16 @@ export const L02: LevelScript = {
             map: 'assets/maps/L02_gate.json',
             onEnter: [{ ifFlag: 'L02_GATE_OPEN', then: [], else: [{ dialog: 'l02_arrive' }] }],
             hotspots: [
+                enterFair,
                 {
                     hotspot: 'gate',
-                    when: 'L02_GATE_OPEN',
-                    onInspect: [say('l02.gate.open.inspect')],
-                    onUse: [{ goto: { level: 'L02', screen: 'entrance' } }],
+                    onItem: { ITEM_GATE_KEY: unlockGate },
                 },
+                { ...enterFair, hotspot: 'chain' },
                 {
-                    hotspot: 'gate',
-                    onItem: {
-                        ITEM_GATE_KEY: [
-                            { removeItem: 'ITEM_GATE_KEY' }, { sfx: 'sfx_gate' },
-                            { setFlag: 'L02_GATE_OPEN' }, say('l02.gate.open'),
-                        ],
-                    },
+                    ...inspect('chain', 'l02.chain.cut'),
+                    onItem: { ITEM_GATE_KEY: unlockGate },
                 },
-                inspect('chain', 'l02.chain.cut'),
                 {
                     hotspot: 'pole',
                     onInspect: [say('l02.pole.inspect')],
@@ -76,7 +80,7 @@ export const L02: LevelScript = {
                 {
                     hotspot: 'vendor',
                     when: 'L02_FAIR_ALIVE',
-                    onInspect: [{ say: 'vendor', key: 'l02.vendor.board' }],
+                    onInspect: [{ say: 'vendor', key: 'l02.vendor.board', mood: 'smug' }],
                     onUse: [
                         { ifFlag: 'L02_VENDOR_MET', then: [], else: [
                             { dialog: 'l02_vendor' }, { say: 'spitz', key: 'l02.spitz.crossout' }, { setFlag: 'L02_VENDOR_MET' },

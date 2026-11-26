@@ -36,10 +36,9 @@ export class GeneratorScreen extends OverlayScreen {
             container.add(s.add.circle(SOCKET_X[c], SOCKET_Y, SOCKET_R, 0x111111, 1).setStrokeStyle(8, COLORS[c]));
             container.add(s.add.text(SOCKET_X[c], SOCKET_Y + SOCKET_R + 30, MARKS[c], { fontFamily: 'sans-serif', fontSize: '40px', color: '#ffffff' }).setOrigin(0.5));
         }
-        container.add(s.add.rectangle(TANK.x, TANK.y, TANK.w, TANK.h, 0x37474f, 1).setStrokeStyle(6, 0xb0bec5));
-        container.add(s.add.rectangle(CORD.x, CORD.y, CORD.w, CORD.h, 0x4e342e, 1).setStrokeStyle(6, 0xd7ccc8));
-        const cord = s.add.text(CORD.x, CORD.y, '⌇', { fontFamily: 'sans-serif', fontSize: '120px', color: '#ffffff' }).setOrigin(0.5)
-            .setInteractive({ useHandCursor: true }).setName('generator-cord');
+        container.add(s.add.rectangle(TANK.x, TANK.y, TANK.w, TANK.h, 0x293c49, 0.28).setStrokeStyle(6, 0x9bc2c5));
+        const cord = s.add.rectangle(CORD.x, CORD.y, CORD.w, CORD.h, 0x584250, 0.25)
+            .setStrokeStyle(6, 0xe8bc82).setInteractive({ useHandCursor: true }).setName('generator-cord');
         cord.on('pointerdown', () => this.pull());
         container.add(cord);
         this.redraw();

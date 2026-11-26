@@ -56,6 +56,17 @@ describe('L02 «Ярмарка»', () => {
     expect(h.log).toEqual(['goto:L02:entrance']);
   });
 
+  test('the visible lock accepts the key and the opened passage is clickable at floor level', async () => {
+    const h = await start('gate');
+    h.state.addItem('ITEM_GATE_KEY');
+    await h.use('chain', 'ITEM_GATE_KEY');
+    expect(h.state.hasFlag('L02_GATE_OPEN')).toBe(true);
+    expect(h.state.hasItem('ITEM_GATE_KEY')).toBe(false);
+    h.log.length = 0;
+    await h.click('chain');
+    expect(h.log).toEqual(['goto:L02:entrance']);
+  });
+
   test('2. the monkey refuses a mandarin; the item stays; the urn gives one foil only', async () => {
     const h = await start('gate');
     h.state.addItem('ITEM_MANDARIN');

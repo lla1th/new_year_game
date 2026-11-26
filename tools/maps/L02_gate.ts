@@ -12,7 +12,12 @@ export default {
     spot('poster', 480, 200, 160, 200, { x: 560, y: 720 }),
   ], [
     sprite('gate_bars', 1660, 620),
-    sprite('monkey', 780, 540),
-    sprite('monkey_key', 792, 503, 542),
-  ]),
+    { ...sprite('monkey', 788, 540), texture: 'l02_monkey_climb' },
+    sprite('monkey_key', 820, 521, 542),
+    sprite('foil', 376, 490),
+  ], {
+    marker_gate: { x: 1776, y: 330 }, marker_chain: { x: 1705, y: 487 },
+    marker_pole: { x: 735, y: 246 }, marker_crate: { x: 1085, y: 546 },
+    marker_urn: { x: 423, y: 470 }, marker_poster: { x: 613, y: 245 },
+  }),
 };

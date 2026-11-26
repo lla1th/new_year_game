@@ -1333,7 +1333,8 @@ export function isHihik (text: string): boolean
 
 /** Background picture of each close-up screen (ASSET_REQUIREMENTS §2), drawn under the screen when it exists. */
 const CLOSEUP_BG: Partial<Record<PuzzleId, string>> = {
-    fridge: 'w1_fridge_close', 'P-02': 'w1_generator_close', fresco: 'w1_fresco_close', 'P-03': 'w1_bells_close',
+    fridge: 'w1_fridge_close', 'P-02': 'w1_generator_close', 'S-02b': 'w1_gallery_close',
+    fresco: 'w1_fresco_close', 'P-03': 'w1_bells_close',
     'P-04': 'w2_pipes_close', 'P-05': 'w2_ice_close', 'P-06': 'w3_page_close', drawing: 'w3_drawing_close',
     clock: 'fin_clock_close', 'P-08': 'fin_box_close',
 };

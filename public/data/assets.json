@@ -194,6 +194,104 @@
    "pixelArt": true
   },
   {
+   "key": "w1_gate_bg",
+   "path": "img/world1/w1_gate_bg.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "w1_entrance_bg",
+   "path": "img/world1/w1_entrance_bg.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "w1_square_fair_bg",
+   "path": "img/world1/w1_square_fair_bg.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "w1_shed_bg",
+   "path": "img/world1/w1_shed_bg.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "w1_tent_bg",
+   "path": "img/world1/w1_tent_bg.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "w1_generator_close",
+   "path": "img/world1/w1_generator_close.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "w1_gallery_close",
+   "path": "img/world1/w1_gallery_close.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_barrel",
+   "path": "img/world1/l02_barrel.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_booth_key",
+   "path": "img/world1/l02_booth_key.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_foil",
+   "path": "img/world1/l02_foil.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_generator",
+   "path": "img/world1/l02_generator.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_lantern_bulb",
+   "path": "img/world1/l02_lantern_bulb.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_pump_hose",
+   "path": "img/world1/l02_pump_hose.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
+   "key": "l02_tent_ice",
+   "path": "img/world1/l02_tent_ice.png",
+   "kind": "image",
+   "levels": ["L02"],
+   "pixelArt": true
+  },
+  {
    "key": "w1_fair_bg",
    "path": "img/world1/w1_fair_bg.png",
    "kind": "image",
@@ -895,11 +993,14 @@
   {
    "key": "l02_monkey",
    "path": "img/world1/l02_monkey.png",
-   "kind": "image",
-   "levels": [
-    "L02"
-   ],
-   "pixelArt": true
+   "kind": "spritesheet",
+   "levels": ["L02"],
+   "pixelArt": true,
+   "frameWidth": 28,
+   "frameHeight": 34,
+   "anims": {
+    "climb": { "frames": { "start": 0, "end": 5 }, "frameRate": 8 }
+   }
   },
   {
    "key": "l02_monkey_key",
@@ -913,11 +1014,14 @@
   {
    "key": "l02_vendor",
    "path": "img/world1/l02_vendor.png",
-   "kind": "image",
-   "levels": [
-    "L02"
-   ],
-   "pixelArt": true
+   "kind": "spritesheet",
+   "levels": ["L02"],
+   "pixelArt": true,
+   "frameWidth": 44,
+   "frameHeight": 57,
+   "anims": {
+    "idle": { "frames": [0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0], "frameRate": 5 }
+   }
   },
   {
    "key": "l02_vendor_ice",
@@ -931,11 +1035,64 @@
   {
    "key": "l02_walkers",
    "path": "img/world1/l02_walkers.png",
-   "kind": "image",
-   "levels": [
-    "L02"
-   ],
-   "pixelArt": true
+   "kind": "spritesheet",
+   "levels": ["L02"],
+   "pixelArt": true,
+   "frameWidth": 64,
+   "frameHeight": 56,
+   "anims": {
+    "idle": { "frames": [0, 0, 1, 2, 3, 4, 5, 6, 7, 0], "frameRate": 5 },
+    "walk": { "frames": { "start": 8, "end": 15 }, "frameRate": 9 }
+   }
+  },
+  {
+   "key": "cat_w1_motion",
+   "path": "img/characters/cat_w1_motion.png",
+   "kind": "spritesheet",
+   "levels": ["L02"],
+   "pixelArt": true,
+   "frameWidth": 38,
+   "frameHeight": 34,
+   "anims": {
+    "idle": { "frames": [0, 1, 2, 3, 4, 5, 6, 7, 0, 0], "frameRate": 6 },
+    "jump": { "frames": { "start": 8, "end": 11 }, "frameRate": 10 }
+   }
+  },
+  {
+   "key": "l02_guest_balloon",
+   "path": "img/world1/l02_guest_balloon.png",
+   "kind": "spritesheet",
+   "levels": ["L02"],
+   "pixelArt": true,
+   "frameWidth": 40,
+   "frameHeight": 56,
+   "anims": {
+    "walk": { "frames": { "start": 0, "end": 7 }, "frameRate": 11 }
+   }
+  },
+  {
+   "key": "l02_guest_cocoa",
+   "path": "img/world1/l02_guest_cocoa.png",
+   "kind": "spritesheet",
+   "levels": ["L02"],
+   "pixelArt": true,
+   "frameWidth": 40,
+   "frameHeight": 56,
+   "anims": {
+    "walk": { "frames": { "start": 0, "end": 7 }, "frameRate": 7 }
+   }
+  },
+  {
+   "key": "l02_guest_muffs",
+   "path": "img/world1/l02_guest_muffs.png",
+   "kind": "spritesheet",
+   "levels": ["L02"],
+   "pixelArt": true,
+   "frameWidth": 40,
+   "frameHeight": 56,
+   "anims": {
+    "walk": { "frames": { "start": 0, "end": 7 }, "frameRate": 9 }
+   }
   },
   {
    "key": "l02_frozen_walkers",

@@ -429,7 +429,8 @@
   "l02_cat_a": [
     {
       "speaker": "cat",
-      "key": "l02.dlg.cat.1"
+      "key": "l02.dlg.cat.1",
+      "mood": "smug"
     },
     {
       "speaker": "ksyusha",
@@ -437,7 +438,8 @@
     },
     {
       "speaker": "cat",
-      "key": "l02.dlg.cat.3"
+      "key": "l02.dlg.cat.3",
+      "mood": "happy"
     }
   ],
   "l02_cat_b": [
@@ -471,7 +473,8 @@
   "l02_vendor": [
     {
       "speaker": "vendor",
-      "key": "l02.vendor.alive.1"
+      "key": "l02.vendor.alive.1",
+      "mood": "happy"
     },
     {
       "speaker": "ksyusha",
@@ -479,7 +482,8 @@
     },
     {
       "speaker": "vendor",
-      "key": "l02.vendor.board"
+      "key": "l02.vendor.board",
+      "mood": "smug"
     }
   ]
 }
