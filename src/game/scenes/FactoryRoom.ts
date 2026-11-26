@@ -1,9 +1,8 @@
 import { Input, type GameObjects, type Scene } from 'phaser';
 import { showVisual } from '../assets/anims';
 import { ensureTexture } from '../assets/placeholder';
-import { GAME_WIDTH, type FlagId } from '../data/types';
+import { GAME_WIDTH, type FlagId, type SpeakerId } from '../data/types';
 import type { SideRoomSpec, SideRoomTarget } from '../script/types';
-import { drawFactoryWorker } from './factoryWorker';
 
 const FLOOR = 889;
 const BELT = 660;
@@ -31,9 +30,10 @@ export class FactoryRoom {
     private readonly prompt: GameObjects.Text;
     private readonly direction: GameObjects.Text;
     private readonly cargo: GameObjects.Container[];
-    private readonly targets: { def: SideRoomTarget; x: number; label: GameObjects.Text; prop?: GameObjects.Graphics }[];
+    private readonly targets: { def: SideRoomTarget; x: number; label: GameObjects.Text; prop?: GameObjects.Graphics; worker?: GameObjects.Sprite }[];
     private readonly slats: GameObjects.Graphics;
     private readonly machineFlow: GameObjects.Graphics;
+    private speaker: SpeakerId | null = null;
     private target: number | null = null;
     private conveyorElapsed = 0;
     private walking = false;
@@ -68,8 +68,11 @@ export class FactoryRoom {
         this.targets = spec.targets.map(def => {
             const x = this.width * def.at;
             if (def.kind === 'worker') {
-                drawFactoryWorker(scene, def.id, x, FLOOR);
-                return { def, x, label: this.text(x, 629, def.label, 33).setDepth(23) };
+                const texture = ensureTexture(scene, `l04_${def.id}`, 200, 224, def.label);
+                scene.add.ellipse(x, FLOOR - 3, 122, 18, INK, 0.26).setDepth(22);
+                const worker = scene.add.sprite(x, FLOOR, texture, 0)
+                    .setOrigin(0.5, 1).setDepth(23).setName(def.id);
+                return { def, x, label: this.text(x, 629, def.label, 33).setDepth(23), worker };
             }
             const prop = scene.add.graphics().setDepth(21);
             prop.fillStyle(INK).fillRoundedRect(x - 60, 733, 120, 114, 19);
@@ -92,6 +95,10 @@ export class FactoryRoom {
     }
 
     get isWalking(): boolean { return this.walking; }
+
+    setSpeaker(speaker: SpeakerId | null): void {
+        this.speaker = speaker;
+    }
 
     pointer(worldX: number, worldY: number, blocked: boolean): void {
         if (blocked || worldY < 350) return;
@@ -325,6 +332,10 @@ export class FactoryRoom {
             const visible = this.visible(t.def);
             t.label.setVisible(visible);
             t.prop?.setVisible(visible);
+            if (t.worker) {
+                const animation = `l04_${t.def.id}_${done || this.speaker === t.def.id ? 'idle' : 'work'}`;
+                if (this.scene.anims.exists(animation)) t.worker.play(animation, true);
+            }
         }
         this.panelOutline.clear();
         if (near) this.panelOutline.lineStyle(7, CREAM).strokeRoundedRect(this.panelX - 148, 688, 296, 170, 34);

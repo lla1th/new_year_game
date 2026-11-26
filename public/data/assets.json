@@ -968,6 +968,66 @@
    ]
   },
   {
+   "key": "l04_ginger",
+   "path": "img/characters/l04_ginger.png",
+   "kind": "spritesheet",
+   "levels": [
+    "L04"
+   ],
+   "frameWidth": 200,
+   "frameHeight": 224,
+   "anims": {
+    "work": {
+     "frames": { "start": 0, "end": 7 },
+     "frameRate": 8
+    },
+    "idle": {
+     "frames": [8, 8, 8, 9, 10, 11, 8, 8],
+     "frameRate": 4
+    }
+   }
+  },
+  {
+   "key": "l04_klava",
+   "path": "img/characters/l04_klava.png",
+   "kind": "spritesheet",
+   "levels": [
+    "L04"
+   ],
+   "frameWidth": 200,
+   "frameHeight": 224,
+   "anims": {
+    "work": {
+     "frames": { "start": 0, "end": 7 },
+     "frameRate": 8
+    },
+    "idle": {
+     "frames": [8, 8, 8, 9, 10, 11, 8, 8],
+     "frameRate": 4
+    }
+   }
+  },
+  {
+   "key": "l04_lekha",
+   "path": "img/characters/l04_lekha.png",
+   "kind": "spritesheet",
+   "levels": [
+    "L04"
+   ],
+   "frameWidth": 200,
+   "frameHeight": 224,
+   "anims": {
+    "work": {
+     "frames": { "start": 0, "end": 7 },
+     "frameRate": 8
+    },
+    "idle": {
+     "frames": [8, 8, 8, 9, 10, 11, 8, 8],
+     "frameRate": 4
+    }
+   }
+  },
+  {
    "key": "lekha_w2_idle",
    "path": "img/characters/lekha_w2_idle.png",
    "kind": "image",

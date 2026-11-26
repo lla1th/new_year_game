@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import type { GameObjects } from 'phaser';
 import type { LevelScene } from '../../src/game/scenes/LevelScene';
 import type { Game } from './helpers';
 import { ORDERS } from '../../src/puzzles/logic/cakes';
@@ -62,8 +63,17 @@ async function openL04Panel(game: Game, aspect: number) {
     await game.overlay();
 }
 
+async function checkWorker(game: Game, id: string, pose: 'work' | 'idle') {
+    await expect.poll(() => game.p.evaluate(name => {
+        const level = (window as DebugWindow).__levelScene;
+        const worker = level?.children.getByName(name) as GameObjects.Sprite | undefined;
+        return worker?.anims.currentAnim?.key;
+    }, id)).toBe(`l04_${id}_${pose}`);
+}
+
 export async function playL04(game: Game) {
     const { p, click, overlayClosed } = game;
+    await checkWorker(game, 'ginger', 'work');
     await solveDeduction(game, 1.6, 0.28, 2, 0);
     await useTarget(game, 1.6, 0.50);
     await useTarget(game, 1.6, 0.79);
@@ -75,8 +85,10 @@ export async function playL04(game: Game) {
     }
     await overlayClosed();
     expect((await game.state())?.flags).toContain('L04_CAKES_DONE');
+    await checkWorker(game, 'ginger', 'idle');
     await walkL04(game, 'ArrowRight', 'L04', 'sorting');
 
+    await checkWorker(game, 'klava', 'work');
     await solveDeduction(game, 1.8, 0.29, 0);
     await useTarget(game, 1.8, 0.50);
     await useTarget(game, 1.8, 0.79);
@@ -97,6 +109,7 @@ export async function playL04(game: Game) {
     }
     await overlayClosed();
     expect((await game.state())?.flags).toContain('L04_SORT_DONE');
+    await checkWorker(game, 'klava', 'idle');
     await walkL04(game, 'ArrowRight', 'L04', 'technical');
 
     await playL04Glaze(game);
@@ -104,6 +117,7 @@ export async function playL04(game: Game) {
 
 async function playL04Glaze(game: Game) {
     const { p, click, overlayClosed } = game;
+    await checkWorker(game, 'lekha', 'work');
     await useTarget(game, 1.5, 0.49);
     await solveDeduction(game, 1.5, 0.785, 3);
     await useTarget(game, 1.5, 0.30);
@@ -122,5 +136,6 @@ async function playL04Glaze(game: Game) {
     await click(1130, 770);
     await overlayClosed();
     expect((await game.state())?.flags).toContain('L04_PIPES_DONE');
+    await checkWorker(game, 'lekha', 'idle');
     await walkL04(game, 'ArrowRight', 'L05', 'freezer');
 }

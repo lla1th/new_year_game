@@ -923,13 +923,18 @@ export class LevelScene extends Scene
     say (speaker: SpeakerId, key: string, mood?: MoodId): Promise<void>
     {
         // Ksyusha speaks in the talk pose; a «Хихик» line uses the hihik pose.
-        const own = !this.factoryRoom && speaker === 'ksyusha' && !!this.ksyusha && this.pose === 'idle';
+        const factory = this.factoryRoom;
+        factory?.setSpeaker(speaker);
+        const own = !factory && speaker === 'ksyusha' && !!this.ksyusha && this.pose === 'idle';
         if (own) {
             this.pose = isHihik(getGameData()?.texts.t(key) ?? '') ? 'hihik' : 'talk';
             this.applyTexture();
         }
         return this.talk(done => bus.on('say:done', done), () => bus.emit('say', { speaker, textKey: key, mood }))
-            .then(() => { if (own && this.pose !== 'idle') { this.pose = 'idle'; this.applyTexture(); } });
+            .then(() => {
+                factory?.setSpeaker(null);
+                if (own && this.pose !== 'idle') { this.pose = 'idle'; this.applyTexture(); }
+            });
     }
 
     dialog (dialogId: string): Promise<void>

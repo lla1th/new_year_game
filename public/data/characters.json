@@ -69,6 +69,9 @@
     },
     "ginger": {
       "w2": "img/portraits/ginger_w2.png"
+    },
+    "klava": {
+      "w2": "img/portraits/klava_w2.png"
     }
   },
   "moods": {
